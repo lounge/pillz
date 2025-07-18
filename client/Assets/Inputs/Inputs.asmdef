@@ -1,0 +1,7 @@
+{
+    "name": "Inputs",
+    "rootNamespace": "masks.client.Assets.Inputs",
+    "references": [
+        "Unity.InputSystem"
+    ]
+}

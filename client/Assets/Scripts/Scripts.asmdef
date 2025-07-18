@@ -1,0 +1,9 @@
+{
+  "name": "Scripts",
+  "rootNamespace": "masks.client.Scripts",
+  "references": [
+    "Inputs",
+    "com.clockworklabs.spacetimedbsdk",
+    "Unity.InputSystem"
+  ]
+}
