@@ -1,4 +1,5 @@
 using masks.server.Tables;
+using masks.server.Timers;
 using SpacetimeDB;
 
 namespace masks.server.Reducers;
@@ -13,6 +14,11 @@ public partial class Initialization
     {
         Log.Info("Initializing the database...");
         ctx.Db.World.Insert(new World { Size = 1000 });
+        
+        ctx.Db.MoveAllPlayersTimer.Insert(new MoveAllPlayersTimer
+        {
+            ScheduledAt = new ScheduleAt.Interval(TimeSpan.FromMilliseconds(50))
+        });
     }
 
 }

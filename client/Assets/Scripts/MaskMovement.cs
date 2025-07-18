@@ -4,7 +4,7 @@ using masks.client.Assets.Input;
 namespace masks.client.Scripts
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    public class PlayerMovement : PlayerController
+    public class MaskMovement : MonoBehaviour
     {
         [Header("Movement Settings")] public float moveSpeed = 10f;
         public float jumpForce = 10f;

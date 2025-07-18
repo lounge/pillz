@@ -7,7 +7,9 @@ namespace masks.client.Scripts
     {
         private static PrefabManager _instance;
         public PlayerController playerPrefab;
+        public MaskController maskPrefab;
 
+        
         private void Awake()
         {
             _instance = this;
@@ -19,6 +21,15 @@ namespace masks.client.Scripts
             playerController.name = $"Player_{player.Id}";
             playerController.Initialize(player);
             return playerController;
+        }
+        
+        public static MaskController SpawnMask(Mask mask, PlayerController owner)
+        {
+            var entityController = Instantiate(_instance.maskPrefab);
+            entityController.name = $"Mask_{mask.EntityId}";
+            entityController.Spawn(mask, owner);
+            // owner.OnCircleSpawned(entityController);
+            return entityController;
         }
     }
 }

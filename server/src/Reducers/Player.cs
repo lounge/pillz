@@ -47,6 +47,20 @@ public static partial class Player
         var player = ctx.Db.Player.Identity.Find(ctx.Sender) ?? throw new Exception("Player not found in the database.");
         player.Name = name;
         ctx.Db.Player.Identity.Update(player);
+        
+        var entity = ctx.Db.Entity.Insert(new Entity
+        {
+            Position = new DbVector2(0, 0),
+        });
+
+        ctx.Db.Mask.Insert(new Mask
+        {
+            EntityId = entity.Id,
+            PlayerId = player.Id,
+            Direction = new DbVector2(0, 0)
+        });
+
+        Log.Info($"Spawned mask at ({entity.Position.X}, {entity.Position.Y}) with id: {entity.Id}.");
     }
 
     [Reducer]
@@ -57,9 +71,12 @@ public static partial class Player
         foreach (var m in ctx.Db.Mask.PlayerId.Filter(player.Id))
         {
             var mask = m;
+            
+            
             mask.Direction = direction.Normalized;
             // circle.Speed = Math.Clamp(direction.Magnitude, 0f, 1f);
             ctx.Db.Mask.EntityId.Update(mask);
+            Log.Debug($"Updated mask with id {mask.EntityId} direction to ({mask.Direction.X}, {mask.Direction.Y}).");
         }
     }
 }

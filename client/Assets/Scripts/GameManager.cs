@@ -19,8 +19,8 @@ namespace masks.client.Scripts
         public static GameManager Instance { get; private set; }
         public static Identity LocalIdentity { get; private set; }
         public static DbConnection Connection { get; set; }
-        
-        // public static Dictionary<uint, EntityController> Entities = new Dictionary<uint, EntityController>();
+
+        private static readonly Dictionary<uint, EntityController> Entities = new();
         private static readonly Dictionary<uint, PlayerController> Players = new();
 
 
@@ -71,6 +71,13 @@ namespace masks.client.Scripts
             AuthToken.SaveToken(token);
             LocalIdentity = identity;
 
+            
+            Connection.Db.Mask.OnInsert += MaskOnInsert;
+
+            
+            Connection.Db.Entity.OnUpdate += EntityOnUpdate;
+            Connection.Db.Entity.OnDelete += EntityOnDelete;
+            
             Connection.Db.Player.OnInsert += PlayerOnInsert;
             Connection.Db.Player.OnDelete += PlayerOnDelete;
 
@@ -104,18 +111,38 @@ namespace masks.client.Scripts
 
             ctx.Reducers.EnterGame("MULLA_JAFFAR");
         }
+        
+        
+        
+        
+        private static void MaskOnInsert(EventContext context, Mask insertedValue)
+        {
+            var player = GetOrCreatePlayer(insertedValue.PlayerId);
+            var entityController = PrefabManager.SpawnMask(insertedValue, player);
+            Entities.Add(insertedValue.EntityId, entityController);
+        }
+        
+        private static void EntityOnUpdate(EventContext context, Entity oldEntity, Entity newEntity)
+        {
+            if (!Entities.TryGetValue(newEntity.Id, out var entityController))
+            {
+                return;
+            }
+            entityController.OnEntityUpdated(newEntity);
+        }
+
+        private static void EntityOnDelete(EventContext context, Entity oldEntity)
+        {
+            if (Entities.Remove(oldEntity.Id, out var entityController))
+            {
+                entityController.OnDelete(context);
+            }
+        }
 
 
         private static void PlayerOnInsert(EventContext context, Player insertedPlayer)
         {
-            if (!Players.TryGetValue(insertedPlayer.Id, out var playerController))
-            {
-                var player = Connection.Db.Player.Id.Find(insertedPlayer.Id);
-                playerController = PrefabManager.SpawnPlayer(player);
-                Players.Add(insertedPlayer.Id, playerController);
-            }
-
-            // return playerController;
+            GetOrCreatePlayer(insertedPlayer.Id);
         }
 
         private static void PlayerOnDelete(EventContext context, Player deletedValue)
@@ -126,6 +153,21 @@ namespace masks.client.Scripts
                 // Destroy(playerController.gameObject);
             }
         }
+        
+        private static PlayerController GetOrCreatePlayer(uint playerId)
+        {
+            if (!Players.TryGetValue(playerId, out var playerController))
+            {
+                var player = Connection.Db.Player.Id.Find(playerId);
+                playerController = PrefabManager.SpawnPlayer(player);
+                Players.Add(playerId, playerController);
+            }
+
+            return playerController;
+        }
+        
+        
+        
     }
 }
 

@@ -1,3 +1,4 @@
+using SpacetimeDB;
 using SpacetimeDB.Types;
 using UnityEngine;
 
@@ -47,9 +48,11 @@ namespace masks.client.Scripts
 
         public virtual void Update()
         {
-            // Interpolate position and scale
             _lerpTime = Mathf.Min(_lerpTime + Time.deltaTime, LerpDurationSec);
             transform.position = Vector3.Lerp(_lerpStartPosition, _lerpTargetPosition, _lerpTime / LerpDurationSec);
+            
+            
+            Log.Debug($"EntityController: Update {EntityId} pos: {transform.position} target: {_lerpTargetPosition}");
             // transform.localScale = Vector3.Lerp(transform.localScale, _targetScale, Time.deltaTime * 8);
         }
 
