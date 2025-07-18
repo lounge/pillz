@@ -1,19 +1,20 @@
 using UnityEngine;
 using masks.client.Assets.Input;
+
 namespace masks.client.Scripts
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    public class PlayerMovement : MonoBehaviour
+    public class PlayerMovement : PlayerController
     {
-        [Header("Movement Settings")] 
-        public float moveSpeed = 40f;
+        [Header("Movement Settings")] public float moveSpeed = 10f;
         public float jumpForce = 10f;
         public LayerMask groundLayer;
         public Transform groundCheck;
         public float groundCheckRadius = 0.2f;
-        
-        [Header("Air Control")] 
-        [Range(0.8f, 1f)] public float airDragFactor = 0.95f;
+
+        [Header("Air Control")] [Range(0.8f, 1f)]
+        public float airDragFactor = 0.95f;
+
         [Range(0f, 1f)] public float smoothing = 0.15f;
 
         private Rigidbody2D _rb;
@@ -22,6 +23,12 @@ namespace masks.client.Scripts
         private bool _isJumpPressed;
         private bool _isGrounded;
         private float _airborneXDirection = 0f;
+
+
+        private float _lastMovementSendTimestamp;
+
+        
+
 
 
         private void Awake()
@@ -38,45 +45,44 @@ namespace masks.client.Scripts
 
         private void FixedUpdate()
         {
-            // Check ground
+            // if (!IsLocalPlayer || !GameManager.IsConnected())
+            // {
+            //     return;
+            // }
+            
             _isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
 
-            // Jump
             if (_isJumpPressed && _isGrounded)
             {
                 _rb.linearVelocityY = jumpForce;
             }
-            
-            float inputX = _moveInput.x;
+
+            var inputX = _moveInput.x;
             float targetX;
 
             if (_isGrounded)
             {
-                // Ground: smooth toward input
                 targetX = inputX * moveSpeed;
                 _rb.linearVelocityX = Mathf.Lerp(_rb.linearVelocityX, targetX, smoothing);
-
-                _airborneXDirection = inputX; // Reset
+                _airborneXDirection = inputX;
             }
             else
             {
-                // In air: allow directional input
                 if (Mathf.Abs(inputX) > 0.01f)
                 {
                     _airborneXDirection = inputX;
                 }
 
-                // Desired velocity including directional push
                 targetX = _airborneXDirection * moveSpeed;
-
-                // Apply drag first
                 _rb.linearVelocityX *= airDragFactor;
-
-                // Smooth toward the adjusted velocity
                 _rb.linearVelocityX = Mathf.Lerp(_rb.linearVelocityX, targetX, smoothing);
             }
+
+            _isJumpPressed = false;
+
+            GameManager.Connection.Reducers.UpdatePlayerInput(_rb.linearVelocity);
             
-            _isJumpPressed = false; // Reset flag each frame
+            Debug.Log("Player Input Updated: " + _rb.linearVelocity);
         }
     }
 }
