@@ -1,3 +1,4 @@
+using System;
 using SpacetimeDB;
 using SpacetimeDB.Types;
 using UnityEngine;
@@ -8,61 +9,59 @@ namespace masks.client.Scripts
     {
         private const float LerpDurationSec = 0.1f;
 
-        // private static readonly int ShaderColorProperty = Shader.PropertyToID("_Color");
-
-
-        protected uint EntityId;
+        private uint _entityId;
 
         private float _lerpTime;
-        private Vector3 _lerpStartPosition;
         private Vector3 _lerpTargetPosition;
-        // private Vector3 _targetScale;
 
-        protected virtual void Spawn(uint entityId)
+
+        [NonSerialized] public PlayerController Owner;
+
+        private Rigidbody2D _rb;
+
+        protected virtual void Awake()
         {
-            EntityId = entityId;
+            _rb = GetComponent<Rigidbody2D>();
+        }
+
+        protected void Spawn(uint entityId, PlayerController owner)
+        {
+            _entityId = entityId;
+            Owner = owner;
+
 
             var entity = GameManager.Connection.Db.Entity.Id.Find(entityId);
-            _lerpStartPosition = _lerpTargetPosition = transform.position = (Vector2)entity?.Position;
+            _lerpTargetPosition = transform.position = (Vector2)entity?.Position;
             transform.localScale = Vector3.one;
-            // _targetScale = MassToScale(entity.Mass);
         }
 
-        // public void SetColor(Color color)
-        // {
-        //     GetComponent<SpriteRenderer>().material.SetColor(ShaderColorProperty, color);
-        // }
-
-        public virtual void OnEntityUpdated(Entity newVal)
+        public void OnEntityUpdated(Entity newVal)
         {
             _lerpTime = 0.0f;
-            _lerpStartPosition = transform.position;
             _lerpTargetPosition = (Vector2)newVal.Position;
-            // _targetScale = MassToScale(newVal.Mass);
         }
 
-        public virtual void OnDelete(EventContext context)
+        public void OnDelete(EventContext context)
         {
             Destroy(gameObject);
         }
 
         public virtual void Update()
         {
-            _lerpTime = Mathf.Min(_lerpTime + Time.deltaTime, LerpDurationSec);
-            transform.position = Vector3.Lerp(_lerpStartPosition, _lerpTargetPosition, _lerpTime / LerpDurationSec);
-            
-            
-            Log.Debug($"EntityController: Update {EntityId} pos: {transform.position} target: {_lerpTargetPosition}");
-            // transform.localScale = Vector3.Lerp(transform.localScale, _targetScale, Time.deltaTime * 8);
-        }
+            if (Owner.IsLocalPlayer)
+            {
+                return;
+            }
 
-        // public static Vector3 MassToScale(uint mass)
-        // {
-        //     var diameter = MassToDiameter(mass);
-        //     return new Vector3(diameter, diameter, 1);
-        // }
-        //
-        // public static float MassToRadius(uint mass) => Mathf.Sqrt(mass);
-        // public static float MassToDiameter(uint mass) => MassToRadius(mass) * 2;
+            _lerpTime = Mathf.Min(_lerpTime + Time.deltaTime, LerpDurationSec);
+            var t = _lerpTime / LerpDurationSec;
+
+            transform.position = Vector3.Lerp(transform.position, _lerpTargetPosition, t);
+            _rb.position = transform.position; // override RB to match
+            _rb.linearVelocity = Vector2.zero; // cancel drift
+
+
+            Log.Debug($"EntityController: Update {_entityId} pos: {transform.position} target: {_lerpTargetPosition}");
+        }
     }
 }

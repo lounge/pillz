@@ -1,5 +1,7 @@
 using UnityEngine;
 using masks.client.Assets.Input;
+using SpacetimeDB;
+using SpacetimeDB.Types;
 
 namespace masks.client.Scripts
 {
@@ -17,22 +19,19 @@ namespace masks.client.Scripts
 
         [Range(0f, 1f)] public float smoothing = 0.15f;
 
+        private MaskController _maskController;
         private Rigidbody2D _rb;
         private PlayerInputActions _inputActions;
         private Vector2 _moveInput;
         private bool _isJumpPressed;
         private bool _isGrounded;
         private float _airborneXDirection = 0f;
-
-
         private float _lastMovementSendTimestamp;
 
         
-
-
-
         private void Awake()
         {
+            _maskController = GetComponent<MaskController>();
             _rb = GetComponent<Rigidbody2D>();
             _inputActions = new PlayerInputActions();
             _inputActions.Player.Jump.performed += _ => _isJumpPressed = true;
@@ -45,10 +44,11 @@ namespace masks.client.Scripts
 
         private void FixedUpdate()
         {
-            // if (!IsLocalPlayer || !GameManager.IsConnected())
-            // {
-            //     return;
-            // }
+            if (!_maskController.Owner.IsLocalPlayer || !GameManager.IsConnected())
+            {
+                Log.Debug("MaskMovement: Not local player or not connected, skipping movement update.");
+                return;
+            }
             
             _isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
 
@@ -80,7 +80,8 @@ namespace masks.client.Scripts
 
             _isJumpPressed = false;
 
-            GameManager.Connection.Reducers.UpdatePlayerInput(_rb.linearVelocity);
+            var playerInput = new PlayerInput(_rb.linearVelocity, !FocusHandler.HasFocus, _isGrounded);
+            GameManager.Connection.Reducers.UpdatePlayerInput(playerInput);
             
             Debug.Log("Player Input Updated: " + _rb.linearVelocity);
         }

@@ -1,3 +1,4 @@
+using System;
 using SpacetimeDB.Types;
 using UnityEngine;
 
@@ -5,23 +6,21 @@ namespace masks.client.Scripts
 {
     public class PlayerController : MonoBehaviour
     {
-        protected uint PlayerId;
-        
-        protected static PlayerController Local { get; private set; }
-        protected bool IsLocalPlayer => this == Local;
-        
-        protected string Username => GameManager.Connection.Db.Player.Id.Find(PlayerId)?.Name;
+        private uint _playerId;
+        private static PlayerController _local;
+        public bool IsLocalPlayer => this == _local;
+        public string Username => GameManager.Connection.Db.Player.Id.Find(_playerId)?.Name;
         
         
         public void Initialize(Player player)
         {
-            PlayerId = player.Id;
+            _playerId = player.Id;
             if (player.Identity == GameManager.LocalIdentity)
             {
-                Local = this;
+                _local = this;
             }
         }
-        public virtual void OnDelete(EventContext context)
+        public void OnDelete(EventContext context)
         {
             Destroy(gameObject);
         }
