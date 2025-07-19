@@ -1,5 +1,6 @@
 using masks.server.Tables;
 using SpacetimeDB;
+using PlayerInput = masks.server.Tables.PlayerInput;
 
 namespace masks.server.Reducers;
 
@@ -57,26 +58,27 @@ public static partial class Player
         {
             EntityId = entity.Id,
             PlayerId = player.Id,
-            Direction = new DbVector2(0, 0)
+            Velocity = new DbVector2(0, 0)
         });
 
         Log.Info($"Spawned mask at ({entity.Position.X}, {entity.Position.Y}) with id: {entity.Id}.");
     }
 
     [Reducer]
-    public static void UpdatePlayerInput(ReducerContext ctx, DbVector2 direction)
+    public static void UpdatePlayerInput(ReducerContext ctx, PlayerInput input)
     {
+        
         var player = ctx.Db.Player.Identity.Find(ctx.Sender) ?? throw new Exception("Player not found in the database.");
 
         foreach (var m in ctx.Db.Mask.PlayerId.Filter(player.Id))
         {
             var mask = m;
-            
-            
-            mask.Direction = direction.Normalized;
-            // circle.Speed = Math.Clamp(direction.Magnitude, 0f, 1f);
+
+            mask.IsPaused = input.IsPaused;
+            mask.IsGrounded = input.IsGrounded;
+            mask.Velocity = input.Velocity;
             ctx.Db.Mask.EntityId.Update(mask);
-            Log.Debug($"Updated mask with id {mask.EntityId} direction to ({mask.Direction.X}, {mask.Direction.Y}).");
+            Log.Debug($"Updated mask with id {mask.EntityId} direction to ({mask.Velocity.X}, {mask.Velocity.Y}).");
         }
     }
 }

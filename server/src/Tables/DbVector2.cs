@@ -18,15 +18,11 @@ public partial struct DbVector2
     {
         get
         {
-            float mag = Magnitude;
+            var mag = Magnitude;
             if (mag > float.Epsilon)
                 return this / mag;
             return new DbVector2(0, 0);
         }
-            // return this / Magnitude;
-
-       
-       
     }
 
     public static DbVector2 operator +(DbVector2 a, DbVector2 b) => new(a.X + b.X, a.Y + b.Y);

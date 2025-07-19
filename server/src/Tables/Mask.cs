@@ -9,5 +9,7 @@ public partial struct Mask
     [PrimaryKey]
     public uint EntityId;
     public uint PlayerId;
-    public DbVector2 Direction;
+    public DbVector2 Velocity;
+    public bool IsPaused;
+    public bool IsGrounded;
 }
