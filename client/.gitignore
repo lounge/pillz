@@ -15,10 +15,10 @@ MemoryCaptures/
 # ========== Visual Studio / Rider / IDEs ==========
 .vscode/
 .idea/
-# *.sln
-# *.csproj
+*.sln
+*.csproj
 *.user
-# *.unityproj
+*.unityproj
 *.pidb
 *.suo
 *.userprefs
