@@ -343,6 +343,17 @@ namespace masks.client.Assets.Input
                 },
                 {
                     ""name"": """",
+                    ""id"": ""2cdd984a-4f33-4db2-9679-af91ed51295f"",
+                    ""path"": ""<Pointer>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Look"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""573029ef-319e-4008-95a3-b54a190353a4"",
                     ""path"": ""<Gamepad>/buttonWest"",
                     ""interactions"": """",
