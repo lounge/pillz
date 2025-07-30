@@ -15,7 +15,12 @@ public partial class Initialization
         Log.Info("Initializing the database...");
         ctx.Db.World.Insert(new World { Size = 1000 });
         
-        ctx.Db.MoveAllPlayersTimer.Insert(new MoveAllPlayersTimer
+        ctx.Db.MovePlayersTimer.Insert(new MovePlayersTimer
+        {
+            ScheduledAt = new ScheduleAt.Interval(TimeSpan.FromMilliseconds(50))
+        });
+        
+        ctx.Db.MoveProjectilesTimer.Insert(new MoveProjectilesTimer
         {
             ScheduledAt = new ScheduleAt.Interval(TimeSpan.FromMilliseconds(50))
         });

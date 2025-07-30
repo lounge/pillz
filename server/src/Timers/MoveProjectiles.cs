@@ -3,8 +3,8 @@ using SpacetimeDB;
 
 namespace masks.server.Timers;
 
-[Table(Scheduled = nameof(Game.MoveAllPlayers), ScheduledAt = nameof(ScheduledAt))]
-public partial struct MoveAllPlayersTimer
+[Table(Scheduled = nameof(Game.MoveProjectiles), ScheduledAt = nameof(ScheduledAt))]
+public partial struct MoveProjectilesTimer
 {
     [PrimaryKey, AutoInc]
     public ulong ScheduledId;
