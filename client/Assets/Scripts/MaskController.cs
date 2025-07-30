@@ -33,7 +33,15 @@ namespace masks.client.Scripts
         private bool _isGrounded;
         private float _airborneXDirection = 0f;
         private float _lastMovementSendTimestamp;
+        
+        [NonSerialized]
+        public WeaponController WeaponController;
+        
+        private PlayerInput _lastMovementInput;
 
+        
+        // [NonSerialized]
+        // public MaskController MaskController;
 
         protected override void Awake()
         {
@@ -82,9 +90,17 @@ namespace masks.client.Scripts
             _isJumpPressed = false;
 
             var playerInput = new PlayerInput(_rb.linearVelocity, !FocusHandler.HasFocus, _isGrounded);
-            GameManager.Connection.Reducers.UpdatePlayerInput(playerInput);
+
+            if (!playerInput.Equals(_lastMovementInput))
+            {
+                Debug.Log("Player Input Updated");
+                GameManager.Connection.Reducers.UpdatePlayerInput(playerInput);
+            }
             
-            Debug.Log("Player Input Updated: " + _rb.linearVelocity);
+            
+            _lastMovementInput = playerInput;
+            
+            // Debug.Log("Player Input Updated: " + _rb.linearVelocity);
         }
     
     
@@ -98,13 +114,18 @@ namespace masks.client.Scripts
                 return;
             }
             
-            var weapon = Instantiate(weaponPrefab, transform);
-            weapon.SetParent(transform);
+            WeaponController = Instantiate(weaponPrefab, transform);
+            WeaponController.Initialize(transform);
             
             _rb = GetComponent<Rigidbody2D>();
             _inputActions.Player.Jump.performed += _ => _isJumpPressed = true;
             _inputActions.Player.Move.performed += ctx => _moveInput = ctx.ReadValue<Vector2>();
             _inputActions.Player.Move.canceled += ctx => _moveInput = Vector2.zero;
         }
+
+        // public void SetMask(MaskController entityController)
+        // {
+        //     MaskController = entityController;
+        // }
     }
 }

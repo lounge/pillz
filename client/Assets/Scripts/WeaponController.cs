@@ -1,4 +1,6 @@
 using masks.client.Assets.Input;
+using SpacetimeDB;
+using SpacetimeDB.Types;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,7 +12,7 @@ namespace masks.client.Scripts
         [SerializeField] private float weaponDistance = 1.5f;
         
         [Header("Projectile Settings")]
-        [SerializeField] private GameObject projectilePrefab;
+        [SerializeField] private ProjectileController projectilePrefab;
         [SerializeField] private float projectileSpeed = 20f;
         
         private Camera _mainCamera;
@@ -23,8 +25,10 @@ namespace masks.client.Scripts
         private void OnDisable() => _inputActions.Disable();
         
         private Transform _parentTransform;
+        private Rigidbody2D _projectileRb;
+        private PlayerController _owner;
 
-        public void SetParent(Transform parent)
+        public void Initialize(Transform parent)
         {
             _parentTransform = parent;
         }
@@ -33,7 +37,7 @@ namespace masks.client.Scripts
         {
             _inputActions = new PlayerInputActions();
             _inputActions.Player.Look.performed += ctx => _lookInput = ctx.ReadValue<Vector2>();
-            _inputActions.Player.Attack.performed += Shoot;
+            _inputActions.Player.Attack.performed += OnClick;
             _mainCamera = Camera.main;
         }
 
@@ -49,13 +53,41 @@ namespace masks.client.Scripts
                 
                 var weaponPosition = _parentTransform.position +  Quaternion.Euler(0, 0, angle) * new Vector3(weaponDistance, 0, 0);
                 weapon.position = weaponPosition;
+                
+                // Log.Debug("WeaponDirection: " + _weaponDirection.normalized);
             }
+            
+            
         }
 
-        private void Shoot(InputAction.CallbackContext ctx)
+        private void OnClick(InputAction.CallbackContext ctx)
         {
-            var projectile = Instantiate(projectilePrefab, weapon.position, Quaternion.identity);
-            projectile.GetComponent<Rigidbody2D>().linearVelocity = _weaponDirection.normalized * projectileSpeed;
+       
+            // Log.Debug("WeaponController: OnClick - Shooting projectile.");
+            
+            
+            // GameManager.Entities.Add(projectile);
+            GameManager.Connection.Reducers.ShootProjectile(new DbVector2(weapon.position.x, weapon.position.y));
+            
+        }
+        
+        public ProjectileController Shoot(Projectile projectile, PlayerController player)
+        {
+            Log.Debug($"WEAPON POSITION {weapon.position}");
+            var projectileController = Instantiate(projectilePrefab, weapon.position, Quaternion.identity);
+
+            // projectileController.transform.position = weapon.position;
+            projectileController.Spawn(projectile, player, _weaponDirection.normalized * projectileSpeed);
+            
+            Log.Debug($"WeaponController: Shooting projectile from {weapon.position} with direction {_weaponDirection.normalized} and speed {projectileSpeed}.");
+            
+            
+            // _projectileRb = projectile.GetComponent<Rigidbody2D>();
+            // _projectileRb.linearVelocity = _weaponDirection.normalized * projectileSpeed;
+            
+            // Log.Debug($"WeaponController: Shooting projectile from {weapon.position} with direction {linearVelocity.linearVelocity} and speed {projectileSpeed}.");
+
+            return projectileController;
         }
     }
 }

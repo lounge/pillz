@@ -15,14 +15,15 @@ namespace masks.client.Scripts
         private Vector3 _lerpTargetPosition;
 
 
-        [NonSerialized] protected PlayerController Owner;
+        [NonSerialized] 
+        public PlayerController Owner;
 
         [NonSerialized]
-        private Rigidbody2D _rb;
+        private Rigidbody2D _entityRb;
 
         protected virtual void Awake()
         {
-            _rb = GetComponent<Rigidbody2D>();
+            _entityRb = GetComponent<Rigidbody2D>();
         }
 
         protected void Spawn(uint entityId, PlayerController owner)
@@ -30,6 +31,12 @@ namespace masks.client.Scripts
             _entityId = entityId;
             Owner = owner;
 
+            
+            if (Owner.IsLocalPlayer)
+            {
+                return;
+            }
+            
             var entity = GameManager.Connection.Db.Entity.Id.Find(entityId);
             _lerpTargetPosition = transform.position = (Vector2)entity?.Position;
             transform.localScale = Vector3.one;
@@ -57,10 +64,10 @@ namespace masks.client.Scripts
             var t = _lerpTime / LerpDurationSec;
 
             transform.position = Vector3.Lerp(transform.position, _lerpTargetPosition, t);
-            if (_rb)
+            if (_entityRb)
             {
-                _rb.position = transform.position;
-                _rb.linearVelocity = Vector2.zero;
+                _entityRb.position = transform.position;
+                _entityRb.linearVelocity = Vector2.zero;
             }
 
             Log.Debug($"EntityController: Update {_entityId} pos: {transform.position} target: {_lerpTargetPosition}");

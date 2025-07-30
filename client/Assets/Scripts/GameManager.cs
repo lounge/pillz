@@ -73,6 +73,8 @@ namespace masks.client.Scripts
 
             
             Connection.Db.Mask.OnInsert += MaskOnInsert;
+            
+            Connection.Db.Projectile.OnInsert += ProjectileOnInsert;
 
             
             Connection.Db.Entity.OnUpdate += EntityOnUpdate;
@@ -119,6 +121,16 @@ namespace masks.client.Scripts
         {
             var player = GetOrCreatePlayer(insertedValue.PlayerId);
             var entityController = PrefabManager.SpawnMask(insertedValue, player);
+            player.SetMask(entityController);
+            Entities.Add(insertedValue.EntityId, entityController);
+        }
+        
+        private static void ProjectileOnInsert(EventContext context, Projectile insertedValue)
+        {
+            var player = GetOrCreatePlayer(insertedValue.PlayerId);
+            
+            var entityController = player.Mask.WeaponController.Shoot(insertedValue, player);
+            // var entityController = PrefabManager.SpawnMask(insertedValue, player);
             Entities.Add(insertedValue.EntityId, entityController);
         }
         
@@ -150,7 +162,6 @@ namespace masks.client.Scripts
             if (Players.Remove(deletedValue.Id, out var playerController))
             {
                 playerController.OnDelete(context);
-                // Destroy(playerController.gameObject);
             }
         }
         
@@ -158,10 +169,13 @@ namespace masks.client.Scripts
         {
             if (!Players.TryGetValue(playerId, out var playerController))
             {
+                Log.Debug("Creating new player controller for player ID: " + playerId);
                 var player = Connection.Db.Player.Id.Find(playerId);
                 playerController = PrefabManager.SpawnPlayer(player);
                 Players.Add(playerId, playerController);
             }
+            
+            // Log.Debug("Player controller created");
 
             return playerController;
         }

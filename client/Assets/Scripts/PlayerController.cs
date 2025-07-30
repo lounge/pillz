@@ -6,24 +6,38 @@ namespace masks.client.Scripts
 {
     public class PlayerController : MonoBehaviour
     {
-        private uint _playerId;
+        [NonSerialized]
+        public uint PlayerId;
+        
         private static PlayerController _local;
         public bool IsLocalPlayer => this == _local;
-        public string Username => GameManager.Connection.Db.Player.Id.Find(_playerId)?.Name;
         
         
+        
+        public string Username => GameManager.Connection.Db.Player.Id.Find(PlayerId)?.Name;
+
+
+        [NonSerialized] 
+        public MaskController Mask;
+
+
         public void Initialize(Player player)
         {
-            _playerId = player.Id;
+            PlayerId = player.Id;
             if (player.Identity == GameManager.LocalIdentity)
             {
                 _local = this;
             }
         }
+
         public void OnDelete(EventContext context)
         {
             Destroy(gameObject);
         }
-        
+
+        public void SetMask(MaskController entityController)
+        {
+            Mask = entityController;
+        }
     }
 }

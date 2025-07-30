@@ -102,5 +102,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weapon: {fileID: 2616092348292719961}
   weaponDistance: 1.5
-  projectilePrefab: {fileID: 842978576711658570, guid: b807338ce5d9a432197d5f73603e7fc0, type: 3}
+  projectilePrefab: {fileID: 4165104554183277221, guid: b807338ce5d9a432197d5f73603e7fc0, type: 3}
   projectileSpeed: 20
