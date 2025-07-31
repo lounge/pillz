@@ -127,10 +127,19 @@ namespace masks.client.Scripts
         
         private static void ProjectileOnInsert(EventContext context, Projectile insertedValue)
         {
-            var player = GetOrCreatePlayer(insertedValue.PlayerId);
+            var player = GetOrCreatePlayer(insertedValue.PlayerId);    
             
-            var entityController = player.Mask.WeaponController.Shoot(insertedValue, player);
-            // var entityController = PrefabManager.SpawnMask(insertedValue, player);
+            var entity = Connection.Db.Entity.Id.Find(insertedValue.EntityId);
+
+            if (entity == null)
+            {
+                Log.Error($"[ProjectileOnInsert] No entity found for projectile {insertedValue.EntityId}");
+                return;
+            }
+
+            var spawnPos = (Vector2)entity.Position;
+            
+            var entityController = player.Mask.WeaponController.Shoot(insertedValue, player, spawnPos);
             Entities.Add(insertedValue.EntityId, entityController);
         }
         

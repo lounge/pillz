@@ -20,12 +20,8 @@ namespace masks.client.Scripts
 
         [Range(0f, 1f)] public float smoothing = 0.15f;
         
-        
         [Header("Weapons")]
         public WeaponController weaponPrefab;
-
-        [NonSerialized]
-        private Rigidbody2D _rb;
         
         private PlayerInputActions _inputActions;
         private Vector2 _moveInput;
@@ -33,15 +29,14 @@ namespace masks.client.Scripts
         private bool _isGrounded;
         private float _airborneXDirection = 0f;
         private float _lastMovementSendTimestamp;
+        private PlayerInput _lastMovementInput;
+        
+        [NonSerialized]
+        private Rigidbody2D _rb;
         
         [NonSerialized]
         public WeaponController WeaponController;
         
-        private PlayerInput _lastMovementInput;
-
-        
-        // [NonSerialized]
-        // public MaskController MaskController;
 
         protected override void Awake()
         {
@@ -55,7 +50,7 @@ namespace masks.client.Scripts
         {
             if (!Owner.IsLocalPlayer || !GameManager.IsConnected())
             {
-                Log.Debug("MaskMovement: Not local player or not connected, skipping movement update.");
+                // Log.Debug("MaskMovement: Not local player or not connected, skipping movement update.");
                 return;
             }
             
@@ -89,7 +84,7 @@ namespace masks.client.Scripts
 
             _isJumpPressed = false;
 
-            var playerInput = new PlayerInput(_rb.linearVelocity, !FocusHandler.HasFocus, _isGrounded);
+            var playerInput = new PlayerInput(_rb.linearVelocity, _rb.position,!FocusHandler.HasFocus);
 
             if (!playerInput.Equals(_lastMovementInput))
             {
@@ -108,24 +103,21 @@ namespace masks.client.Scripts
         {
             base.Spawn(mask.EntityId, owner);
             
+            WeaponController = Instantiate(weaponPrefab, transform);
+            WeaponController.Initialize(transform, owner);
+            
             if (Owner && (!Owner.IsLocalPlayer || !GameManager.IsConnected()))
             {
                 Log.Debug("MaskMovement: Not local player or not connected, skipping movement init.");
                 return;
             }
             
-            WeaponController = Instantiate(weaponPrefab, transform);
-            WeaponController.Initialize(transform);
+         
             
             _rb = GetComponent<Rigidbody2D>();
             _inputActions.Player.Jump.performed += _ => _isJumpPressed = true;
             _inputActions.Player.Move.performed += ctx => _moveInput = ctx.ReadValue<Vector2>();
             _inputActions.Player.Move.canceled += ctx => _moveInput = Vector2.zero;
         }
-
-        // public void SetMask(MaskController entityController)
-        // {
-        //     MaskController = entityController;
-        // }
     }
 }
