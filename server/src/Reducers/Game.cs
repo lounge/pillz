@@ -10,14 +10,15 @@ public partial class Game
     [Reducer]
     public static void MovePlayers(ReducerContext ctx, MovePlayersTimer timer)
     {
-        var worldSize = (ctx.Db.World.Id.Find(0) ??
-                         throw new Exception("Config table is empty. Please initialize the database first.")).Size;
+        // var worldSize = (ctx.Db.World.Id.Find(0) ??
+        //                  throw new Exception("Config table is empty. Please initialize the database first.")).Size;
 
         foreach (var mask in ctx.Db.Mask.Iter())
         {
-            if (mask.IsPaused)
+            var player = ctx.Db.Player.Id.Find(mask.PlayerId);
+            if (player is { IsPaused: true })
             {
-                Log.Debug($"Mask with id {mask.EntityId} is paused, skipping movement.");
+                // Log.Debug($"Mask with id {mask.EntityId} is paused, skipping movement.");
                 continue;
             }
 
@@ -30,32 +31,31 @@ public partial class Game
 
             var maskEntity = entity.Value;
             var velocity = mask.Velocity;
-            var newPosition = maskEntity.Position + velocity * DeltaTime;
+            var newPosition = mask.Position + velocity * DeltaTime;
 
-            maskEntity.Position.X = newPosition.X;
-            maskEntity.Position.Y = mask.IsGrounded ? -2 : newPosition.Y;
 
-            Log.Debug(
-                $"Moving mask with id {mask.EntityId} to position ({maskEntity.Position.X}, {maskEntity.Position.Y})");
+            if (!maskEntity.Position.Equals(newPosition))
+            {
+                maskEntity.Position.X = newPosition.X;
+                maskEntity.Position.Y = newPosition.Y;
+                
+                ctx.Db.Entity.Id.Update(maskEntity);
+                
+            }
+            // Log.Debug(
+            //     $"Moving mask with id {mask.EntityId} to position ({maskEntity.Position.X}, {maskEntity.Position.Y})");
 
-            ctx.Db.Entity.Id.Update(maskEntity);
         }
     }
 
     [Reducer]
     public static void MoveProjectiles(ReducerContext ctx, MoveProjectilesTimer timer)
     {
-        var worldSize = (ctx.Db.World.Id.Find(0) ??
-                         throw new Exception("Config table is empty. Please initialize the database first.")).Size;
+        // var worldSize = (ctx.Db.World.Id.Find(0) ??
+        //                  throw new Exception("Config table is empty. Please initialize the database first.")).Size;
 
         foreach (var projectile in ctx.Db.Projectile.Iter())
-        {
-            // if (projectile.IsPaused)
-            // {
-            //     Log.Debug($"Mask with id {projectile.EntityId} is paused, skipping movement.");
-            //     continue;
-            // }          
-
+        {  
             var entity = ctx.Db.Entity.Id.Find(projectile.EntityId);
             if (entity == null)
             {
@@ -65,20 +65,18 @@ public partial class Game
 
             var projectileEntity = entity.Value;
             var velocity = projectile.Velocity;
-            var newPosition = projectileEntity.Position + velocity * DeltaTime;
+            var newPosition = projectile.Position + velocity * DeltaTime;
 
             if (!projectileEntity.Position.Equals(newPosition))
             {
                 projectileEntity.Position.X = newPosition.X;
-                projectileEntity.Position.Y = newPosition.Y; // projectile.IsGrounded ? -2 ; 
+                projectileEntity.Position.Y = newPosition.Y;
+                
+                ctx.Db.Entity.Id.Update(projectileEntity);
 
                 Log.Debug(
                     $"Moving projectile with id {projectile.EntityId} to position ({projectileEntity.Position.X}, {projectileEntity.Position.Y})");
             }
-            
-
-
-            ctx.Db.Entity.Id.Update(projectileEntity);
         }
     }
 }

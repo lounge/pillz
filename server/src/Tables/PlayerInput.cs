@@ -4,14 +4,14 @@ namespace masks.server.Tables;
 public partial struct PlayerInput
 {
     public DbVector2 Velocity;
+    public DbVector2 Position;
     public bool IsPaused;
-    public bool IsGrounded;
     
-    public PlayerInput(DbVector2 velocity, bool isPaused, bool isGrounded)
+    public PlayerInput(DbVector2 velocity, DbVector2 position, bool isPaused)
     {
         Velocity = velocity;
+        Position = position;
         IsPaused = isPaused;
-        IsGrounded = isGrounded;
     }
 
 

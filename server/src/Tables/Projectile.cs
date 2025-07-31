@@ -10,4 +10,5 @@ public partial struct Projectile
     public uint EntityId;
     public uint PlayerId;
     public DbVector2 Velocity;
+    public DbVector2 Position;
 }

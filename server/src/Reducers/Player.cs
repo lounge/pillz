@@ -67,16 +67,16 @@ public static partial class Player
     [Reducer]
     public static void UpdatePlayerInput(ReducerContext ctx, PlayerInput input)
     {
-        
         var player = ctx.Db.Player.Identity.Find(ctx.Sender) ?? throw new Exception("Player not found in the database.");
 
         foreach (var m in ctx.Db.Mask.PlayerId.Filter(player.Id))
         {
             var mask = m;
-
-            mask.IsPaused = input.IsPaused;
-            mask.IsGrounded = input.IsGrounded;
             mask.Velocity = input.Velocity;
+            mask.Position = input.Position;
+            
+            player.IsPaused = input.IsPaused;
+            ctx.Db.Player.Identity.Update(player);
             ctx.Db.Mask.EntityId.Update(mask);
             Log.Debug($"Updated mask with id {mask.EntityId} direction to ({mask.Velocity.X}, {mask.Velocity.Y}).");
         }

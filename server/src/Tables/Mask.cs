@@ -10,6 +10,6 @@ public partial struct Mask
     public uint EntityId;
     public uint PlayerId;
     public DbVector2 Velocity;
-    public bool IsPaused;
+    public DbVector2 Position;
     public bool IsGrounded;
 }

@@ -12,7 +12,5 @@ public partial struct Player
     [Unique, AutoInc] 
     public uint Id;
     public string Name;
-    // public DbVector2 Position;
-    // public uint EntityId;
-
+    public bool IsPaused;
 }
