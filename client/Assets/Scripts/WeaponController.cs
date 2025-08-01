@@ -87,7 +87,7 @@ namespace masks.client.Scripts
 
         public ProjectileController Shoot(Projectile projectile, PlayerController player, Vector2 position)
         {
-            var projectileController = Instantiate(projectilePrefab, weapon.position, Quaternion.identity);
+            var projectileController = Instantiate(projectilePrefab, weapon);
             projectileController.Spawn(projectile, player, position, _weaponDirection.normalized * projectileSpeed);
 
             // Log.Debug(

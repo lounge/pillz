@@ -122,9 +122,8 @@ namespace masks.client.Scripts
             
             WeaponController = Instantiate(weaponPrefab, transform);
             WeaponController.Initialize(transform, owner);
-            
-            _hpDisplay = Instantiate(hpDisplay, transform.position, Quaternion.identity);
-            _hpDisplay.transform.SetParent(null);
+
+            _hpDisplay = Instantiate(hpDisplay, transform);
             _hpDisplay.AttachTo(transform);
             _hpDisplay.SetHp(mask.Hp);    
             
