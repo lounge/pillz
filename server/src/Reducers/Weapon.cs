@@ -28,16 +28,24 @@ public static partial class Weapon
     [Reducer]
     public static void UpdateProjectile(ReducerContext ctx, DbVector2 velocity, DbVector2 position)
     {
-        var player = ctx.Db.Player.Identity.Find(ctx.Sender) ?? throw new Exception("Player not found in the database.");
+        var player = ctx.Db.Player.Identity.Find(ctx.Sender) ?? throw new Exception("Player not found");
 
-        foreach (var p in ctx.Db.Projectile.PlayerId.Filter(player.Id))
+        foreach (var proj in ctx.Db.Projectile.PlayerId.Filter(player.Id))
         {
-            var projectile = p;
+            var projectile = proj;
 
             projectile.Velocity = velocity;
             projectile.Position = position;
             ctx.Db.Projectile.EntityId.Update(projectile);
             Log.Debug($"Updated projectile with id {projectile.EntityId} direction to ({projectile.Velocity.X}, {projectile.Velocity.Y}).");
         }
+    }
+    
+    [Reducer]
+    public static void DeleteProjectile(ReducerContext ctx, uint id)
+    {
+        ctx.Db.Entity.Id.Delete(id);
+        ctx.Db.Projectile.EntityId.Delete(id);
+        Log.Info($"Deleted a projectile and entity with id {id}.");
     }
 }

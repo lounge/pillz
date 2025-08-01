@@ -12,4 +12,5 @@ public partial struct Mask
     public DbVector2 Velocity;
     public DbVector2 Position;
     public bool IsGrounded;
+    public uint Hp;
 }
