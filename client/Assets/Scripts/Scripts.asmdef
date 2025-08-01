@@ -4,6 +4,7 @@
   "references": [
     "Inputs",
     "com.clockworklabs.spacetimedbsdk",
-    "Unity.InputSystem"
+    "Unity.InputSystem",
+    "Unity.TextMeshPro"
   ]
 }

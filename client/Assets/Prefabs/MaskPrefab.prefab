@@ -46,7 +46,7 @@ GameObject:
   - component: {fileID: 1906537564627166700}
   m_Layer: 0
   m_Name: MaskPrefab
-  m_TagString: Untagged
+  m_TagString: Mask
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -183,8 +183,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: -0.001535058}
-  m_Size: {x: 1, y: 2.0030706}
+  m_Offset: {x: -0.0073063374, y: 0.00000023841858}
+  m_Size: {x: 1.3269591, y: 2.0039725}
   m_Direction: 0
 --- !u!114 &1906537564627166700
 MonoBehaviour:
@@ -208,3 +208,4 @@ MonoBehaviour:
   airDragFactor: 0.95
   smoothing: 0.15
   weaponPrefab: {fileID: -1818467974883061908, guid: 76f4b1fc46e6d48efb97781ece7ae496, type: 3}
+  hpDisplay: {fileID: 8404897755120854897, guid: e36236dedbba74af68e3501aa376f9e8, type: 3}

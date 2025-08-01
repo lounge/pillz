@@ -73,8 +73,10 @@ namespace masks.client.Scripts
 
             
             Connection.Db.Mask.OnInsert += MaskOnInsert;
+            Connection.Db.Mask.OnUpdate += MaskOnUpdate;
             
             Connection.Db.Projectile.OnInsert += ProjectileOnInsert;
+            Connection.Db.Projectile.OnDelete += ProjectileOnDelete;
 
             
             Connection.Db.Entity.OnUpdate += EntityOnUpdate;
@@ -91,6 +93,8 @@ namespace masks.client.Scripts
                 .OnApplied(HandleSubscriptionApplied)
                 .SubscribeToAllTables();
         }
+
+        #region Connection Handlers
 
         private static void HandleConnectError(Exception ex)
         {
@@ -113,10 +117,12 @@ namespace masks.client.Scripts
 
             ctx.Reducers.EnterGame("MULLA_JAFFAR");
         }
-        
-        
-        
-        
+
+        #endregion
+
+
+        #region  Mask Handlers
+
         private static void MaskOnInsert(EventContext context, Mask insertedValue)
         {
             var player = GetOrCreatePlayer(insertedValue.PlayerId);
@@ -124,6 +130,21 @@ namespace masks.client.Scripts
             player.SetMask(entityController);
             Entities.Add(insertedValue.EntityId, entityController);
         }
+        
+        private static void MaskOnUpdate(EventContext context, Mask oldMask, Mask newMask)
+        {
+            if (!Entities.TryGetValue(newMask.EntityId, out var entityController))
+            {
+                return;
+            }
+            
+            ((MaskController)entityController).OnMaskUpdated(newMask);
+        }
+
+        #endregion
+        
+        
+        #region Projectile Handlers
         
         private static void ProjectileOnInsert(EventContext context, Projectile insertedValue)
         {
@@ -143,6 +164,19 @@ namespace masks.client.Scripts
             Entities.Add(insertedValue.EntityId, entityController);
         }
         
+        private void ProjectileOnDelete(EventContext context, Projectile projectile)
+        {
+            if (Entities.Remove(projectile.EntityId, out var entityController))
+            {
+                entityController.OnDelete(context);
+            }
+        }
+        
+        #endregion
+
+        
+        #region Entity Handlers
+        
         private static void EntityOnUpdate(EventContext context, Entity oldEntity, Entity newEntity)
         {
             if (!Entities.TryGetValue(newEntity.Id, out var entityController))
@@ -159,8 +193,11 @@ namespace masks.client.Scripts
                 entityController.OnDelete(context);
             }
         }
-
-
+        
+        #endregion
+        
+        #region Player Handlers
+        
         private static void PlayerOnInsert(EventContext context, Player insertedPlayer)
         {
             GetOrCreatePlayer(insertedPlayer.Id);
@@ -176,21 +213,18 @@ namespace masks.client.Scripts
         
         private static PlayerController GetOrCreatePlayer(uint playerId)
         {
-            if (!Players.TryGetValue(playerId, out var playerController))
-            {
-                Log.Debug("Creating new player controller for player ID: " + playerId);
-                var player = Connection.Db.Player.Id.Find(playerId);
-                playerController = PrefabManager.SpawnPlayer(player);
-                Players.Add(playerId, playerController);
-            }
+            if (Players.TryGetValue(playerId, out var playerController)) 
+                return playerController;
             
-            // Log.Debug("Player controller created");
+            Log.Debug("Creating new player controller for player ID: " + playerId);
+            var player = Connection.Db.Player.Id.Find(playerId);
+            playerController = PrefabManager.SpawnPlayer(player);
+            Players.Add(playerId, playerController);
 
             return playerController;
         }
         
-        
-        
+        #endregion
     }
 }
 

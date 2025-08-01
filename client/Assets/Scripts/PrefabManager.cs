@@ -25,7 +25,7 @@ namespace masks.client.Scripts
         public static MaskController SpawnMask(Mask mask, PlayerController owner)
         {
             var entityController = Instantiate(_instance.maskPrefab);
-            entityController.name = $"Mask_{mask.EntityId}";
+            entityController.name = $"Mask_{mask.PlayerId}";
             entityController.Spawn(mask, owner);
             return entityController;
         }

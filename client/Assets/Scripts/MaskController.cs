@@ -23,13 +23,18 @@ namespace masks.client.Scripts
         [Header("Weapons")]
         public WeaponController weaponPrefab;
         
-        private PlayerInputActions _inputActions;
+        [Header("Gui")]
+        public HpDisplay hpDisplay;
+
+        private uint _hp = 100;
         private Vector2 _moveInput;
         private bool _isJumpPressed;
         private bool _isGrounded;
         private float _airborneXDirection = 0f;
         private float _lastMovementSendTimestamp;
+        private PlayerInputActions _inputActions;
         private PlayerInput _lastMovementInput;
+        private HpDisplay _hpDisplay;
         
         [NonSerialized]
         private Rigidbody2D _rb;
@@ -81,24 +86,36 @@ namespace masks.client.Scripts
                 _rb.linearVelocityX *= airDragFactor;
                 _rb.linearVelocityX = Mathf.Lerp(_rb.linearVelocityX, targetX, smoothing);
             }
-
-            _isJumpPressed = false;
+            
+            _hpDisplay.transform.position = _rb.transform.position;
 
             var playerInput = new PlayerInput(_rb.linearVelocity, _rb.position,!FocusHandler.HasFocus);
-
-            if (!playerInput.Equals(_lastMovementInput))
+            if (!playerInput.Equals(_lastMovementInput) && Time.time -_lastMovementSendTimestamp >= SendUpdatesFrequency)
             {
                 Debug.Log("Player Input Updated");
+
+                _lastMovementSendTimestamp = Time.time;
                 GameManager.Connection.Reducers.UpdatePlayerInput(playerInput);
             }
             
+            if (IsOutOfBounds())
+            {
+                // DEAD
+                Log.Debug("MaskController: Out of bounds DEAD, deleting mask.");
+                GameManager.Connection.Reducers.DeleteMask(null);
+            }
             
             _lastMovementInput = playerInput;
-            
-            // Debug.Log("Player Input Updated: " + _rb.linearVelocity);
+            _isJumpPressed = false;
         }
-    
-    
+
+        public void OnMaskUpdated(Mask newVal)
+        {
+            _hp = newVal.Hp;
+            _hpDisplay.SetHp(_hp);
+        }
+
+
         public void Spawn(Mask mask, PlayerController owner)
         {
             base.Spawn(mask.EntityId, owner);
@@ -106,18 +123,59 @@ namespace masks.client.Scripts
             WeaponController = Instantiate(weaponPrefab, transform);
             WeaponController.Initialize(transform, owner);
             
+            _hpDisplay = Instantiate(hpDisplay, transform.position, Quaternion.identity);
+            _hpDisplay.transform.SetParent(null);
+            _hpDisplay.AttachTo(transform);
+            _hpDisplay.SetHp(mask.Hp);    
+            
             if (Owner && (!Owner.IsLocalPlayer || !GameManager.IsConnected()))
             {
                 Log.Debug("MaskMovement: Not local player or not connected, skipping movement init.");
                 return;
             }
             
-         
-            
             _rb = GetComponent<Rigidbody2D>();
+            
             _inputActions.Player.Jump.performed += _ => _isJumpPressed = true;
             _inputActions.Player.Move.performed += ctx => _moveInput = ctx.ReadValue<Vector2>();
             _inputActions.Player.Move.canceled += ctx => _moveInput = Vector2.zero;
+        }
+
+        public void ApplyDamage(uint damage)
+        {
+            GameManager.Connection.Reducers.ApplyDamage(Owner.PlayerId, damage);
+            
+            if (_hp <= 0)
+            {
+                Log.Debug("MaskController: HP is 0 or below, deleting mask.");
+                GameManager.Connection.Reducers.DeleteMask(Owner.PlayerId);
+                return;
+            }
+            
+            Log.Debug($"MaskController: Applied {damage} damage, remaining HP: {_hp}");
+        }
+
+        public override void OnDelete(EventContext context)
+        {
+            base.OnDelete(context);
+            
+            if (_hpDisplay)
+            {
+                Destroy(_hpDisplay.gameObject);
+            }
+            
+            if (WeaponController)
+            {
+                Destroy(WeaponController.gameObject);
+            }
+
+            if (Owner)
+            {
+                Destroy(Owner.gameObject);
+            }
+            
+            _inputActions?.Disable();
+            _inputActions = null;
         }
     }
 }

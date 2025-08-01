@@ -7,26 +7,24 @@ namespace masks.client.Scripts
 {
     public class ProjectileController : EntityController
     {
-        private Camera _mainCamera;
         private Rigidbody2D _rb;
+        private float _lastPositionSendTimestamp;
 
-        [NonSerialized]
-        private Vector2 _lastPosition;
+        [NonSerialized] private Vector2 _lastPosition;
 
         protected override void Awake()
         {
             gameObject.SetActive(true);
-            _mainCamera = Camera.main;
             _rb = GetComponent<Rigidbody2D>();
         }
-        
+
         public override void OnEntityUpdated(Entity newVal)
         {
             base.OnEntityUpdated(newVal);
 
-            if (Owner.IsLocalPlayer) 
+            if (Owner.IsLocalPlayer)
                 return;
-            
+
             transform.position = (Vector2)newVal.Position;
             _rb.position = transform.position;
             _rb.linearVelocity = Vector2.zero;
@@ -41,24 +39,20 @@ namespace masks.client.Scripts
                 Log.Debug("ProjectileController: Not local player or not connected, skipping projectile update.");
                 return;
             }
-
-            if (!_mainCamera)
-                return;
-
-            var screenPoint = _mainCamera.WorldToViewportPoint(transform.position);
-            if (screenPoint.x < 0 || screenPoint.x > 1 || screenPoint.y < 0 || screenPoint.y > 1)
-            {
-                Destroy(gameObject);
-            }
-
-            // Log.Debug("ProjectileController: Updating projectile position. direction: " + _rb.linearVelocity);
-
-            if (!_rb.linearVelocity.Equals(_lastPosition))
+            
+            if (!_rb.linearVelocity.Equals(_lastPosition) && Time.time - _lastPositionSendTimestamp >= SendUpdatesFrequency)
             {
                 Log.Debug("ProjectileController: Projectile position changed, updating velocity.");
+
+                _lastPositionSendTimestamp = Time.time;
                 GameManager.Connection.Reducers.UpdateProjectile(_rb.linearVelocity, _rb.position);
             }
             
+            if (IsOutOfBounds())
+            {
+                GameManager.Connection.Reducers.DeleteProjectile(EntityId);
+            }
+
             _lastPosition = _rb.linearVelocity;
         }
 
@@ -68,6 +62,29 @@ namespace masks.client.Scripts
             _rb.linearVelocity = velocity;
 
             Log.Debug($"ProjectileController: Shooting projectile from with direction {velocity}.");
+        }
+
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            var hitObject = collision.gameObject;
+            
+            Log.Debug("ProjectileController: Collision detected with " + hitObject.name);
+
+            if (hitObject.CompareTag("Ground"))
+            {
+                Log.Debug("ProjectileController: Hit the ground, deleting projectile.");
+                GameManager.Connection.Reducers.DeleteProjectile(EntityId);
+            }
+            
+            if (hitObject.CompareTag("Mask"))
+            {
+                var hitMask = hitObject.GetComponent<MaskController>();
+                
+                Log.Debug("ProjectileController: Hit a mask, deleting projectile. Applying damage");
+                GameManager.Connection.Reducers.DeleteProjectile(EntityId);
+                
+                hitMask.ApplyDamage(10);
+            }
         }
     }
 }

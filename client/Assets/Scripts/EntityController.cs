@@ -8,30 +8,40 @@ namespace masks.client.Scripts
     public abstract class EntityController : MonoBehaviour
     {
         private const float LerpDurationSec = 0.1f;
-        private uint _entityId;
         private float _lerpTime;
         private Vector3 _lerpTargetPosition;
+        private Camera _mainCamera;
+        
         
         [NonSerialized]
         private Vector3 _lastPosition;
+       
+        [NonSerialized] 
+        private Rigidbody2D _entityRb;
         
         [NonSerialized] 
         public PlayerController Owner;
 
-        [NonSerialized] 
-        private Rigidbody2D _entityRb;
         
         
+        protected uint EntityId;
+        
+        protected const int SendUpdatesPerSec = 20;
+        protected const float SendUpdatesFrequency = 1f / SendUpdatesPerSec;
+
 
         protected virtual void Awake()
         {
+            
             _entityRb = GetComponent<Rigidbody2D>();
         }
         
         protected void Spawn(uint entityId, PlayerController owner, Vector2? initialPosition = null)
         {
-            _entityId = entityId;
+            EntityId = entityId;
             Owner = owner;
+            _mainCamera = Camera.main;
+
 
             if (Owner.IsLocalPlayer)
             {
@@ -49,7 +59,7 @@ namespace masks.client.Scripts
             _lerpTargetPosition = (Vector2)newVal.Position;
         }
 
-        public void OnDelete(EventContext context)
+        public virtual void OnDelete(EventContext context)
         {
             Destroy(gameObject);
         }
@@ -71,8 +81,24 @@ namespace masks.client.Scripts
                 _entityRb.position = transform.position;
                 _entityRb.linearVelocity = Vector2.zero;
                 
-                Log.Debug($"EntityController: TYPE: {this} Update {_entityId} pos: {transform.position} target: {_lerpTargetPosition}");
+                Log.Debug($"EntityController: TYPE: {this} Update {EntityId} pos: {transform.position} target: {_lerpTargetPosition}");
             }
+        }
+        
+        protected bool IsOutOfBounds()
+        {
+            if (!_mainCamera)
+            {
+                
+                Log.Debug("EntityController: No main camera found, cannot check out of bounds.");
+                return false;
+                
+            }
+            
+            var screenPoint = _mainCamera.WorldToViewportPoint(transform.position);
+
+            Log.Debug($"{screenPoint.x < 0 || screenPoint.x > 1 || screenPoint.y < 0 || screenPoint.y > 1}");
+            return screenPoint.x < 0 || screenPoint.x > 1 || screenPoint.y < 0 || screenPoint.y > 1;
         }
     }
 }
