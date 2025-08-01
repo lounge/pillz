@@ -72,6 +72,7 @@ namespace masks.client.Scripts
 
             if (hitObject.CompareTag("Ground"))
             {
+                Destroy(hitObject.gameObject);
                 Log.Debug("ProjectileController: Hit the ground, deleting projectile.");
                 GameManager.Connection.Reducers.DeleteProjectile(EntityId);
             }
