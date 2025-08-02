@@ -13,17 +13,24 @@ public partial class Initialization
     public static void Init(ReducerContext ctx)
     {
         Log.Info("Initializing the database...");
-        ctx.Db.World.Insert(new World { Size = 1000 });
+
+        var worldWidth = 1920 * 4;
+        var worldHeight = 1080 * 4;
         
+        ctx.Db.World.Insert(new World
+        {
+            Width = (ulong)worldWidth,
+            Height = (ulong)worldHeight
+        });
+       
         ctx.Db.MovePlayersTimer.Insert(new MovePlayersTimer
         {
             ScheduledAt = new ScheduleAt.Interval(TimeSpan.FromMilliseconds(50))
         });
-        
+
         ctx.Db.MoveProjectilesTimer.Insert(new MoveProjectilesTimer
         {
             ScheduledAt = new ScheduleAt.Interval(TimeSpan.FromMilliseconds(50))
         });
     }
-
 }

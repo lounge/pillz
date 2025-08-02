@@ -3,14 +3,11 @@ using SpacetimeDB;
 namespace masks.server.Tables;
 
 [Table(Public = true)]
-public partial struct World
-{
+public partial struct Ground {
+    
     [PrimaryKey, AutoInc]
     public uint Id;
-
-    public ulong Width;
-
-    public ulong Height;
-
-    public bool IsGenerated;
+    
+    public  int X;
+    public  int Y;
 }
