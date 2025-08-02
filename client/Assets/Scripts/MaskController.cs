@@ -37,6 +37,9 @@ namespace masks.client.Scripts
         private HpDisplay _hpDisplay;
         
         [NonSerialized]
+        private Camera _mainCamera;
+        
+        [NonSerialized]
         private Rigidbody2D _rb;
         
         [NonSerialized]
@@ -45,12 +48,13 @@ namespace masks.client.Scripts
 
         protected override void Awake()
         {
+            _mainCamera = Camera.main;
             _inputActions = new PlayerInputActions();
         }
 
         private void OnEnable() => _inputActions.Enable();
         private void OnDisable() => _inputActions.Disable();
-
+        
         private void FixedUpdate()
         {
             if (!Owner.IsLocalPlayer || !GameManager.IsConnected())
@@ -58,11 +62,17 @@ namespace masks.client.Scripts
                 // Log.Debug("MaskMovement: Not local player or not connected, skipping movement update.");
                 return;
             }
-            
-            _isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
 
+            _isGrounded =  Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+
+            if (_isJumpPressed)
+            {
+                Log.Debug("MaskMovement: Jump pressed, checking if grounded.");
+            }
+            
             if (_isJumpPressed && _isGrounded)
             {
+                Log.Debug("MaskMovement: Jump pressed, applying jump force.");
                 _rb.linearVelocityY = jumpForce;
             }
 
@@ -98,12 +108,13 @@ namespace masks.client.Scripts
                 GameManager.Connection.Reducers.UpdatePlayerInput(playerInput);
             }
             
-            if (IsOutOfBounds())
-            {
-                // DEAD
-                Log.Debug("MaskController: Out of bounds DEAD, deleting mask.");
-                GameManager.Connection.Reducers.DeleteMask(null);
-            }
+            // TODO: Check this in some other way
+            // if (IsOutOfBounds())
+            // {
+            //     // DEAD
+            //     Log.Debug("MaskController: Out of bounds DEAD, deleting mask.");
+            //     GameManager.Connection.Reducers.DeleteMask(null);
+            // }
             
             _lastMovementInput = playerInput;
             _isJumpPressed = false;
@@ -113,6 +124,7 @@ namespace masks.client.Scripts
         {
             _hp = newVal.Hp;
             _hpDisplay.SetHp(_hp);
+            WeaponController?.SetAimDir(newVal.AimDir);
         }
 
 
@@ -121,7 +133,7 @@ namespace masks.client.Scripts
             base.Spawn(mask.EntityId, owner);
             
             WeaponController = Instantiate(weaponPrefab, transform);
-            WeaponController.Initialize(transform, owner);
+            WeaponController.Initialize(transform, owner, mask.AimDir);
 
             _hpDisplay = Instantiate(hpDisplay, transform);
             _hpDisplay.AttachTo(transform);
@@ -134,6 +146,9 @@ namespace masks.client.Scripts
             }
             
             _rb = GetComponent<Rigidbody2D>();
+            
+            _mainCamera.GetComponent<CameraFollow>()?.SetTarget(transform);
+
             
             _inputActions.Player.Jump.performed += _ => _isJumpPressed = true;
             _inputActions.Player.Move.performed += ctx => _moveInput = ctx.ReadValue<Vector2>();

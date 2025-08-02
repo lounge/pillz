@@ -23,61 +23,72 @@ namespace masks.client.Scripts
         private Transform _parentTransform;
         private Rigidbody2D _projectileRb;
         private PlayerController _owner;
+        private Vector2 _aimDir;
 
-        private void OnEnable() => _inputActions.Enable();
-        private void OnDisable() => _inputActions.Disable();
+        private void OnEnable()
+        {
+            if (_owner?.IsLocalPlayer == true)
+                _inputActions?.Enable();
+        }
 
-        public void Initialize(Transform parent, PlayerController owner)
+        private void OnDisable()
+        {
+            if (_owner?.IsLocalPlayer == true)
+                _inputActions?.Disable();
+        }
+
+        public void Initialize(Transform parent, PlayerController owner, DbVector2 aimDir)
         {
             _owner = owner;
             _parentTransform = parent;
-
-            if (!_owner.IsLocalPlayer)
+            _mainCamera = Camera.main;
+            _aimDir = aimDir;
+            
+            if (_owner.IsLocalPlayer)
             {
-                if (weapon)
-                {
-                    weapon.gameObject.SetActive(false);
-                }
-                
-                _inputActions?.Disable();
-                _inputActions = null;
-
-                enabled = true;
+                _inputActions = new PlayerInputActions();
+                _inputActions.Player.Look.performed += ctx => _lookInput = ctx.ReadValue<Vector2>();
+                _inputActions.Player.Attack.performed += OnClick;
+                _inputActions.Enable();
             }
         }
 
-        private void Awake()
+        public void SetAimDir(Vector2 aimDir)
         {
-            if (_owner && _owner.IsLocalPlayer)
-            {
-                return;
-            }
-            
-            _inputActions = new PlayerInputActions();
-            _inputActions.Player.Look.performed += ctx => _lookInput = ctx.ReadValue<Vector2>();
-            _inputActions.Player.Attack.performed += OnClick;
-            _mainCamera = Camera.main;
+            _aimDir = aimDir;
         }
 
         private void Update()
         {
-            if (!_owner.IsLocalPlayer)
-            {
-                return;
-            }
+            Vector2 direction;
 
-            if (_lookInput.sqrMagnitude > 0.01f)
+            if (_owner.IsLocalPlayer)
             {
+                if (_lookInput.sqrMagnitude < 0.01f)
+                    return;
+
                 var mouseWorldPosition = _mainCamera.ScreenToWorldPoint(_lookInput);
-                _weaponDirection = (mouseWorldPosition - _parentTransform.position);
-
-                var angle = Mathf.Atan2(_weaponDirection.y, _weaponDirection.x) * Mathf.Rad2Deg;
-                weapon.rotation = Quaternion.Euler(new Vector3(0, 0, angle - 90));
-
-                var weaponPosition = _parentTransform.position +
-                                     Quaternion.Euler(0, 0, angle) * new Vector3(weaponDistance, 0, 0);
-                weapon.position = weaponPosition;
+                direction = (mouseWorldPosition - _parentTransform.position);
+        
+                GameManager.Connection.Reducers.Aim(_lookInput);
             }
+            else
+            {
+                
+                if (_aimDir.sqrMagnitude < 0.01f)
+                    return;
+
+                direction = _aimDir;
+            }
+
+            _weaponDirection = direction;
+
+            var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            weapon.rotation = Quaternion.Euler(0, 0, angle - 90);
+
+            var weaponPosition = _parentTransform.position +
+                                 Quaternion.Euler(0, 0, angle) * new Vector3(weaponDistance, 0, 0);
+            weapon.position = weaponPosition;
         }
 
         private void OnClick(InputAction.CallbackContext ctx)
@@ -87,7 +98,7 @@ namespace masks.client.Scripts
 
         public ProjectileController Shoot(Projectile projectile, PlayerController player, Vector2 position)
         {
-            var projectileController = Instantiate(projectilePrefab, weapon);
+            var projectileController = Instantiate(projectilePrefab, weapon.position, Quaternion.identity);
             projectileController.Spawn(projectile, player, position, _weaponDirection.normalized * projectileSpeed);
 
             // Log.Debug(

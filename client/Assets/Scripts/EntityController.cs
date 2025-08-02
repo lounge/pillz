@@ -66,7 +66,7 @@ namespace masks.client.Scripts
 
         public virtual void Update()
         {
-            if (Owner.IsLocalPlayer)
+            if (!Owner || Owner.IsLocalPlayer)
             {
                 Log.Debug("EntityController: Not updating local player entity.");
                 return;

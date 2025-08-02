@@ -1,42 +1,48 @@
+using SpacetimeDB;
+using SpacetimeDB.Types;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace masks.client.Scripts
 {
     public class GroundGenerator : MonoBehaviour
     {
-        [SerializeField] private GameObject groundPrefab;
-        [SerializeField] private float tileSize = 1f;
-        [SerializeField] private float heightCoverage = 0.25f; // 25%
+        public static GroundGenerator Instance { get; private set; }
+
+        public Tilemap tilemap;
+        public TileBase groundTile;
+
 
         private void Awake()
         {
-            GenerateGroundGrid();
+            Instance = this;
+            
+            if (!tilemap)
+            {
+                tilemap = GetComponent<Tilemap>();
+            }
         }
 
-        private void GenerateGroundGrid()
+        public void Render()
         {
-            var worldHeight = Camera.main!.orthographicSize * 2f;
-            var worldWidth = worldHeight * Camera.main.aspect; 
-            var groundHeight = worldHeight * heightCoverage;
-
-            var rows = Mathf.CeilToInt(groundHeight / tileSize);
-            var cols = Mathf.CeilToInt(worldWidth / tileSize);
-
-            var startX = -worldWidth / 2f + tileSize / 2f;
-            var startY = -Camera.main.orthographicSize + tileSize / 2f;
-
-            for (var y = 0; y < rows; y++)
+            Log.Debug("GroundGenerator: Generating ground...");
+            foreach (var tile in GameManager.Connection.Db.Ground.Iter())
             {
-                for (var x = 0; x < cols; x++)
-                {
-                    var pos = new Vector2(
-                        startX + x * tileSize,
-                        startY + y * tileSize
-                    );
-
-                    Instantiate(groundPrefab, pos, Quaternion.identity, transform);
-                }
+                // Log.Debug("GroundGenerator: Adding tile at position " + new Vector3Int(tile.X, tile.Y, 0));
+                OnTileAdded(null, tile);
             }
+        }
+        
+        public void OnTileAdded(EventContext ctx, Ground tile)
+        {
+            var pos = new Vector3Int(tile.X, tile.Y, 0);
+            tilemap.SetTile(pos, groundTile);
+        }
+
+        public void OnTileRemoved(EventContext ctx, Ground tile)
+        {
+            var pos = new Vector3Int(tile.X, tile.Y, 0);
+            tilemap.SetTile(pos, null);
         }
     }
 }

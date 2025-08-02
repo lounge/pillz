@@ -2,6 +2,7 @@ using System;
 using SpacetimeDB;
 using SpacetimeDB.Types;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace masks.client.Scripts
 {
@@ -72,8 +73,22 @@ namespace masks.client.Scripts
 
             if (hitObject.CompareTag("Ground"))
             {
-                Destroy(hitObject.gameObject);
-                Log.Debug("ProjectileController: Hit the ground, deleting projectile.");
+                var contact = collision.GetContact(0);
+                var hitPosition = contact.point;
+
+                var tilemap = hitObject.GetComponentInParent<Tilemap>();
+                if (!tilemap)
+                {
+                    Log.Error("ProjectileController: Tilemap not found on Ground collision.");
+                    return;
+                }
+
+                var cellPos = tilemap.WorldToCell(hitPosition);
+                Log.Debug("ProjectileController: Tile hit at cell position " + cellPos);
+
+                GameManager.Connection.Reducers.DeleteGroundTile(cellPos.x, cellPos.y);
+                //
+                // Log.Debug("ProjectileController: Hit the ground, deleting projectile.");
                 GameManager.Connection.Reducers.DeleteProjectile(EntityId);
             }
             
