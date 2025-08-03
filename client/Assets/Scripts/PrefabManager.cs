@@ -17,7 +17,7 @@ namespace masks.client.Scripts
         public static PlayerController SpawnPlayer(Player player)
         {
             var playerController = Instantiate(_instance.playerPrefab);
-            playerController.name = $"Player_{player.Id}";
+            playerController.name = $"Player_{player.Username}";
             playerController.Initialize(player);
             return playerController;
         }
@@ -25,8 +25,11 @@ namespace masks.client.Scripts
         public static MaskController SpawnMask(Mask mask, PlayerController owner)
         {
             var entityController = Instantiate(_instance.maskPrefab, owner.transform);
-            entityController.name = $"Mask_{mask.PlayerId}";
+            entityController.name = $"Mask_{owner.Username}";
             entityController.Spawn(mask, owner);
+            
+            owner.SetDefaults(entityController);
+            
             return entityController;
         }
     }

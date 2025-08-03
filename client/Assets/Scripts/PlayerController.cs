@@ -12,7 +12,7 @@ namespace masks.client.Scripts
         private static PlayerController _local;
         public bool IsLocalPlayer => this == _local;
         
-        public string Username => GameManager.Connection.Db.Player.Id.Find(PlayerId)?.Name;
+        public string Username => GameManager.Connection.Db.Player.Id.Find(PlayerId)?.Username;
 
 
         [NonSerialized] 
@@ -33,8 +33,9 @@ namespace masks.client.Scripts
             Destroy(gameObject);
         }
 
-        public void SetMask(MaskController entityController)
+        public void SetDefaults(MaskController entityController)
         {
+            name = $"Player_{Username}";
             Mask = entityController;
         }
     }

@@ -76,10 +76,13 @@ namespace masks.client.Scripts
             Connection.Db.World.OnInsert += WorldOnInsert;
             Connection.Db.World.OnUpdate += WorldOnUpdate;
 
+
             Connection.Db.Ground.OnDelete += OnTileRemoved;
 
             Connection.Db.Mask.OnInsert += MaskOnInsert;
             Connection.Db.Mask.OnUpdate += MaskOnUpdate;
+            Connection.Db.Mask.OnDelete += MaskOnDelete;
+
 
             Connection.Db.Projectile.OnInsert += ProjectileOnInsert;
             Connection.Db.Projectile.OnDelete += ProjectileOnDelete;
@@ -123,12 +126,10 @@ namespace masks.client.Scripts
 
             Connection.Reducers.GenerateGround();
 
-            RenderAndSpawn(Connection.Db.World.Iter().FirstOrDefault());
-
+            RenderWorld(Connection.Db.World.Iter().FirstOrDefault());
         }
 
         #endregion
-
 
         #region World Handlers
 
@@ -139,18 +140,15 @@ namespace masks.client.Scripts
 
         private void WorldOnUpdate(EventContext ctx, World oldWorld, World newWorld)
         {
-            RenderAndSpawn(newWorld);
+            RenderWorld(newWorld);
         }
 
-        private static void RenderAndSpawn(World world)
+        private static void RenderWorld(World world)
         {
             if (world.IsGenerated)
             {
                 Log.Debug("WorldOnUpdate: World table updated, generating ground...");
                 GroundGenerator.Instance.Render();
-                
-                Log.Debug("WorldOnUpdate: Entering game with Mulla Jaffar.");
-                Connection.Reducers.EnterGame("MULLA_JAFFAR");
             }
         }
 
@@ -164,20 +162,21 @@ namespace masks.client.Scripts
         }
 
         #endregion
-
-
+        
         #region Mask Handlers
 
         private static void MaskOnInsert(EventContext context, Mask insertedValue)
         {
+            Log.Debug(
+                $"MaskOnInsert: Inserting mask for player {insertedValue.PlayerId} with entity ID {insertedValue.EntityId}");
             var player = GetOrCreatePlayer(insertedValue.PlayerId);
             var entityController = PrefabManager.SpawnMask(insertedValue, player);
-            player.SetMask(entityController);
             Entities.Add(insertedValue.EntityId, entityController);
         }
 
         private static void MaskOnUpdate(EventContext context, Mask oldMask, Mask newMask)
         {
+            Log.Debug($"MaskOnUpdate: Updating mask for player {newMask.PlayerId} with entity ID {newMask.EntityId}");
             if (!Entities.TryGetValue(newMask.EntityId, out var entityController))
             {
                 return;
@@ -186,8 +185,17 @@ namespace masks.client.Scripts
             ((MaskController)entityController).OnMaskUpdated(newMask);
         }
 
-        #endregion
+        private static void MaskOnDelete(EventContext context, Mask oldEntity)
+        {
+            var masks = Connection.Db.Mask.PlayerId.Filter(oldEntity.PlayerId);
+            if (masks.Any() || !Players.ContainsKey(oldEntity.PlayerId)) 
+                return;
+            
+            Log.Debug($"MaskOnDelete: No masks left for player {oldEntity.PlayerId}, removing player controller.");
+            Players.Remove(oldEntity.PlayerId);
+        }
 
+        #endregion
 
         #region Projectile Handlers
 
@@ -218,8 +226,7 @@ namespace masks.client.Scripts
         }
 
         #endregion
-
-
+        
         #region Entity Handlers
 
         private static void EntityOnUpdate(EventContext context, Entity oldEntity, Entity newEntity)
@@ -251,8 +258,13 @@ namespace masks.client.Scripts
 
         private static void PlayerOnDelete(EventContext context, Player deletedValue)
         {
+            Log.Debug($"PlayerOnDelete");
+
             if (Players.Remove(deletedValue.Id, out var playerController))
             {
+                Log.Debug(
+                    $"PlayerOnDelete: Removing player controller for player ID: {deletedValue.Id} player count remaining: {Players.Count}");
+
                 playerController.OnDelete(context);
             }
         }

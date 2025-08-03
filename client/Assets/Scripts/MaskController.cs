@@ -19,12 +19,10 @@ namespace masks.client.Scripts
         public float airDragFactor = 0.95f;
 
         [Range(0f, 1f)] public float smoothing = 0.15f;
-        
-        [Header("Weapons")]
-        public WeaponController weaponPrefab;
-        
-        [Header("Gui")]
-        public HpDisplay hpDisplay;
+
+        [Header("Weapons")] public WeaponController weaponPrefab;
+
+        [Header("Gui")] public MaskHud maskHud;
 
         private uint _hp = 100;
         private Vector2 _moveInput;
@@ -34,27 +32,26 @@ namespace masks.client.Scripts
         private float _lastMovementSendTimestamp;
         private PlayerInputActions _inputActions;
         private PlayerInput _lastMovementInput;
-        private HpDisplay _hpDisplay;
-        
-        [NonSerialized]
-        private Camera _mainCamera;
-        
-        [NonSerialized]
-        private Rigidbody2D _rb;
-        
-        [NonSerialized]
-        public WeaponController WeaponController;
-        
+        private MaskHud _maskHud;
+        private GameObject _gameCanvas;
+
+        [NonSerialized] private Camera _mainCamera;
+
+        [NonSerialized] private Rigidbody2D _rb;
+
+        [NonSerialized] public WeaponController WeaponController;
+
 
         protected override void Awake()
         {
+            _gameCanvas = GameObject.Find("GameCanvas");
             _mainCamera = Camera.main;
             _inputActions = new PlayerInputActions();
         }
 
         private void OnEnable() => _inputActions.Enable();
         private void OnDisable() => _inputActions.Disable();
-        
+
         private void FixedUpdate()
         {
             if (!Owner.IsLocalPlayer || !GameManager.IsConnected())
@@ -63,13 +60,13 @@ namespace masks.client.Scripts
                 return;
             }
 
-            _isGrounded =  Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+            _isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
 
             if (_isJumpPressed)
             {
                 Log.Debug("MaskMovement: Jump pressed, checking if grounded.");
             }
-            
+
             if (_isJumpPressed && _isGrounded)
             {
                 Log.Debug("MaskMovement: Jump pressed, applying jump force.");
@@ -96,18 +93,19 @@ namespace masks.client.Scripts
                 _rb.linearVelocityX *= airDragFactor;
                 _rb.linearVelocityX = Mathf.Lerp(_rb.linearVelocityX, targetX, smoothing);
             }
-            
-            _hpDisplay.transform.position = _rb.transform.position;
 
-            var playerInput = new PlayerInput(_rb.linearVelocity, _rb.position,!FocusHandler.HasFocus);
-            if (!playerInput.Equals(_lastMovementInput) && Time.time -_lastMovementSendTimestamp >= SendUpdatesFrequency)
+            _maskHud.transform.position = _rb.transform.position;
+
+            var playerInput = new PlayerInput(_rb.linearVelocity, _rb.position, !FocusHandler.HasFocus);
+            if (!playerInput.Equals(_lastMovementInput) &&
+                Time.time - _lastMovementSendTimestamp >= SendUpdatesFrequency)
             {
                 Debug.Log("Player Input Updated");
 
                 _lastMovementSendTimestamp = Time.time;
                 GameManager.Connection.Reducers.UpdatePlayerInput(playerInput);
             }
-            
+
             // TODO: Check this in some other way
             // if (IsOutOfBounds())
             // {
@@ -115,7 +113,7 @@ namespace masks.client.Scripts
             //     Log.Debug("MaskController: Out of bounds DEAD, deleting mask.");
             //     GameManager.Connection.Reducers.DeleteMask(null);
             // }
-            
+
             _lastMovementInput = playerInput;
             _isJumpPressed = false;
         }
@@ -123,33 +121,51 @@ namespace masks.client.Scripts
         public void OnMaskUpdated(Mask newVal)
         {
             _hp = newVal.Hp;
-            _hpDisplay.SetHp(_hp);
+            _maskHud.SetHp(_hp);
             WeaponController?.SetAimDir(newVal.AimDir);
+            
+            if (_hp <= 0)
+            {
+                Log.Debug("MaskController: HP is 0 or below, deleting mask.");
+                
+                if (Owner.IsLocalPlayer)
+                {
+                    Log.Debug("MaskController: Local player mask destroyed, showing death screen.");
+                    DeathScreenManager.Instance.Show(Owner);
+                }
+                
+                
+                GameManager.Connection.Reducers.DeleteMask(Owner.PlayerId);
+                
+
+                return;
+            }
         }
 
 
         public void Spawn(Mask mask, PlayerController owner)
         {
             base.Spawn(mask.EntityId, owner);
-            
+
             WeaponController = Instantiate(weaponPrefab, transform);
             WeaponController.Initialize(transform, owner, mask.AimDir);
 
-            _hpDisplay = Instantiate(hpDisplay, transform);
-            _hpDisplay.AttachTo(transform);
-            _hpDisplay.SetHp(mask.Hp);    
-            
+            _maskHud = Instantiate(maskHud, _gameCanvas.transform);
+            _maskHud.AttachTo(transform);
+            _maskHud.SetHp(mask.Hp);
+            _maskHud.SetUsername(owner.Username);
+
             if (Owner && (!Owner.IsLocalPlayer || !GameManager.IsConnected()))
             {
                 Log.Debug("MaskMovement: Not local player or not connected, skipping movement init.");
                 return;
             }
-            
+
             _rb = GetComponent<Rigidbody2D>();
-            
+
             _mainCamera.GetComponent<CameraFollow>()?.SetTarget(transform);
 
-            
+
             _inputActions.Player.Jump.performed += _ => _isJumpPressed = true;
             _inputActions.Player.Move.performed += ctx => _moveInput = ctx.ReadValue<Vector2>();
             _inputActions.Player.Move.canceled += ctx => _moveInput = Vector2.zero;
@@ -158,26 +174,19 @@ namespace masks.client.Scripts
         public void ApplyDamage(uint damage)
         {
             GameManager.Connection.Reducers.ApplyDamage(Owner.PlayerId, damage);
-            
-            if (_hp <= 0)
-            {
-                Log.Debug("MaskController: HP is 0 or below, deleting mask.");
-                GameManager.Connection.Reducers.DeleteMask(Owner.PlayerId);
-                return;
-            }
-            
+
             Log.Debug($"MaskController: Applied {damage} damage, remaining HP: {_hp}");
         }
 
         public override void OnDelete(EventContext context)
         {
             base.OnDelete(context);
-            
-            if (_hpDisplay)
+
+            if (_maskHud)
             {
-                Destroy(_hpDisplay.gameObject);
+                Destroy(_maskHud.gameObject);
             }
-            
+
             if (WeaponController)
             {
                 Destroy(WeaponController.gameObject);
@@ -187,7 +196,7 @@ namespace masks.client.Scripts
             {
                 Destroy(Owner.gameObject);
             }
-            
+
             _inputActions?.Disable();
             _inputActions = null;
         }

@@ -29,11 +29,11 @@ namespace masks.client.Scripts
 
         private void OnZoom(UnityEngine.InputSystem.InputAction.CallbackContext context)
         {
-            float scroll = context.ReadValue<Vector2>().y;
+            var scroll = context.ReadValue<Vector2>().y;
 
             if (Mathf.Abs(scroll) > 0.01f)
             {
-                float step = -Mathf.Sign(scroll) * zoomStepSize;
+                var step = -Mathf.Sign(scroll) * zoomStepSize;
                 _targetZoom = Mathf.Clamp(_targetZoom + step, minZoom, maxZoom);
             }
         }

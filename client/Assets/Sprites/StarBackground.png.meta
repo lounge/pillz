@@ -1,0 +1,2054 @@
+fileFormatVersion: 2
+guid: 66ae3a7e544cd45a083ba41cc0fbd824
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 6542133821065548087
+    second: StarBackground_0
+  - first:
+      213: 3599433743049327167
+    second: StarBackground_1
+  - first:
+      213: 1493228830668967655
+    second: StarBackground_2
+  - first:
+      213: 5489701207133317527
+    second: StarBackground_3
+  - first:
+      213: 2328258275199812785
+    second: StarBackground_4
+  - first:
+      213: 4389416346753787741
+    second: StarBackground_5
+  - first:
+      213: 187688012573785127
+    second: StarBackground_6
+  - first:
+      213: 7669524529432489713
+    second: StarBackground_7
+  - first:
+      213: 3747825056730710422
+    second: StarBackground_8
+  - first:
+      213: 1018988853635202587
+    second: StarBackground_9
+  - first:
+      213: 4252875390460546903
+    second: StarBackground_10
+  - first:
+      213: -8521012366130186181
+    second: StarBackground_11
+  - first:
+      213: -6614955955443068815
+    second: StarBackground_12
+  - first:
+      213: -3817239998666496896
+    second: StarBackground_13
+  - first:
+      213: 468951233490130921
+    second: StarBackground_14
+  - first:
+      213: -480704264891354483
+    second: StarBackground_15
+  - first:
+      213: -1282883763702905609
+    second: StarBackground_16
+  - first:
+      213: 3780097060830233712
+    second: StarBackground_17
+  - first:
+      213: -5443917349730685294
+    second: StarBackground_18
+  - first:
+      213: 1709140359042503912
+    second: StarBackground_19
+  - first:
+      213: -4914387593745982443
+    second: StarBackground_20
+  - first:
+      213: 5248096730961554344
+    second: StarBackground_21
+  - first:
+      213: 5798200490797657991
+    second: StarBackground_22
+  - first:
+      213: -7117428897210303014
+    second: StarBackground_23
+  - first:
+      213: -2552090699586538737
+    second: StarBackground_24
+  - first:
+      213: -1224786485944023239
+    second: StarBackground_25
+  - first:
+      213: 6445717659236683193
+    second: StarBackground_26
+  - first:
+      213: -6614471058622128519
+    second: StarBackground_27
+  - first:
+      213: 4021334124134345826
+    second: StarBackground_28
+  - first:
+      213: -293202356332877837
+    second: StarBackground_29
+  - first:
+      213: -4836463953072966598
+    second: StarBackground_30
+  - first:
+      213: -3288335353257454359
+    second: StarBackground_31
+  - first:
+      213: 6483566559142517850
+    second: StarBackground_32
+  - first:
+      213: -5344986078697407616
+    second: StarBackground_33
+  - first:
+      213: 3433565291363554733
+    second: StarBackground_34
+  - first:
+      213: 8968854914534460413
+    second: StarBackground_35
+  - first:
+      213: -4602533216626474987
+    second: StarBackground_36
+  - first:
+      213: -7756427493877880609
+    second: StarBackground_37
+  - first:
+      213: 5449102350132027336
+    second: StarBackground_38
+  - first:
+      213: 4026240550250044133
+    second: StarBackground_39
+  - first:
+      213: -8214816746593978633
+    second: StarBackground_40
+  - first:
+      213: 6549096869005367752
+    second: StarBackground_41
+  - first:
+      213: -3926619302785914882
+    second: StarBackground_42
+  - first:
+      213: 4308035607113834249
+    second: StarBackground_43
+  - first:
+      213: 481500278855172480
+    second: StarBackground_44
+  - first:
+      213: -1348873409317904969
+    second: StarBackground_45
+  - first:
+      213: -9170787554030238227
+    second: StarBackground_46
+  - first:
+      213: -3853581358656172095
+    second: StarBackground_47
+  - first:
+      213: 7197739503914777081
+    second: StarBackground_48
+  - first:
+      213: -4046146955861364762
+    second: StarBackground_49
+  - first:
+      213: 2741516034883471225
+    second: StarBackground_50
+  - first:
+      213: -5840210661491332942
+    second: StarBackground_51
+  - first:
+      213: 8366647981178674874
+    second: StarBackground_52
+  - first:
+      213: -4101956795603401494
+    second: StarBackground_53
+  - first:
+      213: -2712627441927795649
+    second: StarBackground_54
+  - first:
+      213: -3072510090363742131
+    second: StarBackground_55
+  - first:
+      213: 6189639733159711913
+    second: StarBackground_56
+  - first:
+      213: 192351826266704855
+    second: StarBackground_57
+  - first:
+      213: 5706942835981889169
+    second: StarBackground_58
+  - first:
+      213: -1368454202372042610
+    second: StarBackground_59
+  - first:
+      213: -2886554876100270662
+    second: StarBackground_60
+  - first:
+      213: 1426646532792183002
+    second: StarBackground_61
+  - first:
+      213: 2367960228253336780
+    second: StarBackground_62
+  - first:
+      213: 3324479985592405049
+    second: StarBackground_63
+  - first:
+      213: 6998623568922002357
+    second: StarBackground_64
+  - first:
+      213: -7626111344157458965
+    second: StarBackground_65
+  - first:
+      213: 7976596843132799602
+    second: StarBackground_66
+  - first:
+      213: -4963768122958534363
+    second: StarBackground_67
+  - first:
+      213: 7155936244817714092
+    second: StarBackground_68
+  - first:
+      213: -754266543658945148
+    second: StarBackground_69
+  - first:
+      213: 6041631140518105027
+    second: StarBackground_70
+  - first:
+      213: -2009090400919514286
+    second: StarBackground_71
+  - first:
+      213: 667131879314448445
+    second: StarBackground_72
+  - first:
+      213: -8745735791613815702
+    second: StarBackground_73
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 0
+    wrapV: 0
+    wrapW: 0
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 0
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 0
+  spriteTessellationDetail: -1
+  textureType: 0
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: StarBackground_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1
+        width: 708
+        height: 2047
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7315ead6c045aca50800000000000000
+      internalID: 6542133821065548087
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_1
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 632
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f32820f2be1c3f130800000000000000
+      internalID: 3599433743049327167
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_2
+      rect:
+        serializedVersion: 2
+        x: 149
+        y: 1638
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ee4564c5b309b410800000000000000
+      internalID: 1493228830668967655
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_3
+      rect:
+        serializedVersion: 2
+        x: 153
+        y: 818
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 799e63689265f2c40800000000000000
+      internalID: 5489701207133317527
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_4
+      rect:
+        serializedVersion: 2
+        x: 174
+        y: 1830
+        width: 46
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1b406aec092af4020800000000000000
+      internalID: 2328258275199812785
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_5
+      rect:
+        serializedVersion: 2
+        x: 182
+        y: 647
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d576d8749e65aec30800000000000000
+      internalID: 4389416346753787741
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_6
+      rect:
+        serializedVersion: 2
+        x: 190
+        y: 1150
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72c3f06c04dca9200800000000000000
+      internalID: 187688012573785127
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_7
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 306
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1fee7f4bcef9f6a60800000000000000
+      internalID: 7669524529432489713
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_8
+      rect:
+        serializedVersion: 2
+        x: 230
+        y: 303
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6910eb24803f20430800000000000000
+      internalID: 3747825056730710422
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_9
+      rect:
+        serializedVersion: 2
+        x: 235
+        y: 655
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b1e320ba6fc242e00800000000000000
+      internalID: 1018988853635202587
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_10
+      rect:
+        serializedVersion: 2
+        x: 248
+        y: 584
+        width: 47
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 75fc66a82af350b30800000000000000
+      internalID: 4252875390460546903
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_11
+      rect:
+        serializedVersion: 2
+        x: 315
+        y: 345
+        width: 6
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b38791636684fb980800000000000000
+      internalID: -8521012366130186181
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_12
+      rect:
+        serializedVersion: 2
+        x: 323
+        y: 1080
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17016f62b94f234a0800000000000000
+      internalID: -6614955955443068815
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_13
+      rect:
+        serializedVersion: 2
+        x: 336
+        y: 1047
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 08422112270760bc0800000000000000
+      internalID: -3817239998666496896
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_14
+      rect:
+        serializedVersion: 2
+        x: 342
+        y: 910
+        width: 6
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e7192989ac028600800000000000000
+      internalID: 468951233490130921
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_15
+      rect:
+        serializedVersion: 2
+        x: 347
+        y: 1748
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d82b22994023459f0800000000000000
+      internalID: -480704264891354483
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_16
+      rect:
+        serializedVersion: 2
+        x: 426
+        y: 1554
+        width: 18
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f44f509308423ee0800000000000000
+      internalID: -1282883763702905609
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_17
+      rect:
+        serializedVersion: 2
+        x: 437
+        y: 1583
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 074c84fbf3a957430800000000000000
+      internalID: 3780097060830233712
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_18
+      rect:
+        serializedVersion: 2
+        x: 491
+        y: 1000
+        width: 369
+        height: 1045
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 29e67b673025374b0800000000000000
+      internalID: -5443917349730685294
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_19
+      rect:
+        serializedVersion: 2
+        x: 503
+        y: 30
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8e41304e91618b710800000000000000
+      internalID: 1709140359042503912
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_20
+      rect:
+        serializedVersion: 2
+        x: 550
+        y: 122
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 51c1f2265869ccbb0800000000000000
+      internalID: -4914387593745982443
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_21
+      rect:
+        serializedVersion: 2
+        x: 560
+        y: 1870
+        width: 15
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ab2ad3db2cf4d840800000000000000
+      internalID: 5248096730961554344
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_22
+      rect:
+        serializedVersion: 2
+        x: 574
+        y: 1865
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 78f6d7e40a8577050800000000000000
+      internalID: 5798200490797657991
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_23
+      rect:
+        serializedVersion: 2
+        x: 581
+        y: 1858
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: addfda3b020d93d90800000000000000
+      internalID: -7117428897210303014
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_24
+      rect:
+        serializedVersion: 2
+        x: 585
+        y: 391
+        width: 9
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f03f090c707259cd0800000000000000
+      internalID: -2552090699586538737
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_25
+      rect:
+        serializedVersion: 2
+        x: 630
+        y: 393
+        width: 13
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9378b932e2fa00fe0800000000000000
+      internalID: -1224786485944023239
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_26
+      rect:
+        serializedVersion: 2
+        x: 666
+        y: 375
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9bdc3496f0ac37950800000000000000
+      internalID: 6445717659236683193
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_27
+      rect:
+        serializedVersion: 2
+        x: 682
+        y: 1731
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 97ed9bdfd9da434a0800000000000000
+      internalID: -6614471058622128519
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_28
+      rect:
+        serializedVersion: 2
+        x: 706
+        y: 0
+        width: 1342
+        height: 2042
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 26c2f287416aec730800000000000000
+      internalID: 4021334124134345826
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_29
+      rect:
+        serializedVersion: 2
+        x: 812
+        y: 1519
+        width: 219
+        height: 527
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f7a877a2065eebf0800000000000000
+      internalID: -293202356332877837
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_30
+      rect:
+        serializedVersion: 2
+        x: 834
+        y: 662
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a34ba1cc8ad61ecb0800000000000000
+      internalID: -4836463953072966598
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_31
+      rect:
+        serializedVersion: 2
+        x: 848
+        y: 602
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e41bb62b6c7d52d0800000000000000
+      internalID: -3288335353257454359
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_32
+      rect:
+        serializedVersion: 2
+        x: 897
+        y: 1646
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a5c9a432f614af950800000000000000
+      internalID: 6483566559142517850
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_33
+      rect:
+        serializedVersion: 2
+        x: 897
+        y: 581
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 08b35d9fa7bc2d5b0800000000000000
+      internalID: -5344986078697407616
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_34
+      rect:
+        serializedVersion: 2
+        x: 900
+        y: 1673
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: da5d5d0d07976af20800000000000000
+      internalID: 3433565291363554733
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_35
+      rect:
+        serializedVersion: 2
+        x: 902
+        y: 1633
+        width: 25
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dfbc7d69606c77c70800000000000000
+      internalID: 8968854914534460413
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_36
+      rect:
+        serializedVersion: 2
+        x: 1088
+        y: 1777
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5100b0cbc648020c0800000000000000
+      internalID: -4602533216626474987
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_37
+      rect:
+        serializedVersion: 2
+        x: 1104
+        y: 1802
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fd8e5552a42ab5490800000000000000
+      internalID: -7756427493877880609
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_38
+      rect:
+        serializedVersion: 2
+        x: 1223
+        y: 1509
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8cf9d5487b91f9b40800000000000000
+      internalID: 5449102350132027336
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_39
+      rect:
+        serializedVersion: 2
+        x: 1232
+        y: 777
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ea5de1d27410e730800000000000000
+      internalID: 4026240550250044133
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_40
+      rect:
+        serializedVersion: 2
+        x: 1261
+        y: 803
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f6f55461bb1ffd80800000000000000
+      internalID: -8214816746593978633
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_41
+      rect:
+        serializedVersion: 2
+        x: 1290
+        y: 1482
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c910bc57e013ea50800000000000000
+      internalID: 6549096869005367752
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_42
+      rect:
+        serializedVersion: 2
+        x: 1329
+        y: 1780
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ef7e0495c88d189c0800000000000000
+      internalID: -3926619302785914882
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_43
+      rect:
+        serializedVersion: 2
+        x: 1330
+        y: 1659
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 90f11c94f8739cb30800000000000000
+      internalID: 4308035607113834249
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_44
+      rect:
+        serializedVersion: 2
+        x: 1347
+        y: 1497
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0810a68d3f1aea600800000000000000
+      internalID: 481500278855172480
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_45
+      rect:
+        serializedVersion: 2
+        x: 1389
+        y: 1317
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7bdd2a6e7c6d74de0800000000000000
+      internalID: -1348873409317904969
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_46
+      rect:
+        serializedVersion: 2
+        x: 1402
+        y: 1135
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: de5447bfe41dab080800000000000000
+      internalID: -9170787554030238227
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_47
+      rect:
+        serializedVersion: 2
+        x: 1488
+        y: 852
+        width: 6
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1cf4b34eb24558ac0800000000000000
+      internalID: -3853581358656172095
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_48
+      rect:
+        serializedVersion: 2
+        x: 1502
+        y: 823
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f9f2ac81f183e360800000000000000
+      internalID: 7197739503914777081
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_49
+      rect:
+        serializedVersion: 2
+        x: 1576
+        y: 891
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6efead2f7c239d7c0800000000000000
+      internalID: -4046146955861364762
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_50
+      rect:
+        serializedVersion: 2
+        x: 1593
+        y: 771
+        width: 9
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 977444dfe42db0620800000000000000
+      internalID: 2741516034883471225
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_51
+      rect:
+        serializedVersion: 2
+        x: 1605
+        y: 1002
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2b82c5c985763fea0800000000000000
+      internalID: -5840210661491332942
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_52
+      rect:
+        serializedVersion: 2
+        x: 1616
+        y: 60
+        width: 8
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: abed4eea20e4c1470800000000000000
+      internalID: 8366647981178674874
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_53
+      rect:
+        serializedVersion: 2
+        x: 1636
+        y: 1213
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae44f0a070ce217c0800000000000000
+      internalID: -4101956795603401494
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_54
+      rect:
+        serializedVersion: 2
+        x: 1638
+        y: 809
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f3ccae3b6bfca5ad0800000000000000
+      internalID: -2712627441927795649
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_55
+      rect:
+        serializedVersion: 2
+        x: 1660
+        y: 892
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d48d0170a504c55d0800000000000000
+      internalID: -3072510090363742131
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_56
+      rect:
+        serializedVersion: 2
+        x: 1685
+        y: 1657
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9a4d0ae0b8406e550800000000000000
+      internalID: 6189639733159711913
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_57
+      rect:
+        serializedVersion: 2
+        x: 1694
+        y: 818
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7db468487fe5ba200800000000000000
+      internalID: 192351826266704855
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_58
+      rect:
+        serializedVersion: 2
+        x: 1722
+        y: 399
+        width: 11
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 19e292cc542233f40800000000000000
+      internalID: 5706942835981889169
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_59
+      rect:
+        serializedVersion: 2
+        x: 1818
+        y: 1609
+        width: 230
+        height: 439
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e8059304726420de0800000000000000
+      internalID: -1368454202372042610
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_60
+      rect:
+        serializedVersion: 2
+        x: 1825
+        y: 1788
+        width: 11
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ab52f5142a5e0f7d0800000000000000
+      internalID: -2886554876100270662
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_61
+      rect:
+        serializedVersion: 2
+        x: 1880
+        y: 1276
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ad8ee1f76777cc310800000000000000
+      internalID: 1426646532792183002
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_62
+      rect:
+        serializedVersion: 2
+        x: 1906
+        y: 9
+        width: 20
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc40b47184facd020800000000000000
+      internalID: 2367960228253336780
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_63
+      rect:
+        serializedVersion: 2
+        x: 1926
+        y: 1299
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 93c812cdeece22e20800000000000000
+      internalID: 3324479985592405049
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_64
+      rect:
+        serializedVersion: 2
+        x: 1927
+        y: 502
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5b3c54e3e0b102160800000000000000
+      internalID: 6998623568922002357
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_65
+      rect:
+        serializedVersion: 2
+        x: 1946
+        y: 982
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bedfae9232c9a2690800000000000000
+      internalID: -7626111344157458965
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_66
+      rect:
+        serializedVersion: 2
+        x: 1952
+        y: 1867
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 27ace67219092be60800000000000000
+      internalID: 7976596843132799602
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_67
+      rect:
+        serializedVersion: 2
+        x: 1954
+        y: 1779
+        width: 11
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 52926abf0372d1bb0800000000000000
+      internalID: -4963768122958534363
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_68
+      rect:
+        serializedVersion: 2
+        x: 1960
+        y: 3
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cabd3b3d91efe4360800000000000000
+      internalID: 7155936244817714092
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_69
+      rect:
+        serializedVersion: 2
+        x: 1961
+        y: 15
+        width: 9
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4853f37239e4885f0800000000000000
+      internalID: -754266543658945148
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_70
+      rect:
+        serializedVersion: 2
+        x: 1969
+        y: 18
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3cf058a238f28d350800000000000000
+      internalID: 6041631140518105027
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_71
+      rect:
+        serializedVersion: 2
+        x: 1981
+        y: 705
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2539b8bcce64e14e0800000000000000
+      internalID: -2009090400919514286
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_72
+      rect:
+        serializedVersion: 2
+        x: 1990
+        y: 976
+        width: 8
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3060ecd8e0224900800000000000000
+      internalID: 667131879314448445
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StarBackground_73
+      rect:
+        serializedVersion: 2
+        x: 2015
+        y: 1883
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a64507962a7e0a680800000000000000
+      internalID: -8745735791613815702
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      StarBackground_0: 6542133821065548087
+      StarBackground_1: 3599433743049327167
+      StarBackground_10: 4252875390460546903
+      StarBackground_11: -8521012366130186181
+      StarBackground_12: -6614955955443068815
+      StarBackground_13: -3817239998666496896
+      StarBackground_14: 468951233490130921
+      StarBackground_15: -480704264891354483
+      StarBackground_16: -1282883763702905609
+      StarBackground_17: 3780097060830233712
+      StarBackground_18: -5443917349730685294
+      StarBackground_19: 1709140359042503912
+      StarBackground_2: 1493228830668967655
+      StarBackground_20: -4914387593745982443
+      StarBackground_21: 5248096730961554344
+      StarBackground_22: 5798200490797657991
+      StarBackground_23: -7117428897210303014
+      StarBackground_24: -2552090699586538737
+      StarBackground_25: -1224786485944023239
+      StarBackground_26: 6445717659236683193
+      StarBackground_27: -6614471058622128519
+      StarBackground_28: 4021334124134345826
+      StarBackground_29: -293202356332877837
+      StarBackground_3: 5489701207133317527
+      StarBackground_30: -4836463953072966598
+      StarBackground_31: -3288335353257454359
+      StarBackground_32: 6483566559142517850
+      StarBackground_33: -5344986078697407616
+      StarBackground_34: 3433565291363554733
+      StarBackground_35: 8968854914534460413
+      StarBackground_36: -4602533216626474987
+      StarBackground_37: -7756427493877880609
+      StarBackground_38: 5449102350132027336
+      StarBackground_39: 4026240550250044133
+      StarBackground_4: 2328258275199812785
+      StarBackground_40: -8214816746593978633
+      StarBackground_41: 6549096869005367752
+      StarBackground_42: -3926619302785914882
+      StarBackground_43: 4308035607113834249
+      StarBackground_44: 481500278855172480
+      StarBackground_45: -1348873409317904969
+      StarBackground_46: -9170787554030238227
+      StarBackground_47: -3853581358656172095
+      StarBackground_48: 7197739503914777081
+      StarBackground_49: -4046146955861364762
+      StarBackground_5: 4389416346753787741
+      StarBackground_50: 2741516034883471225
+      StarBackground_51: -5840210661491332942
+      StarBackground_52: 8366647981178674874
+      StarBackground_53: -4101956795603401494
+      StarBackground_54: -2712627441927795649
+      StarBackground_55: -3072510090363742131
+      StarBackground_56: 6189639733159711913
+      StarBackground_57: 192351826266704855
+      StarBackground_58: 5706942835981889169
+      StarBackground_59: -1368454202372042610
+      StarBackground_6: 187688012573785127
+      StarBackground_60: -2886554876100270662
+      StarBackground_61: 1426646532792183002
+      StarBackground_62: 2367960228253336780
+      StarBackground_63: 3324479985592405049
+      StarBackground_64: 6998623568922002357
+      StarBackground_65: -7626111344157458965
+      StarBackground_66: 7976596843132799602
+      StarBackground_67: -4963768122958534363
+      StarBackground_68: 7155936244817714092
+      StarBackground_69: -754266543658945148
+      StarBackground_7: 7669524529432489713
+      StarBackground_70: 6041631140518105027
+      StarBackground_71: -2009090400919514286
+      StarBackground_72: 667131879314448445
+      StarBackground_73: -8745735791613815702
+      StarBackground_8: 3747825056730710422
+      StarBackground_9: 1018988853635202587
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
