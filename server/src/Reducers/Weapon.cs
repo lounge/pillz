@@ -22,7 +22,7 @@ public static partial class Weapon
             Velocity = new DbVector2(position.X, position.Y)
         });
 
-        Log.Info($"Player {player.Name} shot a projectile from position ({entity.Position.X}, {entity.Position.Y}).");
+        Log.Info($"Player {player.Username} shot a projectile from position ({entity.Position.X}, {entity.Position.Y}).");
     }
 
     [Reducer]
@@ -37,7 +37,7 @@ public static partial class Weapon
             projectile.Velocity = velocity;
             projectile.Position = position;
             ctx.Db.Projectile.EntityId.Update(projectile);
-            Log.Debug($"Updated projectile with id {projectile.EntityId} direction to ({projectile.Velocity.X}, {projectile.Velocity.Y}).");
+            // Log.Debug($"Updated projectile with id {projectile.EntityId} direction to ({projectile.Velocity.X}, {projectile.Velocity.Y}).");
         }
     }
     
@@ -60,7 +60,7 @@ public static partial class Weapon
             mask.AimDir = aimDir;
             
             ctx.Db.Mask.EntityId.Update(mask);
-            Log.Debug($"Updated mask with id {mask.EntityId} aim direction to ({mask.AimDir.X}, {mask.AimDir.Y}).");
+            // Log.Debug($"Updated mask with id {mask.EntityId} aim direction to ({mask.AimDir.X}, {mask.AimDir.Y}).");
         }
     }
 }

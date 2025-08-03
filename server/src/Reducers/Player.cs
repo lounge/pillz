@@ -22,7 +22,7 @@ public static partial class Player
             ctx.Db.Player.Insert(new Tables.Player
             {
                 Identity = ctx.Sender,
-                Name = ""
+                Username = "<NoName>"
             });
         }
     }
@@ -44,12 +44,13 @@ public static partial class Player
     }
 
     [Reducer]
-    public static void EnterGame(ReducerContext ctx, string name)
+    public static void EnterGame(ReducerContext ctx, string username)
     {
-        Log.Info($"{ctx.Sender} is entering the game with name {name}.");
+        Log.Info($"{ctx.Sender} is entering the game with name {username}.");
         var player = ctx.Db.Player.Identity.Find(ctx.Sender) ??
                      throw new Exception("Player not found in the database.");
-        player.Name = name;
+        
+        player.Username = username;
         ctx.Db.Player.Identity.Update(player);
 
         var entity = ctx.Db.Entity.Insert(new Entity
@@ -81,7 +82,7 @@ public static partial class Player
             player.IsPaused = input.IsPaused;
             ctx.Db.Player.Identity.Update(player);
             ctx.Db.Mask.EntityId.Update(mask);
-            Log.Debug($"Updated mask with id {mask.EntityId} direction to ({mask.Velocity.X}, {mask.Velocity.Y}).");
+            // Log.Debug($"Updated mask with id {mask.EntityId} direction to ({mask.Velocity.X}, {mask.Velocity.Y}).");
         }
     }
     

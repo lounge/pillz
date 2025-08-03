@@ -11,6 +11,6 @@ public partial struct Player
     public Identity Identity;
     [Unique, AutoInc] 
     public uint Id;
-    public string Name;
+    public string Username;
     public bool IsPaused;
 }
