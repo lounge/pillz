@@ -13,5 +13,7 @@ public partial struct Mask
     public DbVector2 Position;
     public bool IsGrounded;
     public uint Hp;
+    public uint Dmg;
+    public uint Frags;
     public DbVector2 AimDir;
 }

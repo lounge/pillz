@@ -74,8 +74,8 @@ public partial class Game
                 
                 ctx.Db.Entity.Id.Update(projectileEntity);
 
-                Log.Debug(
-                    $"Moving projectile with id {projectile.EntityId} to position ({projectileEntity.Position.X}, {projectileEntity.Position.Y})");
+                // Log.Debug(
+                //     $"Moving projectile with id {projectile.EntityId} to position ({projectileEntity.Position.X}, {projectileEntity.Position.Y})");
             }
         }
     }

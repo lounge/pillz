@@ -44,7 +44,7 @@ public static partial class Player
     }
 
     [Reducer]
-    public static void EnterGame(ReducerContext ctx, string username)
+    public static void EnterGame(ReducerContext ctx, string username, DbVector2 spawnPosition)
     {
         Log.Info($"{ctx.Sender} is entering the game with name {username}.");
         var player = ctx.Db.Player.Identity.Find(ctx.Sender) ??
@@ -55,18 +55,21 @@ public static partial class Player
 
         var entity = ctx.Db.Entity.Insert(new Entity
         {
-            Position = new DbVector2(0, 0),
+            Position = spawnPosition,
         });
 
-        ctx.Db.Mask.Insert(new Mask
+        var mask =ctx.Db.Mask.Insert(new Mask
         {
             EntityId = entity.Id,
             PlayerId = player.Id,
             Velocity = new DbVector2(0, 0),
+            Position = entity.Position,
             Hp = 100
         });
 
-        Log.Info($"Spawned mask at ({entity.Position.X}, {entity.Position.Y}) with id: {entity.Id}.");
+        Log.Info($"Spawned mask at ({mask.Position.X}, {entity.Position.Y}) with id: {entity.Id}.");
+        
+        Log.Info($"Spawned entity at ({entity.Position.X}, {entity.Position.Y}) with id: {entity.Id}.");
     }
 
     [Reducer]
@@ -89,15 +92,33 @@ public static partial class Player
     [Reducer]
     public static void ApplyDamage(ReducerContext ctx, uint playerId, uint damage)
     {
-        var player = ctx.Db.Player.Id.Find(playerId)  ?? throw new Exception("Player not found");
-        foreach (var m in ctx.Db.Mask.PlayerId.Filter(player.Id))
+      
+
+        uint fragCount = 0;
+        var enemy = ctx.Db.Player.Id.Find(playerId)  ?? throw new Exception("Player not found");
+        foreach (var m in ctx.Db.Mask.PlayerId.Filter(enemy.Id))
         {
             var mask = m;
             var hp = Math.Max(0, mask.Hp - damage);
             mask.Hp = hp;
             
+            if (hp <= 0)
+            {
+                fragCount++;
+            }
+            
             ctx.Db.Mask.EntityId.Update(mask);
-            Log.Debug($"Updated mask with id {mask.EntityId} HP to {mask.Hp} after applying damage {damage}.");
+            Log.Debug($"Updated mask with id {mask.EntityId} HP to {mask.Hp} after taking damage {damage}.");
+        }
+        
+        var player = ctx.Db.Player.Identity.Find(ctx.Sender) ??  throw new Exception("Player not found");
+        foreach (var m in ctx.Db.Mask.PlayerId.Filter(player.Id))
+        {
+            var mask = m;
+            mask.Dmg += damage;
+            mask.Frags += fragCount;
+            ctx.Db.Mask.EntityId.Update(mask);
+            Log.Debug($"Updated mask with id {mask.EntityId} damage to {mask.Dmg} after giving damage {damage} fragCount {fragCount}.");
         }
     }
 
