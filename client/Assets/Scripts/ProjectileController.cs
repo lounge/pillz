@@ -49,10 +49,10 @@ namespace masks.client.Scripts
                 GameManager.Connection.Reducers.UpdateProjectile(_rb.linearVelocity, _rb.position);
             }
             
-            if (IsOutOfBounds())
-            {
-                GameManager.Connection.Reducers.DeleteProjectile(EntityId);
-            }
+            // if (IsOutOfBounds())
+            // {
+            //     GameManager.Connection.Reducers.DeleteProjectile(EntityId);
+            // }
 
             _lastPosition = _rb.linearVelocity;
         }
@@ -100,6 +100,12 @@ namespace masks.client.Scripts
                 GameManager.Connection.Reducers.DeleteProjectile(EntityId);
                 
                 hitMask.ApplyDamage(10);
+            }
+            
+            if (collision.gameObject.CompareTag("DeathZone"))
+            {
+                Log.Debug("ProjectileController: Collided with death zone, deleting projectile.");
+                GameManager.Connection.Reducers.DeleteProjectile(EntityId);
             }
         }
     }

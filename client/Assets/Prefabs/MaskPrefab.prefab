@@ -209,3 +209,5 @@ MonoBehaviour:
   smoothing: 0.15
   weaponPrefab: {fileID: -1818467974883061908, guid: 76f4b1fc46e6d48efb97781ece7ae496, type: 3}
   maskHud: {fileID: 2574573869230280460, guid: 9aabcce44c1d54590842f57463ecd9df, type: 3}
+  dmgDisplay: {fileID: 5420862227943291589, guid: 37c3b8150102d490b8c6ef6e6f7fe13a, type: 3}
+  fragDisplay: {fileID: 3850586052932869120, guid: ee9b703e612764b90be075f84a595b3c, type: 3}

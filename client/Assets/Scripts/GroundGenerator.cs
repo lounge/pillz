@@ -1,3 +1,4 @@
+using System.Linq;
 using SpacetimeDB;
 using SpacetimeDB.Types;
 using UnityEngine;
@@ -31,18 +32,48 @@ namespace masks.client.Scripts
                 // Log.Debug("GroundGenerator: Adding tile at position " + new Vector3Int(tile.X, tile.Y, 0));
                 OnTileAdded(null, tile);
             }
+
+            // TODO: ONLY FOR TESTING
+            // foreach (var spawn in GameManager.Connection.Db.SpawnLocation.Iter())
+            // {
+            //     Log.Debug("GroundGenerator: Adding spawn location at position " + new Vector3Int((int)spawn.Position.X, (int)spawn.Position.Y, 0));
+            //     OnSpawnLocAdded(null, spawn);
+            // }
+        }
+        
+        public void OnSpawnLocAdded(EventContext ctx, SpawnLocation spawn)
+        {
+            var pos = new Vector3Int((int)spawn.Position.X, (int)spawn.Position.Y, 0);
+            tilemap.SetTile(pos, groundTile);
+            tilemap.SetColor(pos, new Color(34f, 0f, 0f, 1f)); // Red
         }
         
         public void OnTileAdded(EventContext ctx, Ground tile)
         {
-            var pos = new Vector3Int(tile.X, tile.Y, 0);
+            var pos = new Vector3Int((int)tile.Position.X, (int)tile.Position.Y, 0);
             tilemap.SetTile(pos, groundTile);
+            tilemap.SetColor(pos, new Color32(8, 255, 177, 255)); // teal-green
         }
 
         public void OnTileRemoved(EventContext ctx, Ground tile)
         {
-            var pos = new Vector3Int(tile.X, tile.Y, 0);
+            var pos = new Vector3Int((int)tile.Position.X, (int)tile.Position.Y, 0);
             tilemap.SetTile(pos, null);
+        }
+        
+        public DbVector2 GetRandomSpawnPosition()
+        {
+            // TODO: ONLY FOR TESTING
+            var spawnLocations = GameManager.Connection.Db.SpawnLocation.Iter().FirstOrDefault(); //ToList();
+            return spawnLocations!.Position;
+            
+            // if (spawnLocations.Count == 0)
+            // {
+            //     throw new System.Exception("No spawn locations available.");
+            // }
+            //
+            // int index = Random.Range(0, spawnLocations.Count);
+            // return spawnLocations[index].Position;
         }
     }
 }

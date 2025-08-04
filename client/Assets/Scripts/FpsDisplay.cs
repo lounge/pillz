@@ -20,10 +20,10 @@ namespace masks.client.Scripts
             var rect = new Rect(10, 10, w, h * 2 / 100);
             style.alignment = TextAnchor.UpperLeft;
             style.fontSize = h * 2 / 50;
-            style.normal.textColor = Color.yellow;
+            style.normal.textColor = Color.white;
 
             var fps = 1.0f / _deltaTime;
-            var text = $"{fps:0.} FPS";
+            var text = $"FPS {fps:0.}";
             GUI.Label(rect, text, style);
         }
     }

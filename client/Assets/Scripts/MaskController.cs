@@ -3,6 +3,8 @@ using masks.client.Assets.Input;
 using SpacetimeDB;
 using SpacetimeDB.Types;
 using UnityEngine;
+using UnityEngine.Serialization;
+using Object = UnityEngine.Object;
 
 namespace masks.client.Scripts
 {
@@ -22,7 +24,11 @@ namespace masks.client.Scripts
 
         [Header("Weapons")] public WeaponController weaponPrefab;
 
-        [Header("Gui")] public MaskHud maskHud;
+        [Header("Gui")] 
+        public MaskHud maskHud;
+        public DmgDisplay dmgDisplay;
+        [FormerlySerializedAs("killDisplay")] public FragDisplay fragDisplay;
+        
 
         private uint _hp = 100;
         private Vector2 _moveInput;
@@ -33,6 +39,10 @@ namespace masks.client.Scripts
         private PlayerInputActions _inputActions;
         private PlayerInput _lastMovementInput;
         private MaskHud _maskHud;
+        private DmgDisplay _dmgDisplay;
+        private FragDisplay _fragDisplay;
+        
+        
         private GameObject _gameCanvas;
 
         [NonSerialized] private Camera _mainCamera;
@@ -106,46 +116,57 @@ namespace masks.client.Scripts
                 GameManager.Connection.Reducers.UpdatePlayerInput(playerInput);
             }
 
-            // TODO: Check this in some other way
-            // if (IsOutOfBounds())
-            // {
-            //     // DEAD
-            //     Log.Debug("MaskController: Out of bounds DEAD, deleting mask.");
-            //     GameManager.Connection.Reducers.DeleteMask(null);
-            // }
-
             _lastMovementInput = playerInput;
             _isJumpPressed = false;
+        }
+
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            if (collision.gameObject.CompareTag("DeathZone"))
+            {
+                Log.Debug("MaskController: Collided with death zone DEAD, deleting mask.");
+                Kill();
+            }
         }
 
         public void OnMaskUpdated(Mask newVal)
         {
             _hp = newVal.Hp;
-            _maskHud.SetHp(_hp);
-            WeaponController?.SetAimDir(newVal.AimDir);
+            _maskHud?.SetHp(_hp);
+            _dmgDisplay?.SetDmg(newVal.Dmg);
             
+            Log.Debug($"MaskController: Mask updated with HP: {_hp}, Dmg: {newVal.Dmg}, Frags: {newVal.Frags}");
+            _fragDisplay?.SetFrags(newVal.Frags);
+            
+            WeaponController?.SetAimDir(newVal.AimDir);
+
             if (_hp <= 0)
             {
                 Log.Debug("MaskController: HP is 0 or below, deleting mask.");
-                
-                if (Owner.IsLocalPlayer)
-                {
-                    Log.Debug("MaskController: Local player mask destroyed, showing death screen.");
-                    DeathScreenManager.Instance.Show(Owner);
-                }
-                
-                
-                GameManager.Connection.Reducers.DeleteMask(Owner.PlayerId);
-                
 
-                return;
+                Kill();
             }
+        }
+
+        private void Kill()
+        {
+            if (Owner.IsLocalPlayer)
+            {
+                Log.Debug("MaskController: Local player mask destroyed, showing death screen.");
+                DeathScreenManager.Instance.Show(Owner);
+            }
+
+            GameManager.Connection.Reducers.DeleteMask(Owner.PlayerId);
         }
 
 
         public void Spawn(Mask mask, PlayerController owner)
         {
             base.Spawn(mask.EntityId, owner);
+
+
+            // Set position from server
+            transform.position = new Vector3(mask.Position.X, mask.Position.Y, 0);
 
             WeaponController = Instantiate(weaponPrefab, transform);
             WeaponController.Initialize(transform, owner, mask.AimDir);
@@ -154,6 +175,8 @@ namespace masks.client.Scripts
             _maskHud.AttachTo(transform);
             _maskHud.SetHp(mask.Hp);
             _maskHud.SetUsername(owner.Username);
+            
+            
 
             if (Owner && (!Owner.IsLocalPlayer || !GameManager.IsConnected()))
             {
@@ -162,13 +185,17 @@ namespace masks.client.Scripts
             }
 
             _rb = GetComponent<Rigidbody2D>();
-
             _mainCamera.GetComponent<CameraFollow>()?.SetTarget(transform);
-
 
             _inputActions.Player.Jump.performed += _ => _isJumpPressed = true;
             _inputActions.Player.Move.performed += ctx => _moveInput = ctx.ReadValue<Vector2>();
             _inputActions.Player.Move.canceled += ctx => _moveInput = Vector2.zero;
+            
+            _dmgDisplay = Instantiate(dmgDisplay, Owner.transform);
+            dmgDisplay.SetDmg(mask.Dmg);
+            
+            _fragDisplay = Instantiate(fragDisplay, Owner.transform);
+            fragDisplay.SetFrags(mask.Frags);
         }
 
         public void ApplyDamage(uint damage)

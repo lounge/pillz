@@ -1,0 +1,19 @@
+[X]  Detect when mask falls off map and kill it
+[]  Create win scenario
+    []  WinScreen
+        []  Show kill count
+        []  Show dmg given
+[]  Detect and store dmg given
+    []  Show dmg given on DeathScreen
+[]  Detect and store kill count
+    []  Show kill count on DeathScreen
+[-]  Generate interesting terrain
+    [X]  Bresenham's Line Algorithm
+    [X]  MST to connect all seeds with Bresenham
+    [X]  Find and use possible spawn locations
+    []  Maybe make thicker
+[]  Increase projectile speed on left mouse hold
+[]  Multiple weapons
+    []  Different dmg output
+[]  Add multiple masks per player
+    []  Toggle between players masks

@@ -1,3 +1,4 @@
+using SpacetimeDB;
 using SpacetimeDB.Types;
 using UnityEngine;
 
@@ -23,9 +24,14 @@ namespace masks.client.Scripts
         }
         
         public static MaskController SpawnMask(Mask mask, PlayerController owner)
-        {
-            var entityController = Instantiate(_instance.maskPrefab, owner.transform);
+        {;
+            Log.Debug($"PrefabManager1: Spawning mask at position {mask.Position} with aim direction {mask.AimDir}.");
+            
+            var entityController = Instantiate(_instance.maskPrefab, owner.transform); //  new Vector3(mask.Position.X, mask.Position.Y, 0f), Quaternion.identity);//
             entityController.name = $"Mask_{owner.Username}";
+            
+            Log.Debug($"PrefabManager2: Spawning mask at position {mask.Position} with aim direction {mask.AimDir}.");
+
             entityController.Spawn(mask, owner);
             
             owner.SetDefaults(entityController);

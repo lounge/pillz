@@ -124,7 +124,10 @@ namespace masks.client.Scripts
             Debug.Log("Subscription applied!");
             OnSubscriptionApplied?.Invoke();
 
-            Connection.Reducers.GenerateGround();
+            var seed = Guid.NewGuid().GetHashCode();
+            Log.Debug($"Generating world with seed: {seed}");
+
+            Connection.Reducers.GenerateGround(seed);
 
             RenderWorld(Connection.Db.World.Iter().FirstOrDefault());
         }
@@ -162,13 +165,13 @@ namespace masks.client.Scripts
         }
 
         #endregion
-        
+
         #region Mask Handlers
 
         private static void MaskOnInsert(EventContext context, Mask insertedValue)
         {
             Log.Debug(
-                $"MaskOnInsert: Inserting mask for player {insertedValue.PlayerId} with entity ID {insertedValue.EntityId}");
+                $"MaskOnInsert: Inserting mask for player {insertedValue.PlayerId} with entity ID {insertedValue.EntityId} position {insertedValue.Position}");
             var player = GetOrCreatePlayer(insertedValue.PlayerId);
             var entityController = PrefabManager.SpawnMask(insertedValue, player);
             Entities.Add(insertedValue.EntityId, entityController);
@@ -188,9 +191,9 @@ namespace masks.client.Scripts
         private static void MaskOnDelete(EventContext context, Mask oldEntity)
         {
             var masks = Connection.Db.Mask.PlayerId.Filter(oldEntity.PlayerId);
-            if (masks.Any() || !Players.ContainsKey(oldEntity.PlayerId)) 
+            if (masks.Any() || !Players.ContainsKey(oldEntity.PlayerId))
                 return;
-            
+
             Log.Debug($"MaskOnDelete: No masks left for player {oldEntity.PlayerId}, removing player controller.");
             Players.Remove(oldEntity.PlayerId);
         }
@@ -226,7 +229,7 @@ namespace masks.client.Scripts
         }
 
         #endregion
-        
+
         #region Entity Handlers
 
         private static void EntityOnUpdate(EventContext context, Entity oldEntity, Entity newEntity)

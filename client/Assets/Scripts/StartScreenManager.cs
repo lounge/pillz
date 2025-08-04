@@ -1,3 +1,5 @@
+using System.Linq;
+using SpacetimeDB.Types;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -27,9 +29,11 @@ namespace masks.client.Scripts
             string username = usernameInput.text.Trim();
             if (!string.IsNullOrEmpty(username))
             {
-                GameManager.Connection.Reducers.EnterGame(username);
+                GameManager.Connection.Reducers.EnterGame(username, GroundGenerator.Instance.GetRandomSpawnPosition());
                 gameObject.SetActive(false);
             }
         }
+        
+
     }
 }
