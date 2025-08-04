@@ -30,8 +30,8 @@ public partial class Game
             }
 
             var maskEntity = entity.Value;
-            var velocity = mask.Velocity;
-            var newPosition = mask.Position + velocity * DeltaTime;
+            var direction = mask.Direction;
+            var newPosition = mask.Position + direction * DeltaTime;
 
 
             if (!maskEntity.Position.Equals(newPosition))
@@ -64,8 +64,8 @@ public partial class Game
             }
 
             var projectileEntity = entity.Value;
-            var velocity = projectile.Velocity;
-            var newPosition = projectile.Position + velocity * DeltaTime;
+            var direction = projectile.Direction;
+            var newPosition = projectile.Position + direction * DeltaTime;
 
             if (!projectileEntity.Position.Equals(newPosition))
             {

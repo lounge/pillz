@@ -62,7 +62,7 @@ public static partial class Player
         {
             EntityId = entity.Id,
             PlayerId = player.Id,
-            Velocity = new DbVector2(0, 0),
+            Direction = new DbVector2(0, 0),
             Position = entity.Position,
             Hp = 100
         });
@@ -79,7 +79,7 @@ public static partial class Player
         foreach (var m in ctx.Db.Mask.PlayerId.Filter(player.Id))
         {
             var mask = m;
-            mask.Velocity = input.Velocity;
+            mask.Direction = input.Direction;
             mask.Position = input.Position;
 
             player.IsPaused = input.IsPaused;

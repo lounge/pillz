@@ -3,13 +3,13 @@ namespace masks.server.Tables;
 [SpacetimeDB.Type]
 public partial struct PlayerInput
 {
-    public DbVector2 Velocity;
+    public DbVector2 Direction;
     public DbVector2 Position;
     public bool IsPaused;
     
-    public PlayerInput(DbVector2 velocity, DbVector2 position, bool isPaused)
+    public PlayerInput(DbVector2 direction, DbVector2 position, bool isPaused)
     {
-        Velocity = velocity;
+        Direction = direction;
         Position = position;
         IsPaused = isPaused;
     }

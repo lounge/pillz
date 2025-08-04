@@ -6,7 +6,7 @@ namespace masks.server.Reducers;
 public static partial class Weapon
 {
     [Reducer]
-    public static void ShootProjectile(ReducerContext ctx, DbVector2 position)
+    public static void ShootProjectile(ReducerContext ctx, DbVector2 position, float speed)
     {
         var player = ctx.Db.Player.Identity.Find(ctx.Sender) ??
                      throw new Exception("Player not found in the database.");
@@ -20,11 +20,12 @@ public static partial class Weapon
         {
             EntityId = entity.Id,
             PlayerId = player.Id,
-            Velocity = new DbVector2(position.X, position.Y)
+            Direction = new DbVector2(position.X, position.Y),
+            Speed = speed
         });
 
         Log.Info(
-            $"Player {player.Username} shot a projectile from position ({entity.Position.X}, {entity.Position.Y}).");
+            $"Player {player.Username} shot a projectile from position ({entity.Position.X}, {entity.Position.Y}) and speed {speed}.");
     }
 
     [Reducer]
@@ -36,7 +37,7 @@ public static partial class Weapon
         {
             var projectile = proj;
 
-            projectile.Velocity = velocity;
+            projectile.Direction = velocity;
             projectile.Position = position;
             ctx.Db.Projectile.EntityId.Update(projectile);
             // Log.Debug($"Updated projectile with id {projectile.EntityId} direction to ({projectile.Velocity.X}, {projectile.Velocity.Y}).");
