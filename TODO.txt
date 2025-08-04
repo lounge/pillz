@@ -3,9 +3,11 @@
     []  WinScreen
         []  Show kill count
         []  Show dmg given
-[]  Detect and store dmg given
+[X]  Detect and store dmg given
+    [X]  Show dmg given on in HUD
     []  Show dmg given on DeathScreen
-[]  Detect and store kill count
+[X]  Detect and store kill count
+    [X]  Show kill count on HUD
     []  Show kill count on DeathScreen
 [-]  Generate interesting terrain
     [X]  Bresenham's Line Algorithm
