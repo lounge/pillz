@@ -47,13 +47,6 @@ namespace masks.client.Scripts
             tilemap.SetTile(pos, groundTile);
             tilemap.SetColor(pos, new Color(34f, 0f, 0f, 1f)); // Red
         }
-        
-        public void OnTileAdded(EventContext ctx, Ground tile)
-        {
-            var pos = new Vector3Int((int)tile.Position.X, (int)tile.Position.Y, 0);
-            tilemap.SetTile(pos, groundTile);
-            tilemap.SetColor(pos, new Color32(8, 255, 177, 255)); // teal-green
-        }
 
         public void OnTileRemoved(EventContext ctx, Ground tile)
         {
@@ -61,19 +54,26 @@ namespace masks.client.Scripts
             tilemap.SetTile(pos, null);
         }
         
+        private void OnTileAdded(EventContext ctx, Ground tile)
+        {
+            var pos = new Vector3Int((int)tile.Position.X, (int)tile.Position.Y, 0);
+            tilemap.SetTile(pos, groundTile);
+            tilemap.SetColor(pos, new Color32(8, 255, 177, 255)); // teal-green
+        }
         public DbVector2 GetRandomSpawnPosition()
         {
             // TODO: ONLY FOR TESTING
-            var spawnLocations = GameManager.Connection.Db.SpawnLocation.Iter().FirstOrDefault(); //ToList();
-            return spawnLocations!.Position;
+            // var spawnLocations = GameManager.Connection.Db.SpawnLocation.Iter().FirstOrDefault(); //ToList();
+            // return spawnLocations!.Position;
             
-            // if (spawnLocations.Count == 0)
-            // {
-            //     throw new System.Exception("No spawn locations available.");
-            // }
-            //
-            // int index = Random.Range(0, spawnLocations.Count);
-            // return spawnLocations[index].Position;
+            var spawnLocations = GameManager.Connection.Db.SpawnLocation.Iter().ToList();
+            if (spawnLocations.Count == 0)
+            {
+                throw new System.Exception("No spawn locations available.");
+            }
+            
+            int index = Random.Range(0, spawnLocations.Count);
+            return spawnLocations[index].Position;
         }
     }
 }

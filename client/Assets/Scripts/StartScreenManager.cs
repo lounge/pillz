@@ -33,7 +33,5 @@ namespace masks.client.Scripts
                 gameObject.SetActive(false);
             }
         }
-        
-
     }
 }

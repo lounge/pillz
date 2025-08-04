@@ -14,8 +14,20 @@
     [X]  MST to connect all seeds with Bresenham
     [X]  Find and use possible spawn locations
     []  Maybe make thicker
-[]  Increase projectile speed on left mouse hold
-[]  Multiple weapons
+[X]  Increase projectile speed on left mouse hold
+    []  Needs tuning
+[]  Portals
+    []  Spawn two portals each side of map
+    []  Teleport mask to other portal
+[]  Jetpack movement
+    []  Toggle jetpack on/off
+    []  Jetpack fuel
+        []  Show fuel in HUD
+        []  Deplete fuel when used
+        []  Refill fuel over time
+[]  Add more weapons
     []  Different dmg output
+    []  Different weapon types (e.g., shotgun, sniper)
+    []  Weapon switching mechanism    
 []  Add multiple masks per player
     []  Toggle between players masks

@@ -216,7 +216,7 @@ namespace masks.client.Scripts
 
             var spawnPos = (Vector2)entity.Position;
 
-            var entityController = player.Mask.WeaponController.Shoot(insertedValue, player, spawnPos);
+            var entityController = player.Mask.WeaponController.Shoot(insertedValue, player, spawnPos, insertedValue.Speed);
             Entities.Add(insertedValue.EntityId, entityController);
         }
 

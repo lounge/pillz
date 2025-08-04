@@ -124,7 +124,7 @@ namespace masks.client.Assets.Input
                     ""name"": ""Interact"",
                     ""type"": ""Button"",
                     ""id"": ""28cfaf78-adc9-4147-9dd8-7160382f3a7a"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": ""Hold"",
                     ""initialStateCheck"": false
@@ -133,7 +133,7 @@ namespace masks.client.Assets.Input
                     ""name"": ""Crouch"",
                     ""type"": ""Button"",
                     ""id"": ""2dda4781-c715-439c-8424-91bd946c32e9"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false

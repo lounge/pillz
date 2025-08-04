@@ -24,6 +24,7 @@ namespace masks.client.Scripts
         private Rigidbody2D _projectileRb;
         private PlayerController _owner;
         private Vector2 _aimDir;
+        private float _fireStartTime;
 
         private void OnEnable()
         {
@@ -48,7 +49,9 @@ namespace masks.client.Scripts
             {
                 _inputActions = new PlayerInputActions();
                 _inputActions.Player.Look.performed += ctx => _lookInput = ctx.ReadValue<Vector2>();
-                _inputActions.Player.Attack.performed += OnClick;
+                _inputActions.Player.Attack.started += OnClick;
+                _inputActions.Player.Attack.canceled += OnRelease;
+                
                 _inputActions.Enable();
             }
         }
@@ -93,13 +96,25 @@ namespace masks.client.Scripts
 
         private void OnClick(InputAction.CallbackContext ctx)
         {
-            GameManager.Connection.Reducers.ShootProjectile(new DbVector2(weapon.position.x, weapon.position.y));
+            _fireStartTime = Time.time;
+        }
+        
+        private void OnRelease(InputAction.CallbackContext ctx)
+        {
+            var heldDuration = Time.time - _fireStartTime;
+            var durationClamp = Mathf.Clamp(heldDuration, 0.5f, 2f);
+            var speed = projectileSpeed * durationClamp * 3;
+            
+            Debug.Log($"Mouse was held for {heldDuration} seconds. Speed: {speed:0.00}");
+            
+            GameManager.Connection.Reducers.ShootProjectile(new DbVector2(weapon.position.x, weapon.position.y), speed);
         }
 
-        public ProjectileController Shoot(Projectile projectile, PlayerController player, Vector2 position)
+        public ProjectileController Shoot(Projectile projectile, PlayerController player, Vector2 position,
+            float speed)
         {
             var projectileController = Instantiate(projectilePrefab, weapon.position, Quaternion.identity);
-            projectileController.Spawn(projectile, player, position, _weaponDirection.normalized * projectileSpeed);
+            projectileController.Spawn(projectile, player, position, _weaponDirection.normalized * speed);
 
             // Log.Debug(
             //     $"WeaponController: Shooting projectile from {weapon.position} with direction {_weaponDirection.normalized} and speed {projectileSpeed}.");
