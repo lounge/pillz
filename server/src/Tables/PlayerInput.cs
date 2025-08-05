@@ -1,4 +1,4 @@
-namespace masks.server.Tables;
+namespace pillz.server.Tables;
 
 [SpacetimeDB.Type]
 public partial struct PlayerInput

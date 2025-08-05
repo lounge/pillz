@@ -6,7 +6,7 @@
     <RuntimeIdentifier>wasi-wasm</RuntimeIdentifier>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <RootNamespace>masks.server</RootNamespace>
+    <RootNamespace>pillz.server</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

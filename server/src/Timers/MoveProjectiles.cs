@@ -1,7 +1,7 @@
-using masks.server.Reducers;
 using SpacetimeDB;
+using Game = pillz.server.Reducers.Game;
 
-namespace masks.server.Timers;
+namespace pillz.server.Timers;
 
 [Table(Scheduled = nameof(Game.MoveProjectiles), ScheduledAt = nameof(ScheduledAt))]
 public partial struct MoveProjectilesTimer

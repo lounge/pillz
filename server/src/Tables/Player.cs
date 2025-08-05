@@ -1,7 +1,7 @@
 
 using SpacetimeDB;
 
-namespace masks.server.Tables;
+namespace pillz.server.Tables;
 
 [Table(Name = "Player", Public = true)]
 [Table(Name = "LoggedOutPlayer")]

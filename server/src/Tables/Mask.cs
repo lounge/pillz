@@ -1,6 +1,6 @@
 using SpacetimeDB;
 
-namespace masks.server.Tables;
+namespace pillz.server.Tables;
 
 [Table(Public = true)]
 [SpacetimeDB.Index.BTree(Name = "PlayerId", Columns = [nameof(PlayerId)])]

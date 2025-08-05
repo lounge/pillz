@@ -1,8 +1,10 @@
-using masks.server.Tables;
 using SpacetimeDB;
-using PlayerInput = masks.server.Tables.PlayerInput;
+using DbVector2 = pillz.server.Tables.DbVector2;
+using Entity = pillz.server.Tables.Entity;
+using Mask = pillz.server.Tables.Mask;
+using PlayerInput = pillz.server.Tables.PlayerInput;
 
-namespace masks.server.Reducers;
+namespace pillz.server.Reducers;
 
 public static partial class Player
 {
@@ -19,7 +21,7 @@ public static partial class Player
         }
         else
         {
-            ctx.Db.Player.Insert(new Tables.Player
+            ctx.Db.Player.Insert(new pillz.server.Tables.Player
             {
                 Identity = ctx.Sender,
                 Username = "<NoName>"

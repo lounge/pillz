@@ -1,6 +1,6 @@
 using SpacetimeDB;
 
-namespace masks.server.Tables;
+namespace pillz.server.Tables;
 
 [Table(Public = true)]
 public partial struct Portal

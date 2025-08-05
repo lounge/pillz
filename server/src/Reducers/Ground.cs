@@ -1,14 +1,16 @@
-using masks.server.Tables;
 using SpacetimeDB;
+using DbVector2 = pillz.server.Tables.DbVector2;
+using Portal = pillz.server.Tables.Portal;
+using SpawnLocation = pillz.server.Tables.SpawnLocation;
 
-namespace masks.server.Reducers;
+namespace pillz.server.Reducers;
 
 public partial class Ground
 {
     [Reducer]
     public static void AddGroundTile(ReducerContext ctx, int x, int y)
     {
-        ctx.Db.Ground.Insert(new Tables.Ground
+        ctx.Db.Ground.Insert(new pillz.server.Tables.Ground
         {
             Position = new DbVector2(x, y)
         });
@@ -75,7 +77,7 @@ public partial class Ground
             {
                 if (ground[x, y])
                 {
-                    ctx.Db.Ground.Insert(new Tables.Ground
+                    ctx.Db.Ground.Insert(new pillz.server.Tables.Ground
                     {
                         Position = new DbVector2(x - halfWidth, y - halfHeight)
                     });

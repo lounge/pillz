@@ -1,7 +1,8 @@
-using masks.server.Timers;
 using SpacetimeDB;
+using MovePlayersTimer = pillz.server.Timers.MovePlayersTimer;
+using MoveProjectilesTimer = pillz.server.Timers.MoveProjectilesTimer;
 
-namespace masks.server.Reducers;
+namespace pillz.server.Reducers;
 
 public partial class Game
 {

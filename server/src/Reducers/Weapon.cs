@@ -1,7 +1,9 @@
-using masks.server.Tables;
 using SpacetimeDB;
+using DbVector2 = pillz.server.Tables.DbVector2;
+using Entity = pillz.server.Tables.Entity;
+using Projectile = pillz.server.Tables.Projectile;
 
-namespace masks.server.Reducers;
+namespace pillz.server.Reducers;
 
 public static partial class Weapon
 {
