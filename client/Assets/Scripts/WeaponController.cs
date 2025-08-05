@@ -1,9 +1,9 @@
-using masks.client.Assets.Input;
+using pillz.client.Assets.Input;
 using SpacetimeDB.Types;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace masks.client.Scripts
+namespace pillz.client.Scripts
 {
     public class WeaponController : MonoBehaviour
     {

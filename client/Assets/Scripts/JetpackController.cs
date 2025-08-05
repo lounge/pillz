@@ -1,7 +1,6 @@
-using System;
 using UnityEngine;
 
-namespace masks.client.Scripts
+namespace pillz.client.Scripts
 {
     public class JetpackController : MonoBehaviour
     {

@@ -4,7 +4,7 @@ using SpacetimeDB.Types;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-namespace masks.client.Scripts
+namespace pillz.client.Scripts
 {
     public class ProjectileController : EntityController
     {

@@ -1,6 +1,6 @@
 {
   "name": "Scripts",
-  "rootNamespace": "masks.client.Scripts",
+  "rootNamespace": "pillz.client.Scripts",
   "references": [
     "Inputs",
     "com.clockworklabs.spacetimedbsdk",

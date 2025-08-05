@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-namespace masks.client.Scripts
+namespace pillz.client.Scripts
 {
     public class MaskHud : MonoBehaviour
     {
@@ -26,7 +26,7 @@ namespace masks.client.Scripts
         public void SetHp(uint hp)
         {
             if (hpText)
-                hpText.text = $"{hp}";
+                hpText.text = $"{hp} mg";
         }
 
         public void AttachTo(Transform target)

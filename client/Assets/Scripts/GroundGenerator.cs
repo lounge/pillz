@@ -1,11 +1,10 @@
 using System.Linq;
 using SpacetimeDB;
 using SpacetimeDB.Types;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-namespace masks.client.Scripts
+namespace pillz.client.Scripts
 {
     public class GroundGenerator : MonoBehaviour
     {

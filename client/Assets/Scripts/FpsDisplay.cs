@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace masks.client.Scripts
+namespace pillz.client.Scripts
 {
     public class FpsDisplay : MonoBehaviour
     {

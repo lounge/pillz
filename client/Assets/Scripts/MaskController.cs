@@ -1,11 +1,10 @@
 using System;
-using masks.client.Assets.Input;
+using pillz.client.Assets.Input;
 using SpacetimeDB;
 using SpacetimeDB.Types;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-namespace masks.client.Scripts
+namespace pillz.client.Scripts
 {
     [RequireComponent(typeof(Rigidbody2D))]
     public class MaskController : EntityController

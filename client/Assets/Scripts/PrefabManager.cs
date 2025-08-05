@@ -2,7 +2,7 @@ using SpacetimeDB;
 using SpacetimeDB.Types;
 using UnityEngine;
 
-namespace masks.client.Scripts
+namespace pillz.client.Scripts
 {
     public class PrefabManager : MonoBehaviour
     {

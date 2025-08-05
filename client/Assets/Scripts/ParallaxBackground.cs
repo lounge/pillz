@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace masks.client.Scripts
+namespace pillz.client.Scripts
 {
     public class ParallaxBackground : MonoBehaviour
     {

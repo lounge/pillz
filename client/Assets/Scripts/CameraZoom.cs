@@ -1,7 +1,7 @@
-using masks.client.Assets.Input;
+using pillz.client.Assets.Input;
 using UnityEngine;
 
-namespace masks.client.Scripts
+namespace pillz.client.Scripts
 {
     public class CameraZoom : MonoBehaviour
     {

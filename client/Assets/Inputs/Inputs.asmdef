@@ -1,6 +1,6 @@
 {
     "name": "Inputs",
-    "rootNamespace": "masks.client.Assets.Inputs",
+    "rootNamespace": "pillz.client.Assets.Inputs",
     "references": [
         "Unity.InputSystem"
     ]

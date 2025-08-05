@@ -5,9 +5,8 @@ using JetBrains.Annotations;
 using SpacetimeDB;
 using SpacetimeDB.Types;
 using UnityEngine;
-using DbConnection = SpacetimeDB.Types.DbConnection;
 
-namespace masks.client.Scripts
+namespace pillz.client.Scripts
 {
     public class GameManager : MonoBehaviour
     {
@@ -310,12 +309,9 @@ namespace masks.client.Scripts
 
         #endregion
     }
-}
 
-namespace System.Runtime.CompilerServices
-{
-    // This is a workaround for the Unity IL2CPP compiler, which does not support the IsExternalInit type.
-    // It allows us to use init-only properties in our structs.
+// This is a workaround for the Unity IL2CPP compiler, which does not support the IsExternalInit type.
+// It allows us to use init-only properties in our structs.
     internal static class IsExternalInit
     {
     }

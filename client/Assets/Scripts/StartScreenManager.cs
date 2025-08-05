@@ -1,11 +1,8 @@
-using System.Linq;
-using SpacetimeDB.Types;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-
-namespace masks.client.Scripts
+namespace pillz.client.Scripts
 {
     public class StartScreenManager : MonoBehaviour
     {
