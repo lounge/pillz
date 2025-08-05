@@ -7,7 +7,7 @@ using UnityEngine;
 namespace pillz.client.Scripts
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    public class MaskController : EntityController
+    public class PillController : EntityController
     {
         [Header("Movement Settings")] public float moveSpeed = 10f;
         public float jumpForce = 10f;
@@ -24,7 +24,7 @@ namespace pillz.client.Scripts
 
         [Header("Jetpack")] public JetpackController jetpack;
 
-        [Header("Gui")] public MaskHud maskHud;
+        [Header("Gui")] public PillHud pillHud;
         public DmgDisplay dmgDisplay;
         public FragDisplay fragDisplay;
 
@@ -34,11 +34,11 @@ namespace pillz.client.Scripts
         private bool _isJumpHeld;
         private bool _isJetpackEnabled;
         private bool _isGrounded;
-        private float _airborneXDirection = 0f;
+        private float _airborneXDirection;
         private float _lastMovementSendTimestamp;
         private PlayerInputActions _inputActions;
         private PlayerInput _lastMovementInput;
-        private MaskHud _maskHud;
+        private PillHud _pillHud;
         private DmgDisplay _dmgDisplay;
         private FragDisplay _fragDisplay;
         private GameObject _gameCanvas;
@@ -60,24 +60,24 @@ namespace pillz.client.Scripts
         private void OnEnable() => _inputActions.Enable();
         private void OnDisable() => _inputActions.Disable();
 
-        public void Spawn(Mask mask, PlayerController owner)
+        public void Spawn(Pill pill, PlayerController owner)
         {
-            base.Spawn(mask.EntityId, owner);
+            base.Spawn(pill.EntityId, owner);
 
             // Set position from server correction for client placement
-            transform.position = new Vector3(mask.Position.X + 0.5f, mask.Position.Y + 1f, 0);
+            transform.position = new Vector3(pill.Position.X + 0.5f, pill.Position.Y + 1f, 0);
 
             WeaponController = Instantiate(weaponPrefab, transform);
-            WeaponController.Initialize(transform, owner, mask.AimDir);
+            WeaponController.Initialize(transform, owner, pill.AimDir);
 
-            _maskHud = Instantiate(maskHud, _gameCanvas.transform);
-            _maskHud.AttachTo(transform);
-            _maskHud.SetHp(mask.Hp);
-            _maskHud.SetUsername(owner.Username);
+            _pillHud = Instantiate(pillHud, _gameCanvas.transform);
+            _pillHud.AttachTo(transform);
+            _pillHud.SetHp(pill.Hp);
+            _pillHud.SetUsername(owner.Username);
 
             if (Owner && (!Owner.IsLocalPlayer || !GameManager.IsConnected()))
             {
-                Log.Debug("MaskMovement: Not local player or not connected, skipping movement init.");
+                Log.Debug("PillMovement: Not local player or not connected, skipping movement init.");
                 return;
             }
 
@@ -87,21 +87,20 @@ namespace pillz.client.Scripts
             _inputActions.Player.Jump.started += _ => _isJumpHeld = true;
             _inputActions.Player.Jump.canceled += _ => _isJumpHeld = false;
             _inputActions.Player.Move.performed += ctx => _moveInput = ctx.ReadValue<Vector2>();
-            _inputActions.Player.Move.canceled += ctx => _moveInput = Vector2.zero;
+            _inputActions.Player.Move.canceled += _ => _moveInput = Vector2.zero;
             _inputActions.Player.Jetpack.performed += _ => _isJetpackEnabled = !_isJetpackEnabled;
 
             _dmgDisplay = Instantiate(dmgDisplay, Owner.transform);
-            dmgDisplay.SetDmg(mask.Dmg);
+            dmgDisplay.SetDmg(pill.Dmg);
 
             _fragDisplay = Instantiate(fragDisplay, Owner.transform);
-            fragDisplay.SetFrags(mask.Frags);
+            fragDisplay.SetFrags(pill.Frags);
         }
 
         private void FixedUpdate()
         {
             if (!Owner.IsLocalPlayer || !GameManager.IsConnected())
             {
-                // Log.Debug("MaskMovement: Not local player or not connected, skipping movement update.");
                 return;
             }
 
@@ -134,7 +133,7 @@ namespace pillz.client.Scripts
 
             if (_isJumpHeld && _isGrounded)
             {
-                Log.Debug("MaskMovement: Jump pressed, applying jump force.");
+                Log.Debug("PillMovement: Jump pressed, applying jump force.");
                 _rb.linearVelocityY = jumpForce;
             }
 
@@ -148,7 +147,7 @@ namespace pillz.client.Scripts
 
             if (_isJumpHeld)
             {
-                Log.Debug("MaskMovement: Jump pressed, applying jump force.");
+                Log.Debug("PillMovement: Jump pressed, applying jump force.");
                 jetpack?.ThrottleOn(1);
                 _rb.linearVelocityY = Mathf.Lerp(_rb.linearVelocityY, jumpForce, 0.2f);
             }
@@ -183,20 +182,20 @@ namespace pillz.client.Scripts
                 _rb.linearVelocityX = Mathf.Lerp(_rb.linearVelocityX, targetX, smoothing);
             }
 
-            _maskHud.transform.position = _rb.transform.position;
+            _pillHud.transform.position = _rb.transform.position;
         }
 
-        public void OnMaskUpdated(Mask newVal)
+        public void OnPillUpdated(Pill newVal)
         {
             _hp = newVal.Hp;
-            _maskHud?.SetHp(_hp);
+            _pillHud?.SetHp(_hp);
             _dmgDisplay?.SetDmg(newVal.Dmg);
             _fragDisplay?.SetFrags(newVal.Frags);
             WeaponController?.SetAimDir(newVal.AimDir);
 
             if (_hp <= 0)
             {
-                Log.Debug("MaskController: HP is 0 or below, deleting mask.");
+                Log.Debug("PillController: HP is 0 or below, deleting pill.");
                 Kill();
             }
         }
@@ -205,16 +204,16 @@ namespace pillz.client.Scripts
         {
             GameManager.Connection.Reducers.ApplyDamage(Owner.PlayerId, damage);
 
-            Log.Debug($"MaskController: Applied {damage} damage, remaining HP: {_hp}");
+            Log.Debug($"PillController: Applied {damage} damage, remaining HP: {_hp}");
         }
 
         public override void OnDelete(EventContext context)
         {
             base.OnDelete(context);
 
-            if (_maskHud)
+            if (_pillHud)
             {
-                Destroy(_maskHud.gameObject);
+                Destroy(_pillHud.gameObject);
             }
 
             if (WeaponController)
@@ -247,7 +246,7 @@ namespace pillz.client.Scripts
         {
             if (collision.gameObject.CompareTag("DeathZone"))
             {
-                Log.Debug("MaskController: Collided with death zone DEAD, deleting mask.");
+                Log.Debug("PillController: Collided with death zone DEAD, deleting pill.");
                 Kill();
             }
         }
@@ -256,11 +255,11 @@ namespace pillz.client.Scripts
         {
             if (Owner.IsLocalPlayer)
             {
-                Log.Debug("MaskController: Local player mask destroyed, showing death screen.");
+                Log.Debug("PillController: Local player pill destroyed, showing death screen.");
                 DeathScreenManager.Instance.Show(Owner);
             }
 
-            GameManager.Connection.Reducers.DeleteMask(Owner.PlayerId);
+            GameManager.Connection.Reducers.DeletePill(Owner.PlayerId);
         }
     }
 }

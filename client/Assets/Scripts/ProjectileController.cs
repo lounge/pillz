@@ -92,14 +92,14 @@ namespace pillz.client.Scripts
                 GameManager.Connection.Reducers.DeleteProjectile(EntityId);
             }
             
-            if (hitObject.CompareTag("Mask"))
+            if (hitObject.CompareTag("Pill"))
             {
-                var hitMask = hitObject.GetComponent<MaskController>();
+                var hitPill = hitObject.GetComponent<PillController>();
                 
-                Log.Debug("ProjectileController: Hit a mask, deleting projectile. Applying damage");
+                Log.Debug("ProjectileController: Hit a pill, deleting projectile. Applying damage");
                 GameManager.Connection.Reducers.DeleteProjectile(EntityId);
                 
-                hitMask.ApplyDamage(10);
+                hitPill.ApplyDamage(10);
             }
             
             if (collision.gameObject.CompareTag("DeathZone"))

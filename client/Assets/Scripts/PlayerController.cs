@@ -16,7 +16,7 @@ namespace pillz.client.Scripts
 
 
         [NonSerialized] 
-        public MaskController Mask;
+        public PillController Pill;
 
 
         public void Initialize(Player player)
@@ -33,10 +33,10 @@ namespace pillz.client.Scripts
             Destroy(gameObject);
         }
 
-        public void SetDefaults(MaskController entityController)
+        public void SetDefaults(PillController entityController)
         {
             name = $"Player_{Username}";
-            Mask = entityController;
+            Pill = entityController;
         }
     }
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace pillz.client.Scripts
 {
-    public class MaskHud : MonoBehaviour
+    public class PillHud : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI usernameText;
         [SerializeField] private TextMeshProUGUI hpText;

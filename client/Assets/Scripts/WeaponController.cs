@@ -19,7 +19,7 @@ namespace pillz.client.Scripts
         private PlayerInputActions _inputActions;
         private Vector2 _lookInput;
         private Vector2 _weaponDirection;
-        private Rigidbody2D _mask;
+        private Rigidbody2D _pill;
         private Transform _parentTransform;
         private Rigidbody2D _projectileRb;
         private PlayerController _owner;

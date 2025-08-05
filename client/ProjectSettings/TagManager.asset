@@ -5,8 +5,8 @@ TagManager:
   serializedVersion: 3
   tags:
   - Ground
-  - Mask
   - DeathZone
+  - Pill
   layers:
   - Default
   - TransparentFX

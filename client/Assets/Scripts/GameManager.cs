@@ -11,7 +11,7 @@ namespace pillz.client.Scripts
     public class GameManager : MonoBehaviour
     {
         private const string SpacetimeDbUrl = "http://localhost:3000";
-        private const string SpacetimeDbName = "masks";
+        private const string SpacetimeDbName = "pillz";
 
         [UsedImplicitly] private static event Action OnConnected;
         [UsedImplicitly] private static event Action OnSubscriptionApplied;
@@ -80,9 +80,9 @@ namespace pillz.client.Scripts
             Connection.Db.Portal.OnInsert += PortalOnInsert;
             Connection.Db.Portal.OnUpdate += PortalOnUpdate;
 
-            Connection.Db.Mask.OnInsert += MaskOnInsert;
-            Connection.Db.Mask.OnUpdate += MaskOnUpdate;
-            Connection.Db.Mask.OnDelete += MaskOnDelete;
+            Connection.Db.Pill.OnInsert += PillOnInsert;
+            Connection.Db.Pill.OnUpdate += PillOnUpdate;
+            Connection.Db.Pill.OnDelete += PillOnDelete;
 
             Connection.Db.Projectile.OnInsert += ProjectileOnInsert;
             Connection.Db.Projectile.OnDelete += ProjectileOnDelete;
@@ -188,35 +188,35 @@ namespace pillz.client.Scripts
         
         #endregion
 
-        #region Mask Handlers
+        #region Pill Handlers
 
-        private static void MaskOnInsert(EventContext context, Mask insertedValue)
+        private static void PillOnInsert(EventContext context, Pill insertedValue)
         {
             Log.Debug(
-                $"MaskOnInsert: Inserting mask for player {insertedValue.PlayerId} with entity ID {insertedValue.EntityId} position {insertedValue.Position}");
+                $"PillOnInsert: Inserting pill for player {insertedValue.PlayerId} with entity ID {insertedValue.EntityId} position {insertedValue.Position}");
             var player = GetOrCreatePlayer(insertedValue.PlayerId);
-            var entityController = PrefabManager.SpawnMask(insertedValue, player);
+            var entityController = PrefabManager.SpawnPill(insertedValue, player);
             Entities.Add(insertedValue.EntityId, entityController);
         }
 
-        private static void MaskOnUpdate(EventContext context, Mask oldMask, Mask newMask)
+        private static void PillOnUpdate(EventContext context, Pill oldPill, Pill newPill)
         {
-            Log.Debug($"MaskOnUpdate: Updating mask for player {newMask.PlayerId} with entity ID {newMask.EntityId}");
-            if (!Entities.TryGetValue(newMask.EntityId, out var entityController))
+            Log.Debug($"PillOnUpdate: Updating pill for player {newPill.PlayerId} with entity ID {newPill.EntityId}");
+            if (!Entities.TryGetValue(newPill.EntityId, out var entityController))
             {
                 return;
             }
 
-            ((MaskController)entityController).OnMaskUpdated(newMask);
+            ((PillController)entityController).OnPillUpdated(newPill);
         }
 
-        private static void MaskOnDelete(EventContext context, Mask oldEntity)
+        private static void PillOnDelete(EventContext context, Pill oldEntity)
         {
-            var masks = Connection.Db.Mask.PlayerId.Filter(oldEntity.PlayerId);
-            if (masks.Any() || !Players.ContainsKey(oldEntity.PlayerId))
+            var pillz = Connection.Db.Pill.PlayerId.Filter(oldEntity.PlayerId);
+            if (pillz.Any() || !Players.ContainsKey(oldEntity.PlayerId))
                 return;
 
-            Log.Debug($"MaskOnDelete: No masks left for player {oldEntity.PlayerId}, removing player controller.");
+            Log.Debug($"PillOnDelete: No pillz left for player {oldEntity.PlayerId}, removing player controller.");
             Players.Remove(oldEntity.PlayerId);
         }
 
@@ -238,7 +238,7 @@ namespace pillz.client.Scripts
 
             var spawnPos = (Vector2)entity.Position;
 
-            var entityController = player.Mask.WeaponController.Shoot(insertedValue, player, spawnPos, insertedValue.Speed);
+            var entityController = player.Pill.WeaponController.Shoot(insertedValue, player, spawnPos, insertedValue.Speed);
             Entities.Add(insertedValue.EntityId, entityController);
         }
 

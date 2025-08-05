@@ -8,7 +8,7 @@ namespace pillz.client.Scripts
     {
         private static PrefabManager _instance;
         public PlayerController playerPrefab;
-        public MaskController maskPrefab;
+        public PillController pillPrefab;
         public PortalController portalPrefab;
         
         private void Awake()
@@ -24,16 +24,14 @@ namespace pillz.client.Scripts
             return playerController;
         }
         
-        public static MaskController SpawnMask(Mask mask, PlayerController owner)
+        public static PillController SpawnPill(Pill pill, PlayerController owner)
         {
-            Log.Debug($"PrefabManager1: Spawning mask at position {mask.Position} with aim direction {mask.AimDir}.");
+            Log.Debug($"PrefabManager1: Spawning pill at position {pill.Position} with aim direction {pill.AimDir}.");
             
-            var entityController = Instantiate(_instance.maskPrefab, owner.transform);
-            entityController.name = $"Mask_{owner.Username}";
-            
-            Log.Debug($"PrefabManager2: Spawning mask at position {mask.Position} with aim direction {mask.AimDir}.");
+            var entityController = Instantiate(_instance.pillPrefab, owner.transform);
+            entityController.name = $"Pill_{owner.Username}";
 
-            entityController.Spawn(mask, owner);
+            entityController.Spawn(pill, owner);
             owner.SetDefaults(entityController);
             
             return entityController;

@@ -149,7 +149,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: -6620065160897403285, guid: cf0cab10d08894d748e93799b5830412, type: 3}
-  maskPrefab: {fileID: 1906537564627166700, guid: 0ac1c5718112f426585ef2789683269a, type: 3}
+  pillPrefab: {fileID: 1906537564627166700, guid: 0ac1c5718112f426585ef2789683269a, type: 3}
   portalPrefab: {fileID: 8621887809777349489, guid: 3b6d43c81eb684532887f19b05d2ef27, type: 3}
 --- !u!4 &66960492
 Transform:

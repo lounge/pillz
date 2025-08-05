@@ -27,19 +27,19 @@ namespace pillz.client.Scripts
 
             Log.Debug("PortalController: Collision detected with " + hitObject.name);
 
-            if (hitObject.CompareTag("Mask"))
+            if (hitObject.CompareTag("Pill"))
             {
-                var maskController = hitObject.GetComponent<MaskController>();
-                if (maskController && maskController.Owner.IsLocalPlayer && !maskController.InPortal && maskController.PortalCoolDown <= 0f)
+                var pillController = hitObject.GetComponent<PillController>();
+                if (pillController && pillController.Owner.IsLocalPlayer && !pillController.InPortal && pillController.PortalCoolDown <= 0f)
                 {
-                    Log.Debug("PortalController: Mask entered portal, teleporting...");
+                    Log.Debug("PortalController: Pill entered portal, teleporting...");
                     var connectedPortal = GameManager.Connection.Db.Portal.Id.Find(_connectedPortalId);
                     if (connectedPortal != null)
                     {
-                        maskController.transform.position = new Vector3(connectedPortal.Position.X, connectedPortal.Position.Y, 0);
-                        maskController.InPortal = true;
-                        maskController.PortalCoolDown = 2f; 
-                        Log.Debug("PortalController: Mask teleported to " + maskController.transform.position);
+                        pillController.transform.position = new Vector3(connectedPortal.Position.X, connectedPortal.Position.Y, 0);
+                        pillController.InPortal = true;
+                        pillController.PortalCoolDown = 2f; 
+                        Log.Debug("PortalController: Pill teleported to " + pillController.transform.position);
                     }
                     else
                     {

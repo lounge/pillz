@@ -394,8 +394,8 @@ GameObject:
   - component: {fileID: 6518188610826938459}
   - component: {fileID: 1906537564627166700}
   m_Layer: 0
-  m_Name: MaskPrefab
-  m_TagString: Mask
+  m_Name: PillPrefab
+  m_TagString: Pill
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -505,7 +505,7 @@ MonoBehaviour:
   smoothing: 0.15
   weaponPrefab: {fileID: -1818467974883061908, guid: 76f4b1fc46e6d48efb97781ece7ae496, type: 3}
   jetpack: {fileID: 7429842420436174916}
-  maskHud: {fileID: 2574573869230280460, guid: 9aabcce44c1d54590842f57463ecd9df, type: 3}
+  pillHud: {fileID: 2574573869230280460, guid: 9aabcce44c1d54590842f57463ecd9df, type: 3}
   dmgDisplay: {fileID: 5420862227943291589, guid: 37c3b8150102d490b8c6ef6e6f7fe13a, type: 3}
   fragDisplay: {fileID: 3850586052932869120, guid: ee9b703e612764b90be075f84a595b3c, type: 3}
 --- !u!1 &4849669999516418546
