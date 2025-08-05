@@ -182,6 +182,15 @@ namespace masks.client.Assets.Input
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Jetpack"",
+                    ""type"": ""Button"",
+                    ""id"": ""c225c157-7187-4f2d-88e0-5b89e6bd5f83"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -589,6 +598,17 @@ namespace masks.client.Assets.Input
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Zoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e05f5bcb-b0cc-4aff-a7bb-cfe6d554429c"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jetpack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1186,6 +1206,7 @@ namespace masks.client.Assets.Input
             m_Player_Next = m_Player.FindAction("Next", throwIfNotFound: true);
             m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
             m_Player_Zoom = m_Player.FindAction("Zoom", throwIfNotFound: true);
+            m_Player_Jetpack = m_Player.FindAction("Jetpack", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
             m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1289,6 +1310,7 @@ namespace masks.client.Assets.Input
         private readonly InputAction m_Player_Next;
         private readonly InputAction m_Player_Sprint;
         private readonly InputAction m_Player_Zoom;
+        private readonly InputAction m_Player_Jetpack;
         /// <summary>
         /// Provides access to input actions defined in input action map "Player".
         /// </summary>
@@ -1340,6 +1362,10 @@ namespace masks.client.Assets.Input
             /// Provides access to the underlying input action "Player/Zoom".
             /// </summary>
             public InputAction @Zoom => m_Wrapper.m_Player_Zoom;
+            /// <summary>
+            /// Provides access to the underlying input action "Player/Jetpack".
+            /// </summary>
+            public InputAction @Jetpack => m_Wrapper.m_Player_Jetpack;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -1396,6 +1422,9 @@ namespace masks.client.Assets.Input
                 @Zoom.started += instance.OnZoom;
                 @Zoom.performed += instance.OnZoom;
                 @Zoom.canceled += instance.OnZoom;
+                @Jetpack.started += instance.OnJetpack;
+                @Jetpack.performed += instance.OnJetpack;
+                @Jetpack.canceled += instance.OnJetpack;
             }
 
             /// <summary>
@@ -1437,6 +1466,9 @@ namespace masks.client.Assets.Input
                 @Zoom.started -= instance.OnZoom;
                 @Zoom.performed -= instance.OnZoom;
                 @Zoom.canceled -= instance.OnZoom;
+                @Jetpack.started -= instance.OnJetpack;
+                @Jetpack.performed -= instance.OnJetpack;
+                @Jetpack.canceled -= instance.OnJetpack;
             }
 
             /// <summary>
@@ -1807,6 +1839,13 @@ namespace masks.client.Assets.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnZoom(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Jetpack" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnJetpack(InputAction.CallbackContext context);
         }
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

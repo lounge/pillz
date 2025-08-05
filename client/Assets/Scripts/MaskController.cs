@@ -23,15 +23,17 @@ namespace masks.client.Scripts
 
         [Header("Weapons")] public WeaponController weaponPrefab;
 
-        [Header("Gui")] 
-        public MaskHud maskHud;
+        [Header("Jetpack")] public JetpackController jetpack;
+
+        [Header("Gui")] public MaskHud maskHud;
         public DmgDisplay dmgDisplay;
         public FragDisplay fragDisplay;
-        
-        
+
+
         private uint _hp = 100;
         private Vector2 _moveInput;
-        private bool _isJumpPressed;
+        private bool _isJumpHeld;
+        private bool _isJetpackEnabled;
         private bool _isGrounded;
         private float _airborneXDirection = 0f;
         private float _lastMovementSendTimestamp;
@@ -47,9 +49,10 @@ namespace masks.client.Scripts
         [NonSerialized] public WeaponController WeaponController;
         [NonSerialized] public bool InPortal;
         [NonSerialized] public float PortalCoolDown;
-        
+
         protected override void Awake()
         {
+            jetpack?.gameObject.SetActive(false);
             _gameCanvas = GameObject.Find("GameCanvas");
             _mainCamera = Camera.main;
             _inputActions = new PlayerInputActions();
@@ -57,6 +60,43 @@ namespace masks.client.Scripts
 
         private void OnEnable() => _inputActions.Enable();
         private void OnDisable() => _inputActions.Disable();
+
+        public void Spawn(Mask mask, PlayerController owner)
+        {
+            base.Spawn(mask.EntityId, owner);
+
+            // Set position from server
+            transform.position = new Vector3(mask.Position.X, mask.Position.Y, 0);
+
+            WeaponController = Instantiate(weaponPrefab, transform);
+            WeaponController.Initialize(transform, owner, mask.AimDir);
+
+            _maskHud = Instantiate(maskHud, _gameCanvas.transform);
+            _maskHud.AttachTo(transform);
+            _maskHud.SetHp(mask.Hp);
+            _maskHud.SetUsername(owner.Username);
+
+            if (Owner && (!Owner.IsLocalPlayer || !GameManager.IsConnected()))
+            {
+                Log.Debug("MaskMovement: Not local player or not connected, skipping movement init.");
+                return;
+            }
+
+            _rb = GetComponent<Rigidbody2D>();
+            _mainCamera.GetComponent<CameraFollow>()?.SetTarget(transform);
+
+            _inputActions.Player.Jump.started += _ => _isJumpHeld = true;
+            _inputActions.Player.Jump.canceled += _ => _isJumpHeld = false;
+            _inputActions.Player.Move.performed += ctx => _moveInput = ctx.ReadValue<Vector2>();
+            _inputActions.Player.Move.canceled += ctx => _moveInput = Vector2.zero;
+            _inputActions.Player.Jetpack.performed += _ => _isJetpackEnabled = !_isJetpackEnabled;
+
+            _dmgDisplay = Instantiate(dmgDisplay, Owner.transform);
+            dmgDisplay.SetDmg(mask.Dmg);
+
+            _fragDisplay = Instantiate(fragDisplay, Owner.transform);
+            fragDisplay.SetFrags(mask.Frags);
+        }
 
         private void FixedUpdate()
         {
@@ -69,18 +109,60 @@ namespace masks.client.Scripts
             CheckPortalState();
 
             _isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
-
-            if (_isJumpPressed)
+            if (_isJetpackEnabled)
             {
-                Log.Debug("MaskMovement: Jump pressed, checking if grounded.");
+                JetpackMovement();
+            }
+            else
+            {
+                NormalMovement();
             }
 
-            if (_isJumpPressed && _isGrounded)
+            var playerInput = new PlayerInput(_rb.linearVelocity, _rb.position, !FocusHandler.HasFocus);
+            if (!playerInput.Equals(_lastMovementInput) &&
+                Time.time - _lastMovementSendTimestamp >= SendUpdatesFrequency)
+            {
+                _lastMovementSendTimestamp = Time.time;
+                GameManager.Connection.Reducers.UpdatePlayerInput(playerInput);
+            }
+
+            _lastMovementInput = playerInput;
+        }
+
+        private void NormalMovement()
+        {
+            jetpack?.Disable();
+
+            if (_isJumpHeld && _isGrounded)
             {
                 Log.Debug("MaskMovement: Jump pressed, applying jump force.");
                 _rb.linearVelocityY = jumpForce;
             }
 
+            CalculateMovement();
+        }
+
+        private void JetpackMovement()
+        {
+            jetpack?.Enable();
+            Log.Debug("JetpackMovement: Jetpack is enabled, applying jetpack force.");
+
+            if (_isJumpHeld)
+            {
+                Log.Debug("MaskMovement: Jump pressed, applying jump force.");
+                jetpack?.ThrottleOn(1);
+                _rb.linearVelocityY = Mathf.Lerp(_rb.linearVelocityY, jumpForce, 0.2f);
+            }
+            else
+            {
+                jetpack?.ThrottleOff();
+            }
+
+            CalculateMovement();
+        }
+
+        private void CalculateMovement()
+        {
             var inputX = _moveInput.x;
             float targetX;
 
@@ -103,19 +185,6 @@ namespace masks.client.Scripts
             }
 
             _maskHud.transform.position = _rb.transform.position;
-
-            var playerInput = new PlayerInput(_rb.linearVelocity, _rb.position, !FocusHandler.HasFocus);
-            if (!playerInput.Equals(_lastMovementInput) &&
-                Time.time - _lastMovementSendTimestamp >= SendUpdatesFrequency)
-            {
-                Debug.Log("Player Input Updated");
-
-                _lastMovementSendTimestamp = Time.time;
-                GameManager.Connection.Reducers.UpdatePlayerInput(playerInput);
-            }
-
-            _lastMovementInput = playerInput;
-            _isJumpPressed = false;
         }
 
         public void OnMaskUpdated(Mask newVal)
@@ -132,44 +201,7 @@ namespace masks.client.Scripts
                 Kill();
             }
         }
-        
-        public void Spawn(Mask mask, PlayerController owner)
-        {
-            base.Spawn(mask.EntityId, owner);
 
-
-            // Set position from server
-            transform.position = new Vector3(mask.Position.X, mask.Position.Y, 0);
-
-            WeaponController = Instantiate(weaponPrefab, transform);
-            WeaponController.Initialize(transform, owner, mask.AimDir);
-
-            _maskHud = Instantiate(maskHud, _gameCanvas.transform);
-            _maskHud.AttachTo(transform);
-            _maskHud.SetHp(mask.Hp);
-            _maskHud.SetUsername(owner.Username);
-            
-            
-
-            if (Owner && (!Owner.IsLocalPlayer || !GameManager.IsConnected()))
-            {
-                Log.Debug("MaskMovement: Not local player or not connected, skipping movement init.");
-                return;
-            }
-
-            _rb = GetComponent<Rigidbody2D>();
-            _mainCamera.GetComponent<CameraFollow>()?.SetTarget(transform);
-
-            _inputActions.Player.Jump.performed += _ => _isJumpPressed = true;
-            _inputActions.Player.Move.performed += ctx => _moveInput = ctx.ReadValue<Vector2>();
-            _inputActions.Player.Move.canceled += ctx => _moveInput = Vector2.zero;
-            
-            _dmgDisplay = Instantiate(dmgDisplay, Owner.transform);
-            dmgDisplay.SetDmg(mask.Dmg);
-            
-            _fragDisplay = Instantiate(fragDisplay, Owner.transform);
-            fragDisplay.SetFrags(mask.Frags);
-        }
 
         public void ApplyDamage(uint damage)
         {
@@ -200,7 +232,7 @@ namespace masks.client.Scripts
             _inputActions?.Disable();
             _inputActions = null;
         }
-        
+
         private void CheckPortalState()
         {
             if (PortalCoolDown > 0f)
