@@ -1,12 +1,28 @@
 [X]  Detect when mask falls off map and kill it
+[]  Rename project to pillz
+    []  Rename repo
+    []  Rename mask classes and vars
+    []  Rename server tables and reducers
+    []  Rename prefabs, assests and game objects
 []  Create win scenario
     []  WinScreen
         []  Show kill count
         []  Show dmg given
-[X]  Detect and store dmg given
+[]  Lobby system
+    []  Create lobby
+    []  Join lobby if game not in progress
+    []  If game in progress show game in background 
+    []  Show players in lobby
+    []  First player to join is host
+        []  Host can change map
+        []  Host can start game
+[]  Add player names to HUD
+[]  Add player names to DeathScreen
+[-]  Detect and store dmg given
+    []  Increase dmg points when destroying tiles?
     [X]  Show dmg given on in HUD
     []  Show dmg given on DeathScreen
-[X]  Detect and store kill count
+[-]  Detect and store kill count
     [X]  Show kill count on HUD
     []  Show kill count on DeathScreen
 [-]  Generate interesting terrain
@@ -16,11 +32,13 @@
     []  Maybe make thicker
 [X]  Increase projectile speed on left mouse hold
     []  Needs tuning
-[]  Portals
-    []  Spawn two portals each side of map
-    []  Teleport mask to other portal
-[]  Jetpack movement
-    []  Toggle jetpack on/off
+[-]  Portals
+    [X]  Spawn four portals top, bottom, left, right
+    [X]  Teleport mask to connected portal
+    [X]  Fine tune portal spawn positon
+    []  Make rigidbody and sync position to server
+[-]  Jetpack movement
+    [X]  Toggle jetpack on/off
     []  Jetpack fuel
         []  Show fuel in HUD
         []  Deplete fuel when used

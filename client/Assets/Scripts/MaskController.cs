@@ -65,8 +65,8 @@ namespace masks.client.Scripts
         {
             base.Spawn(mask.EntityId, owner);
 
-            // Set position from server
-            transform.position = new Vector3(mask.Position.X, mask.Position.Y, 0);
+            // Set position from server correction for client placement
+            transform.position = new Vector3(mask.Position.X + 0.5f, mask.Position.Y + 1f, 0);
 
             WeaponController = Instantiate(weaponPrefab, transform);
             WeaponController.Initialize(transform, owner, mask.AimDir);
@@ -201,7 +201,6 @@ namespace masks.client.Scripts
                 Kill();
             }
         }
-
 
         public void ApplyDamage(uint damage)
         {

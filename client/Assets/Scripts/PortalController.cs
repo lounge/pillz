@@ -11,7 +11,9 @@ namespace masks.client.Scripts
         public void Spawn(Portal portal)
         {
             _connectedPortalId = portal.ConnectedPortalId;
-            transform.position = new Vector3(portal.Position.X, portal.Position.Y, 0);
+            
+            // Set position from server correction for client placement
+            transform.position = new Vector3(portal.Position.X + 1f, portal.Position.Y + 1.5f, 0);
         }
         
         public void OnPortalUpdated(Portal newVal)
