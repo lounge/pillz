@@ -14,37 +14,37 @@ public partial class Game
         // var worldSize = (ctx.Db.World.Id.Find(0) ??
         //                  throw new Exception("Config table is empty. Please initialize the database first.")).Size;
 
-        foreach (var mask in ctx.Db.Mask.Iter())
+        foreach (var pill in ctx.Db.Pill.Iter())
         {
-            var player = ctx.Db.Player.Id.Find(mask.PlayerId);
+            var player = ctx.Db.Player.Id.Find(pill.PlayerId);
             if (player is { IsPaused: true })
             {
-                // Log.Debug($"Mask with id {mask.EntityId} is paused, skipping movement.");
+                // Log.Debug($"Pill with id {pill.EntityId} is paused, skipping movement.");
                 continue;
             }
 
-            var entity = ctx.Db.Entity.Id.Find(mask.EntityId);
+            var entity = ctx.Db.Entity.Id.Find(pill.EntityId);
             if (entity == null)
             {
-                Log.Error($"Entity with id {mask.EntityId} not found in the database.");
+                Log.Error($"Entity with id {pill.EntityId} not found in the database.");
                 continue;
             }
 
-            var maskEntity = entity.Value;
-            var direction = mask.Direction;
-            var newPosition = mask.Position + direction * DeltaTime;
+            var pillEntity = entity.Value;
+            var direction = pill.Direction;
+            var newPosition = pill.Position + direction * DeltaTime;
 
 
-            if (!maskEntity.Position.Equals(newPosition))
+            if (!pillEntity.Position.Equals(newPosition))
             {
-                maskEntity.Position.X = newPosition.X;
-                maskEntity.Position.Y = newPosition.Y;
+                pillEntity.Position.X = newPosition.X;
+                pillEntity.Position.Y = newPosition.Y;
                 
-                ctx.Db.Entity.Id.Update(maskEntity);
+                ctx.Db.Entity.Id.Update(pillEntity);
                 
             }
             // Log.Debug(
-            //     $"Moving mask with id {mask.EntityId} to position ({maskEntity.Position.X}, {maskEntity.Position.Y})");
+            //     $"Moving pill with id {pill.EntityId} to position ({pillEntity.Position.X}, {pillEntity.Position.Y})");
 
         }
     }

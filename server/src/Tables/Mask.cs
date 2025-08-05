@@ -4,7 +4,7 @@ namespace pillz.server.Tables;
 
 [Table(Public = true)]
 [SpacetimeDB.Index.BTree(Name = "PlayerId", Columns = [nameof(PlayerId)])]
-public partial struct Mask
+public partial struct Pill
 {
     [PrimaryKey]
     public uint EntityId;

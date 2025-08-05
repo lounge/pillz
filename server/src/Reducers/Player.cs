@@ -1,7 +1,7 @@
 using SpacetimeDB;
 using DbVector2 = pillz.server.Tables.DbVector2;
 using Entity = pillz.server.Tables.Entity;
-using Mask = pillz.server.Tables.Mask;
+using Pill = pillz.server.Tables.Pill;
 using PlayerInput = pillz.server.Tables.PlayerInput;
 
 namespace pillz.server.Reducers;
@@ -33,11 +33,11 @@ public static partial class Player
     public static void Disconnect(ReducerContext ctx)
     {
         var player = ctx.Db.Player.Identity.Find(ctx.Sender) ?? throw new Exception("Player not found");
-        foreach (var mask in ctx.Db.Mask.PlayerId.Filter(player.Id))
+        foreach (var pill in ctx.Db.Pill.PlayerId.Filter(player.Id))
         {
-            var entity = ctx.Db.Entity.Id.Find(mask.EntityId) ?? throw new Exception("Could not find mask");
+            var entity = ctx.Db.Entity.Id.Find(pill.EntityId) ?? throw new Exception("Could not find pill");
             ctx.Db.Entity.Id.Delete(entity.Id);
-            ctx.Db.Mask.EntityId.Delete(entity.Id);
+            ctx.Db.Pill.EntityId.Delete(entity.Id);
             ctx.Db.Projectile.PlayerId.Delete(player.Id);
         }
 
@@ -60,7 +60,7 @@ public static partial class Player
             Position = spawnPosition,
         });
 
-        var mask =ctx.Db.Mask.Insert(new Mask
+        var pill =ctx.Db.Pill.Insert(new Pill
         {
             EntityId = entity.Id,
             PlayerId = player.Id,
@@ -69,7 +69,7 @@ public static partial class Player
             Hp = 100
         });
 
-        Log.Info($"Spawned mask at ({mask.Position.X}, {entity.Position.Y}) with id: {entity.Id}.");
+        Log.Info($"Spawned pill at ({pill.Position.X}, {entity.Position.Y}) with id: {entity.Id}.");
         
         Log.Info($"Spawned entity at ({entity.Position.X}, {entity.Position.Y}) with id: {entity.Id}.");
     }
@@ -78,16 +78,16 @@ public static partial class Player
     public static void UpdatePlayerInput(ReducerContext ctx, PlayerInput input)
     {
         var player = ctx.Db.Player.Identity.Find(ctx.Sender) ?? throw new Exception("Player not found");
-        foreach (var m in ctx.Db.Mask.PlayerId.Filter(player.Id))
+        foreach (var p in ctx.Db.Pill.PlayerId.Filter(player.Id))
         {
-            var mask = m;
-            mask.Direction = input.Direction;
-            mask.Position = input.Position;
+            var pill = p;
+            pill.Direction = input.Direction;
+            pill.Position = input.Position;
 
             player.IsPaused = input.IsPaused;
             ctx.Db.Player.Identity.Update(player);
-            ctx.Db.Mask.EntityId.Update(mask);
-            // Log.Debug($"Updated mask with id {mask.EntityId} direction to ({mask.Velocity.X}, {mask.Velocity.Y}).");
+            ctx.Db.Pill.EntityId.Update(pill);
+            // Log.Debug($"Updated pill with id {pill.EntityId} direction to ({pill.Velocity.X}, {pill.Velocity.Y}).");
         }
     }
     
@@ -96,34 +96,34 @@ public static partial class Player
     {
         uint fragCount = 0;
         var enemy = ctx.Db.Player.Id.Find(playerId)  ?? throw new Exception("Player not found");
-        foreach (var m in ctx.Db.Mask.PlayerId.Filter(enemy.Id))
+        foreach (var p in ctx.Db.Pill.PlayerId.Filter(enemy.Id))
         {
-            var mask = m;
-            var hp = Math.Max(0, mask.Hp - damage);
-            mask.Hp = hp;
+            var pill = p;
+            var hp = Math.Max(0, pill.Hp - damage);
+            pill.Hp = hp;
             
             if (hp <= 0)
             {
                 fragCount++;
             }
             
-            ctx.Db.Mask.EntityId.Update(mask);
-            Log.Debug($"Updated mask with id {mask.EntityId} HP to {mask.Hp} after taking damage {damage}.");
+            ctx.Db.Pill.EntityId.Update(pill);
+            Log.Debug($"Updated pill with id {pill.EntityId} HP to {pill.Hp} after taking damage {damage}.");
         }
         
         var player = ctx.Db.Player.Identity.Find(ctx.Sender) ??  throw new Exception("Player not found");
-        foreach (var m in ctx.Db.Mask.PlayerId.Filter(player.Id))
+        foreach (var p in ctx.Db.Pill.PlayerId.Filter(player.Id))
         {
-            var mask = m;
-            mask.Dmg += damage;
-            mask.Frags += fragCount;
-            ctx.Db.Mask.EntityId.Update(mask);
-            Log.Debug($"Updated mask with id {mask.EntityId} damage to {mask.Dmg} after giving damage {damage} fragCount {fragCount}.");
+            var pill = p;
+            pill.Dmg += damage;
+            pill.Frags += fragCount;
+            ctx.Db.Pill.EntityId.Update(pill);
+            Log.Debug($"Updated pill with id {pill.EntityId} damage to {pill.Dmg} after giving damage {damage} fragCount {fragCount}.");
         }
     }
 
     [Reducer]
-    public static void DeleteMask(ReducerContext ctx, uint? playerId = null)
+    public static void DeletePill(ReducerContext ctx, uint? playerId = null)
     {
         var player = playerId != null ? ctx.Db.Player.Id.Find(playerId.Value) : ctx.Db.Player.Identity.Find(ctx.Sender);
 
@@ -132,14 +132,14 @@ public static partial class Player
             throw new Exception("Player not found");
         }
 
-        foreach (var mask in ctx.Db.Mask.PlayerId.Filter(player.Value.Id))
+        foreach (var pill in ctx.Db.Pill.PlayerId.Filter(player.Value.Id))
         {
-            var entity = ctx.Db.Entity.Id.Find(mask.EntityId) ?? throw new Exception("Could not find mask");
+            var entity = ctx.Db.Entity.Id.Find(pill.EntityId) ?? throw new Exception("Could not find pill");
             ctx.Db.Entity.Id.Delete(entity.Id);
-            ctx.Db.Mask.EntityId.Delete(entity.Id);
+            ctx.Db.Pill.EntityId.Delete(entity.Id);
             ctx.Db.Projectile.PlayerId.Delete(player.Value.Id);
         }
         
-        Log.Debug($"Deleted mask with id {player.Value.Id}.");
+        Log.Debug($"Deleted pill with id {player.Value.Id}.");
     }
 }

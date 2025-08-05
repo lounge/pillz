@@ -1,2 +1,2 @@
  cd ..
- spacetime publish --server local masks --delete-data -y
+ spacetime publish --server local pillz --delete-data -y

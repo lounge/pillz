@@ -59,13 +59,13 @@ public static partial class Weapon
     public static void Aim(ReducerContext ctx, DbVector2 aimDir)
     {
         var player = ctx.Db.Player.Identity.Find(ctx.Sender) ?? throw new Exception("Player not found");
-        foreach (var m in ctx.Db.Mask.PlayerId.Filter(player.Id))
+        foreach (var p in ctx.Db.Pill.PlayerId.Filter(player.Id))
         {
-            var mask = m;
-            mask.AimDir = aimDir;
+            var pill = p;
+            pill.AimDir = aimDir;
 
-            ctx.Db.Mask.EntityId.Update(mask);
-            // Log.Debug($"Updated mask with id {mask.EntityId} aim direction to ({mask.AimDir.X}, {mask.AimDir.Y}).");
+            ctx.Db.Pill.EntityId.Update(pill);
+            // Log.Debug($"Updated pill with id {pill.EntityId} aim direction to ({pill.AimDir.X}, {pill.AimDir.Y}).");
         }
     }
 }
