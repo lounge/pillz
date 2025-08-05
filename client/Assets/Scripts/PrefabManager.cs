@@ -28,13 +28,12 @@ namespace masks.client.Scripts
         {
             Log.Debug($"PrefabManager1: Spawning mask at position {mask.Position} with aim direction {mask.AimDir}.");
             
-            var entityController = Instantiate(_instance.maskPrefab, owner.transform); //  new Vector3(mask.Position.X, mask.Position.Y, 0f), Quaternion.identity);//
+            var entityController = Instantiate(_instance.maskPrefab, owner.transform);
             entityController.name = $"Mask_{owner.Username}";
             
             Log.Debug($"PrefabManager2: Spawning mask at position {mask.Position} with aim direction {mask.AimDir}.");
 
             entityController.Spawn(mask, owner);
-            
             owner.SetDefaults(entityController);
             
             return entityController;
@@ -46,6 +45,8 @@ namespace masks.client.Scripts
             portalController.name = $"Portal_{portal.Id}";
             
             portalController.Spawn(portal);
+            
+            Log.Debug($"Spawned portal at position {portal.Position} with connected portal ID {portal.ConnectedPortalId}.");
 
             return portalController;
         }
