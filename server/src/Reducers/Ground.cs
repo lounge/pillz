@@ -77,44 +77,92 @@ public partial class Ground
                 {
                     ctx.Db.Ground.Insert(new Tables.Ground
                     {
-                        Position = new DbVector2(x - halfWidth, y - halfHeight)
+                        Position = new DbVector2(x - width, y - halfHeight)
                     });
                 }
             }
         }
 
-        // STEP 7: Spawn locations
+        // STEP 7: Spawn and Portal locations
         GenerateSpawnLocations(ctx, width, height, ground, halfWidth, halfHeight);
+        GeneratePortalLocations(ctx, width, height, ground, halfWidth, halfHeight);
     }
-
+    
     private static void GenerateSpawnLocations(ReducerContext ctx, int width, int height, bool[,] ground, int halfWidth,
         int halfHeight)
     {
         for (var x = 2; x < width - 2; x++)
         {
-            for (var y = 2; y < height - 3; y++) // ensure we can check y+1 and y+2
+            for (var y = 2; y < height - 3; y++) // ensure we can check y+3 safely
             {
                 // 1. This tile and the three above must be empty
-                if (ground[x, y]) continue;
-                if (ground[x, y + 1]) continue;
-                if (ground[x, y + 2]) continue;
-                if (ground[x, y + 3]) continue;
+                if (ground[x, y] || ground[x, y + 1] || ground[x, y + 2] || ground[x, y + 3])
+                    continue;
 
+                // 2. Ground below
+                if (!ground[x, y - 1]) continue;
 
-                // 2. At least one solid tile within 1–2 tiles *below*
-                var hasGroundBelow = ground[x, y - 1]; // || ground[x, y - 2];
-                if (!hasGroundBelow) continue;
-
-                // Passed all checks
                 var gx = x - halfWidth;
                 var gy = y - halfHeight;
-                ctx.Db.SpawnLocation.Insert(new SpawnLocation
-                {
-                    Position = new DbVector2(gx + 0.5f, gy + 1f) // center horizontally, lift above ground
-                });
+                var pos = new DbVector2(gx + 0.5f, gy + 1f); // center horizontally, lift above ground
+
+                ctx.Db.SpawnLocation.Insert(new SpawnLocation { Position = pos });
             }
         }
     }
+    
+    private static void GeneratePortalLocations(ReducerContext ctx, int width, int height, bool[,] ground, int halfWidth, int halfHeight)
+    {
+        (float x, float y)? highest = null;
+        (float x, float y)? lowest = null;
+
+        for (var x = 1; x < width - 2; x++) // leave 1 tile margin left/right
+        {
+            for (var y = 2; y < height - 5; y++) // leave space above for 3-tile portal, and 2 tiles below for checks
+            {
+                var spaceClear =
+                    !ground[x, y]     && !ground[x + 1, y] &&
+                    !ground[x, y + 1] && !ground[x + 1, y + 1] &&
+                    !ground[x, y + 2] && !ground[x + 1, y + 2];
+
+                if (!spaceClear)
+                    continue;
+
+                // Ensure solid ground directly below either side
+                var hasGroundBelow = ground[x, y - 1] || ground[x + 1, y - 1];
+                if (!hasGroundBelow)
+                    continue;
+
+                var gx = x - halfWidth;
+                var gy = y - halfHeight;
+                
+                if (lowest == null || gy < lowest.Value.y)
+                    lowest = (gx, gy);
+                if (highest == null || gy > highest.Value.y) 
+                    highest = (gx, gy); 
+            }
+        }
+
+        // Portals (adjust vertical placement to match visual center of portal)
+        if (lowest != null && highest != null)
+        {
+            var portal1 = ctx.Db.Portal.Insert(new Portal
+            {
+                Position = new DbVector2(lowest.Value.x + 1f, lowest.Value.y + 1.5f) // Center X, lift above ground
+
+            });
+
+            var portal2 = ctx.Db.Portal.Insert(new Portal
+            {
+                Position = new DbVector2(highest.Value.x + 1f, highest.Value.y + 1.5f), // Center X, lift above ground 
+                ConnectedPortalId = portal1.Id
+            });
+
+            portal1.ConnectedPortalId = portal2.Id;
+            ctx.Db.Portal.Id.Update(portal1);
+        }
+    }
+
 
     private static void ConnectToGround(List<(int x, int y)> seeds, int[] groundHeights, int connectThreshold,
         bool[,] ground)

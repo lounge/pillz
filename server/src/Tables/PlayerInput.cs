@@ -13,6 +13,4 @@ public partial struct PlayerInput
         Position = position;
         IsPaused = isPaused;
     }
-
-
 }
