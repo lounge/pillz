@@ -49,6 +49,7 @@ namespace pillz.client.Scripts
                 GameManager.Connection.Reducers.UpdateProjectile(_rb.linearVelocity, _rb.position);
             }
             
+            // TODO: Fix out of bounds logic
             // if (IsOutOfBounds())
             // {
             //     GameManager.Connection.Reducers.DeleteProjectile(EntityId);
@@ -87,9 +88,6 @@ namespace pillz.client.Scripts
                 Log.Debug("ProjectileController: Tile hit at cell position " + cellPos);
 
                 GameManager.Connection.Reducers.DeleteGroundTile(cellPos.x, cellPos.y);
-                //
-                // Log.Debug("ProjectileController: Hit the ground, deleting projectile.");
-                GameManager.Connection.Reducers.DeleteProjectile(EntityId);
             }
             
             if (hitObject.CompareTag(Tags.Pill))
@@ -97,16 +95,10 @@ namespace pillz.client.Scripts
                 var hitPill = hitObject.GetComponent<PillController>();
                 
                 Log.Debug("ProjectileController: Hit a pill, deleting projectile. Applying damage");
-                GameManager.Connection.Reducers.DeleteProjectile(EntityId);
-                
                 hitPill.ApplyDamage(10);
             }
             
-            if (collision.gameObject.CompareTag(Tags.DeathZone))
-            {
-                Log.Debug("ProjectileController: Collided with death zone, deleting projectile.");
-                GameManager.Connection.Reducers.DeleteProjectile(EntityId);
-            }
+            GameManager.Connection.Reducers.DeleteProjectile(EntityId);
         }
     }
 }

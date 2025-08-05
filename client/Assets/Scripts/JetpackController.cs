@@ -51,6 +51,7 @@ namespace pillz.client.Scripts
 
         public void ThrottleOff()
         {
+            _throttling = false;
             flames.gameObject.SetActive(false);
         }
 
