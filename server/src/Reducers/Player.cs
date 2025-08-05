@@ -92,8 +92,6 @@ public static partial class Player
     [Reducer]
     public static void ApplyDamage(ReducerContext ctx, uint playerId, uint damage)
     {
-      
-
         uint fragCount = 0;
         var enemy = ctx.Db.Player.Id.Find(playerId)  ?? throw new Exception("Player not found");
         foreach (var m in ctx.Db.Mask.PlayerId.Filter(enemy.Id))

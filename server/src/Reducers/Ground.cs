@@ -77,7 +77,7 @@ public partial class Ground
                 {
                     ctx.Db.Ground.Insert(new Tables.Ground
                     {
-                        Position = new DbVector2(x - width, y - halfHeight)
+                        Position = new DbVector2(x - halfWidth, y - halfHeight)
                     });
                 }
             }
@@ -95,27 +95,33 @@ public partial class Ground
         {
             for (var y = 2; y < height - 3; y++) // ensure we can check y+3 safely
             {
-                // 1. This tile and the three above must be empty
+                // This tile and the three above must be empty
                 if (ground[x, y] || ground[x, y + 1] || ground[x, y + 2] || ground[x, y + 3])
                     continue;
 
-                // 2. Ground below
+                // Ground below
                 if (!ground[x, y - 1]) continue;
 
                 var gx = x - halfWidth;
                 var gy = y - halfHeight;
-                var pos = new DbVector2(gx + 0.5f, gy + 1f); // center horizontally, lift above ground
+                var pos = new DbVector2(gx, gy);
 
                 ctx.Db.SpawnLocation.Insert(new SpawnLocation { Position = pos });
             }
         }
     }
     
-    private static void GeneratePortalLocations(ReducerContext ctx, int width, int height, bool[,] ground, int halfWidth, int halfHeight)
+    private static void GeneratePortalLocations(ReducerContext ctx, int width, int height, bool[,] ground, 
+        int halfWidth, int halfHeight)
     {
+        float minAllowedY = -40f;
+        
         (float x, float y)? highest = null;
         (float x, float y)? lowest = null;
+        (float x, float y)? leftest = null;
+        (float x, float y)? rightest = null;
 
+        
         for (var x = 1; x < width - 2; x++) // leave 1 tile margin left/right
         {
             for (var y = 2; y < height - 5; y++) // leave space above for 3-tile portal, and 2 tiles below for checks
@@ -140,26 +146,48 @@ public partial class Ground
                     lowest = (gx, gy);
                 if (highest == null || gy > highest.Value.y) 
                     highest = (gx, gy); 
+                
+                if (gy >= minAllowedY)
+                {
+                    if (leftest == null || gx < leftest.Value.x)
+                        leftest = (gx, gy);
+                    if (rightest == null || gx > rightest.Value.x)
+                        rightest = (gx, gy);
+                }
             }
         }
 
         // Portals (adjust vertical placement to match visual center of portal)
-        if (lowest != null && highest != null)
+        if (lowest != null && highest != null && leftest != null && rightest != null)
         {
             var portal1 = ctx.Db.Portal.Insert(new Portal
             {
-                Position = new DbVector2(lowest.Value.x + 1f, lowest.Value.y + 1.5f) // Center X, lift above ground
-
+                Position = new DbVector2(lowest.Value.x, lowest.Value.y)
             });
 
             var portal2 = ctx.Db.Portal.Insert(new Portal
             {
-                Position = new DbVector2(highest.Value.x + 1f, highest.Value.y + 1.5f), // Center X, lift above ground 
+                Position = new DbVector2(highest.Value.x, highest.Value.y),
                 ConnectedPortalId = portal1.Id
+            });
+            
+            var portal3 = ctx.Db.Portal.Insert(new Portal
+            {
+                Position = new DbVector2(leftest.Value.x, leftest.Value.y),
+                ConnectedPortalId = portal2.Id
+            });
+            
+            var portal4 = ctx.Db.Portal.Insert(new Portal
+            {
+                Position = new DbVector2(rightest.Value.x, rightest.Value.y),
+                ConnectedPortalId = portal3.Id
             });
 
             portal1.ConnectedPortalId = portal2.Id;
             ctx.Db.Portal.Id.Update(portal1);
+            
+            portal3.ConnectedPortalId = portal4.Id;
+            ctx.Db.Portal.Id.Update(portal3);
         }
     }
 
