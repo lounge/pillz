@@ -71,7 +71,7 @@ namespace pillz.client.Scripts
             
             Log.Debug("ProjectileController: Collision detected with " + hitObject.name);
 
-            if (hitObject.CompareTag("Ground"))
+            if (hitObject.CompareTag(Tags.Ground))
             {
                 var contact = collision.GetContact(0);
                 var hitPosition = contact.point;
@@ -92,7 +92,7 @@ namespace pillz.client.Scripts
                 GameManager.Connection.Reducers.DeleteProjectile(EntityId);
             }
             
-            if (hitObject.CompareTag("Pill"))
+            if (hitObject.CompareTag(Tags.Pill))
             {
                 var hitPill = hitObject.GetComponent<PillController>();
                 
@@ -102,7 +102,7 @@ namespace pillz.client.Scripts
                 hitPill.ApplyDamage(10);
             }
             
-            if (collision.gameObject.CompareTag("DeathZone"))
+            if (collision.gameObject.CompareTag(Tags.DeathZone))
             {
                 Log.Debug("ProjectileController: Collided with death zone, deleting projectile.");
                 GameManager.Connection.Reducers.DeleteProjectile(EntityId);

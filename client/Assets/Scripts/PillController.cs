@@ -244,7 +244,7 @@ namespace pillz.client.Scripts
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            if (collision.gameObject.CompareTag("DeathZone"))
+            if (collision.gameObject.CompareTag(Tags.DeathZone))
             {
                 Log.Debug("PillController: Collided with death zone DEAD, deleting pill.");
                 Kill();

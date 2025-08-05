@@ -1,9 +1,10 @@
-[X]  Detect when mask falls off map and kill it
-[]  Rename project to pillz
-    []  Rename repo
-    []  Rename mask classes and vars
-    []  Rename server tables and reducers
-    []  Rename prefabs, assests and game objects
+[X]  Detect when a mask falls off the map and kill it
+[] Detect when a projectile falls off the map and destroy it
+[X]  Rename project to pillz
+    [X]  Rename repo
+    [X]  Rename mask classes and vars
+    [X]  Rename server tables and reducers
+    [X]  Rename prefabs, assets and game objects
 []  Create win scenario
     []  WinScreen
         []  Show kill count
@@ -20,15 +21,15 @@
 []  Add player names to DeathScreen
 [-]  Detect and store dmg given
     []  Increase dmg points when destroying tiles?
-    [X]  Show dmg given on in HUD
-    []  Show dmg given on DeathScreen
-[-]  Detect and store kill count
-    [X]  Show kill count on HUD
-    []  Show kill count on DeathScreen
-[-]  Generate interesting terrain
-    [X]  Bresenham's Line Algorithm
-    [X]  MST to connect all seeds with Bresenham
-    [X]  Find and use possible spawn locations
+    [X] Show dmg given on in HUD
+    [] Show dmg given on DeathScreen
+[-] Detect and store kill count
+    [X] Show kill count on HUD
+    [] Show kill count on DeathScreen
+[-] Generate interesting terrain
+    [X] Bresenham's Line Algorithm
+    [X] MST to connect all seeds with Bresenham
+    [X] Find and use possible spawn locations
     []  Maybe make thicker
 [X]  Increase projectile speed on left mouse hold
     []  Needs tuning

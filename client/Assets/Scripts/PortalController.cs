@@ -6,6 +6,7 @@ namespace pillz.client.Scripts
 {
     public class PortalController : MonoBehaviour
     {
+        public float portalCoolDown = 2f;
         private uint _connectedPortalId;
 
         public void Spawn(Portal portal)
@@ -27,7 +28,7 @@ namespace pillz.client.Scripts
 
             Log.Debug("PortalController: Collision detected with " + hitObject.name);
 
-            if (hitObject.CompareTag("Pill"))
+            if (hitObject.CompareTag(Tags.Pill))
             {
                 var pillController = hitObject.GetComponent<PillController>();
                 if (pillController && pillController.Owner.IsLocalPlayer && !pillController.InPortal && pillController.PortalCoolDown <= 0f)
@@ -38,7 +39,7 @@ namespace pillz.client.Scripts
                     {
                         pillController.transform.position = new Vector3(connectedPortal.Position.X, connectedPortal.Position.Y, 0);
                         pillController.InPortal = true;
-                        pillController.PortalCoolDown = 2f; 
+                        pillController.PortalCoolDown = portalCoolDown; 
                         Log.Debug("PortalController: Pill teleported to " + pillController.transform.position);
                     }
                     else
