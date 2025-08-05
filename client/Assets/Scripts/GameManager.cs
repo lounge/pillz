@@ -23,7 +23,7 @@ namespace masks.client.Scripts
 
         private static readonly Dictionary<uint, EntityController> Entities = new();
         private static readonly Dictionary<uint, PlayerController> Players = new();
-
+        private static readonly Dictionary<uint, PortalController> Portals = new();
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         private void Start()
@@ -76,13 +76,14 @@ namespace masks.client.Scripts
             Connection.Db.World.OnInsert += WorldOnInsert;
             Connection.Db.World.OnUpdate += WorldOnUpdate;
 
-
             Connection.Db.Ground.OnDelete += OnTileRemoved;
+
+            Connection.Db.Portal.OnInsert += PortalOnInsert;
+            Connection.Db.Portal.OnUpdate += PortalOnUpdate;
 
             Connection.Db.Mask.OnInsert += MaskOnInsert;
             Connection.Db.Mask.OnUpdate += MaskOnUpdate;
             Connection.Db.Mask.OnDelete += MaskOnDelete;
-
 
             Connection.Db.Projectile.OnInsert += ProjectileOnInsert;
             Connection.Db.Projectile.OnDelete += ProjectileOnDelete;
@@ -101,6 +102,8 @@ namespace masks.client.Scripts
                 .OnApplied(HandleSubscriptionApplied)
                 .SubscribeToAllTables();
         }
+
+       
 
 
         #region Connection Handlers
@@ -164,6 +167,26 @@ namespace masks.client.Scripts
             GroundGenerator.Instance.OnTileRemoved(ctx, row);
         }
 
+        #endregion
+        
+        #region Portal Handlers
+        
+        private static void PortalOnInsert(EventContext context, Portal insertedValue)
+        {
+            var portalController = PrefabManager.SpawnPortal(insertedValue);
+            Portals.Add(insertedValue.Id, portalController);
+        }
+        
+        private static void PortalOnUpdate(EventContext context, Portal oldRow, Portal newRow)
+        {
+            if (!Portals.TryGetValue(newRow.Id, out var portalController))
+            {
+                return;
+            }
+
+            portalController.OnPortalUpdated(newRow);
+        }
+        
         #endregion
 
         #region Mask Handlers

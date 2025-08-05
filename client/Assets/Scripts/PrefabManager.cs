@@ -9,6 +9,7 @@ namespace masks.client.Scripts
         private static PrefabManager _instance;
         public PlayerController playerPrefab;
         public MaskController maskPrefab;
+        public PortalController portalPrefab;
         
         private void Awake()
         {
@@ -24,7 +25,7 @@ namespace masks.client.Scripts
         }
         
         public static MaskController SpawnMask(Mask mask, PlayerController owner)
-        {;
+        {
             Log.Debug($"PrefabManager1: Spawning mask at position {mask.Position} with aim direction {mask.AimDir}.");
             
             var entityController = Instantiate(_instance.maskPrefab, owner.transform); //  new Vector3(mask.Position.X, mask.Position.Y, 0f), Quaternion.identity);//
@@ -37,6 +38,16 @@ namespace masks.client.Scripts
             owner.SetDefaults(entityController);
             
             return entityController;
+        }
+
+        public static PortalController SpawnPortal(Portal portal)
+        {
+            var portalController = Instantiate(_instance.portalPrefab);
+            portalController.name = $"Portal_{portal.Id}";
+            
+            portalController.Spawn(portal);
+
+            return portalController;
         }
     }
 }

@@ -1,6 +1,7 @@
 using System.Linq;
 using SpacetimeDB;
 using SpacetimeDB.Types;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -39,6 +40,12 @@ namespace masks.client.Scripts
             //     Log.Debug("GroundGenerator: Adding spawn location at position " + new Vector3Int((int)spawn.Position.X, (int)spawn.Position.Y, 0));
             //     OnSpawnLocAdded(null, spawn);
             // }
+            
+            // foreach (var portal in GameManager.Connection.Db.Portal.Iter())
+            // {
+            //     Log.Debug("GroundGenerator: Adding portal location at position " + new Vector3Int((int)portal.Position.X, (int)portal.Position.Y, 0));
+            //     OnPortalLocAdded(null, portal);
+            // }
         }
         
         public void OnSpawnLocAdded(EventContext ctx, SpawnLocation spawn)
@@ -46,6 +53,13 @@ namespace masks.client.Scripts
             var pos = new Vector3Int((int)spawn.Position.X, (int)spawn.Position.Y, 0);
             tilemap.SetTile(pos, groundTile);
             tilemap.SetColor(pos, new Color(34f, 0f, 0f, 1f)); // Red
+        }
+        
+        public void OnPortalLocAdded(EventContext ctx, Portal portal)
+        {
+            var pos = new Vector3Int((int)portal.Position.X, (int)portal.Position.Y, 0);
+            tilemap.SetTile(pos, groundTile);
+            tilemap.SetColor(pos, new Color(255, 0f, 0, 1f)); // red
         }
 
         public void OnTileRemoved(EventContext ctx, Ground tile)

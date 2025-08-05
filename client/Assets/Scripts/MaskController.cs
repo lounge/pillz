@@ -4,7 +4,6 @@ using SpacetimeDB;
 using SpacetimeDB.Types;
 using UnityEngine;
 using UnityEngine.Serialization;
-using Object = UnityEngine.Object;
 
 namespace masks.client.Scripts
 {
@@ -27,9 +26,9 @@ namespace masks.client.Scripts
         [Header("Gui")] 
         public MaskHud maskHud;
         public DmgDisplay dmgDisplay;
-        [FormerlySerializedAs("killDisplay")] public FragDisplay fragDisplay;
+        public FragDisplay fragDisplay;
         
-
+        
         private uint _hp = 100;
         private Vector2 _moveInput;
         private bool _isJumpPressed;
@@ -41,17 +40,14 @@ namespace masks.client.Scripts
         private MaskHud _maskHud;
         private DmgDisplay _dmgDisplay;
         private FragDisplay _fragDisplay;
-        
-        
         private GameObject _gameCanvas;
 
         [NonSerialized] private Camera _mainCamera;
-
         [NonSerialized] private Rigidbody2D _rb;
-
         [NonSerialized] public WeaponController WeaponController;
-
-
+        [NonSerialized] public bool InPortal;
+        [NonSerialized] public float PortalCoolDown;
+        
         protected override void Awake()
         {
             _gameCanvas = GameObject.Find("GameCanvas");
@@ -69,6 +65,8 @@ namespace masks.client.Scripts
                 // Log.Debug("MaskMovement: Not local player or not connected, skipping movement update.");
                 return;
             }
+
+            CheckPortalState();
 
             _isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
 
@@ -120,46 +118,21 @@ namespace masks.client.Scripts
             _isJumpPressed = false;
         }
 
-        private void OnCollisionEnter2D(Collision2D collision)
-        {
-            if (collision.gameObject.CompareTag("DeathZone"))
-            {
-                Log.Debug("MaskController: Collided with death zone DEAD, deleting mask.");
-                Kill();
-            }
-        }
-
         public void OnMaskUpdated(Mask newVal)
         {
             _hp = newVal.Hp;
             _maskHud?.SetHp(_hp);
             _dmgDisplay?.SetDmg(newVal.Dmg);
-            
-            Log.Debug($"MaskController: Mask updated with HP: {_hp}, Dmg: {newVal.Dmg}, Frags: {newVal.Frags}");
             _fragDisplay?.SetFrags(newVal.Frags);
-            
             WeaponController?.SetAimDir(newVal.AimDir);
 
             if (_hp <= 0)
             {
                 Log.Debug("MaskController: HP is 0 or below, deleting mask.");
-
                 Kill();
             }
         }
-
-        private void Kill()
-        {
-            if (Owner.IsLocalPlayer)
-            {
-                Log.Debug("MaskController: Local player mask destroyed, showing death screen.");
-                DeathScreenManager.Instance.Show(Owner);
-            }
-
-            GameManager.Connection.Reducers.DeleteMask(Owner.PlayerId);
-        }
-
-
+        
         public void Spawn(Mask mask, PlayerController owner)
         {
             base.Spawn(mask.EntityId, owner);
@@ -226,6 +199,38 @@ namespace masks.client.Scripts
 
             _inputActions?.Disable();
             _inputActions = null;
+        }
+        
+        private void CheckPortalState()
+        {
+            if (PortalCoolDown > 0f)
+            {
+                PortalCoolDown -= Time.deltaTime;
+            }
+            else
+            {
+                InPortal = false;
+            }
+        }
+
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            if (collision.gameObject.CompareTag("DeathZone"))
+            {
+                Log.Debug("MaskController: Collided with death zone DEAD, deleting mask.");
+                Kill();
+            }
+        }
+
+        private void Kill()
+        {
+            if (Owner.IsLocalPlayer)
+            {
+                Log.Debug("MaskController: Local player mask destroyed, showing death screen.");
+                DeathScreenManager.Instance.Show(Owner);
+            }
+
+            GameManager.Connection.Reducers.DeleteMask(Owner.PlayerId);
         }
     }
 }
