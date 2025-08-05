@@ -32,7 +32,7 @@ namespace pillz.client.Scripts
         private uint _hp = 100;
         private Vector2 _moveInput;
         private bool _isJumpHeld;
-        private bool _isJetpackEnabled;
+        private bool _jetpackClick;
         private bool _isGrounded;
         private float _airborneXDirection;
         private float _lastMovementSendTimestamp;
@@ -88,7 +88,7 @@ namespace pillz.client.Scripts
             _inputActions.Player.Jump.canceled += _ => _isJumpHeld = false;
             _inputActions.Player.Move.performed += ctx => _moveInput = ctx.ReadValue<Vector2>();
             _inputActions.Player.Move.canceled += _ => _moveInput = Vector2.zero;
-            _inputActions.Player.Jetpack.performed += _ => _isJetpackEnabled = !_isJetpackEnabled;
+            _inputActions.Player.Jetpack.performed += _ => _jetpackClick = !_jetpackClick;
 
             _dmgDisplay = Instantiate(dmgDisplay, Owner.transform);
             dmgDisplay.SetDmg(pill.Dmg);
@@ -107,7 +107,7 @@ namespace pillz.client.Scripts
             CheckPortalState();
 
             _isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
-            if (_isJetpackEnabled)
+            if (_jetpackClick && jetpack?.Fuel > 0f)
             {
                 JetpackMovement();
             }
@@ -148,7 +148,7 @@ namespace pillz.client.Scripts
             if (_isJumpHeld)
             {
                 Log.Debug("PillMovement: Jump pressed, applying jump force.");
-                jetpack?.ThrottleOn(1);
+                jetpack?.ThrottleOn();
                 _rb.linearVelocityY = Mathf.Lerp(_rb.linearVelocityY, jumpForce, 0.2f);
             }
             else
@@ -200,6 +200,11 @@ namespace pillz.client.Scripts
             }
         }
 
+        public void OnJetpackDepleted()
+        {
+            _jetpackClick = false;
+        }
+        
         public void ApplyDamage(uint damage)
         {
             GameManager.Connection.Reducers.ApplyDamage(Owner.PlayerId, damage);

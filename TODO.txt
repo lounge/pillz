@@ -40,13 +40,13 @@
     []  Make rigidbody and sync position to server
 [-]  Jetpack movement
     [X]  Toggle jetpack on/off
-    []  Jetpack fuel
+    [-]  Jetpack fuel
         []  Show fuel in HUD
-        []  Deplete fuel when used
+        [X]  Deplete fuel when used
         []  Refill fuel over time
 []  Add more weapons
-    []  Different dmg output
-    []  Different weapon types (e.g., shotgun, sniper)
+    []  Different weapon types (e.g., rocket, grenade)
+    []  Different dmg output    
     []  Weapon switching mechanism    
 []  Add multiple masks per player
     []  Toggle between players masks
