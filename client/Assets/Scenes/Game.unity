@@ -1001,7 +1001,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42f4aab9f8894ff3b8201d5bbc67dee1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deathZone: {fileID: 1188781890}
   smoothSpeed: 0.125
   offset: {x: 0, y: 0, z: 0}
 --- !u!114 &519420034
@@ -2997,8 +2996,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7e706f16c554250a17f7fdc9261e3d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  deathZone: {fileID: 1188781890}
   tilemap: {fileID: 1721189161}
   terrainTile: {fileID: 11400000, guid: 4d9bea930014145dda0ef9f0d28b8407, type: 2}
+  crumblePrefab: {fileID: 4864440495447371553, guid: 0116c098a739d4ca98c6618cd16217d7, type: 3}
 --- !u!1 &2014742980
 GameObject:
   m_ObjectHideFlags: 0

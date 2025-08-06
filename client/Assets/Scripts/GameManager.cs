@@ -154,7 +154,7 @@ namespace pillz.client.Scripts
             if (world.IsGenerated)
             {
                 Log.Debug("WorldOnUpdate: World table updated, generating ground...");
-                TerrainGenerator.Instance.Render();
+                TerrainManager.Instance.Render();
             }
         }
 
@@ -164,7 +164,7 @@ namespace pillz.client.Scripts
 
         private static void OnTileRemoved(EventContext ctx, Terrain row)
         {
-            TerrainGenerator.Instance.OnTileRemoved(ctx, row);
+            TerrainManager.Instance.OnTileRemoved(ctx, row);
         }
 
         #endregion

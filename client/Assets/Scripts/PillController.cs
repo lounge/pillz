@@ -37,7 +37,7 @@ namespace pillz.client.Scripts
         private PlayerInput _lastMovementInput;
         private PillHud _pillHud;
         private GameObject _pillCanvas;
-        
+
         [NonSerialized] private DmgDisplay _dmgDisplay;
         [NonSerialized] private FragDisplay _fragDisplay;
         [NonSerialized] private Camera _mainCamera;
@@ -51,10 +51,8 @@ namespace pillz.client.Scripts
             jetpack?.gameObject.SetActive(false);
             _mainCamera = Camera.main;
             _inputActions = new PlayerInputActions();
-            
+
             _pillCanvas = GameObject.Find("Pill HUD");
-            
-        
         }
 
         private void OnEnable() => _inputActions.Enable();
@@ -90,13 +88,12 @@ namespace pillz.client.Scripts
             _inputActions.Player.Move.performed += ctx => _moveInput = ctx.ReadValue<Vector2>();
             _inputActions.Player.Move.canceled += _ => _moveInput = Vector2.zero;
             _inputActions.Player.Jetpack.performed += _ => _jetpackClick = !_jetpackClick;
-            
+
             var gameHud = GameObject.Find("Game HUD");
             var hud = Instantiate(Owner.gameHud, gameHud.transform);
-            
+
             _dmgDisplay = hud.GetComponentInChildren<DmgDisplay>();
             _fragDisplay = hud.GetComponentInChildren<FragDisplay>();
-
 
             _dmgDisplay.SetDmg(pill.Dmg);
             _fragDisplay.SetFrags(pill.Frags);
@@ -120,7 +117,7 @@ namespace pillz.client.Scripts
             {
                 NormalMovement();
             }
-            
+
             _pillHud?.SetFuel(jetpack?.Fuel ?? 0);
 
             var playerInput = new PlayerInput(_rb.linearVelocity, _rb.position, !FocusHandler.HasFocus);
@@ -160,18 +157,25 @@ namespace pillz.client.Scripts
             {
                 jetpack?.ThrottleOff();
             }
-
+        
             CalculateMovement();
         }
-
+ 
         private void CalculateMovement()
         {
+            if (IsOutOfBounds() == OutOfBound.Left)
+            {
+                transform.position = new Vector3(TerrainManager.Instance.MaxX - 1f, transform.position.y, 0);
+            }
+            else if (IsOutOfBounds() == OutOfBound.Right)
+            {
+                transform.position = new Vector3(TerrainManager.Instance.MinX + 1f, transform.position.y, 0);
+            }
+        
             var inputX = _moveInput.x;
-            float targetX;
-
             if (_isGrounded)
             {
-                targetX = inputX * moveSpeed;
+                var targetX = inputX * moveSpeed;
                 _rb.linearVelocityX = Mathf.Lerp(_rb.linearVelocityX, targetX, smoothing);
                 _airborneXDirection = inputX;
             }
@@ -181,12 +185,12 @@ namespace pillz.client.Scripts
                 {
                     _airborneXDirection = inputX;
                 }
-
-                targetX = _airborneXDirection * moveSpeed;
+        
+                var targetX = _airborneXDirection * moveSpeed;
                 _rb.linearVelocityX *= airDragFactor;
                 _rb.linearVelocityX = Mathf.Lerp(_rb.linearVelocityX, targetX, smoothing);
             }
-
+        
             _pillHud.transform.position = _rb.transform.position;
         }
 
@@ -209,7 +213,7 @@ namespace pillz.client.Scripts
         {
             _jetpackClick = false;
         }
-        
+
         public void ApplyDamage(uint damage)
         {
             GameManager.Connection.Reducers.ApplyDamage(Owner.PlayerId, damage);

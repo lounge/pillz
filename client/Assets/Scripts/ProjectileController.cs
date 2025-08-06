@@ -8,6 +8,9 @@ namespace pillz.client.Scripts
 {
     public class ProjectileController : EntityController
     {
+        public GameObject explosionPrefab;
+
+        
         private Rigidbody2D _rb;
         private float _lastPositionSendTimestamp;
         private float _explosionRadius = 3.5f;
@@ -50,11 +53,10 @@ namespace pillz.client.Scripts
                 GameManager.Connection.Reducers.UpdateProjectile(_rb.linearVelocity, _rb.position);
             }
             
-            // TODO: Fix out of bounds logic
-            // if (IsOutOfBounds())
-            // {
-            //     GameManager.Connection.Reducers.DeleteProjectile(EntityId);
-            // }
+            if (IsOutOfBounds() != OutOfBound.None)
+            {
+                GameManager.Connection.Reducers.DeleteProjectile(EntityId);
+            }
 
             _lastPosition = _rb.linearVelocity;
         }
@@ -70,6 +72,11 @@ namespace pillz.client.Scripts
         private void OnCollisionEnter2D(Collision2D collision)
         {
             var hitObject = collision.gameObject;
+            
+            if (explosionPrefab)
+            {
+                Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+            }
             
             Log.Debug("ProjectileController: Collision detected with " + hitObject.name);
             GameManager.Connection.Reducers.DeleteProjectile(EntityId);

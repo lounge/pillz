@@ -1,18 +1,28 @@
+using System;
 using System.Linq;
 using SpacetimeDB;
 using SpacetimeDB.Types;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Random = UnityEngine.Random;
 using Terrain = SpacetimeDB.Types.Terrain;
 
 namespace pillz.client.Scripts
 {
-    public class TerrainGenerator : MonoBehaviour
+    public class TerrainManager : MonoBehaviour
     {
-        public static TerrainGenerator Instance { get; private set; }
+        public static TerrainManager Instance { get; private set; }
+        
+        [Header("Clamp Settings")] [SerializeField]
+        private Collider2D deathZone;
 
         public Tilemap tilemap;
         public TileBase terrainTile;
+        public GameObject crumblePrefab;
+        
+        [NonSerialized] public float MinY;
+        [NonSerialized] public float MinX;
+        [NonSerialized] public float MaxX;
 
 
         private void Awake()
@@ -23,22 +33,29 @@ namespace pillz.client.Scripts
             {
                 tilemap = GetComponent<Tilemap>();
             }
+            
+            if (deathZone)
+            {
+                var bounds = deathZone.bounds;
+                MinY = bounds.max.y; 
+                MinX = bounds.min.x;
+                MaxX = bounds.max.x;
+                Log.Debug("TerrainManager: Death zone bounds set to MinY: " + MinY + ", MinX: " + MinX + ", MaxX: " + MaxX);
+            }
         }
 
         public void Render()
         {
-            Log.Debug("TerrainGenerator: Generating terrain...");
+            Log.Debug("TerrainManager: Generating terrain...");
             foreach (var tile in GameManager.Connection.Db.Terrain.Iter())
             {
-                // Log.Debug("TerrainGenerator: Adding tile at position " + new Vector3Int(tile.X, tile.Y, 0));
-
                 OnTerrainAdded(null, tile);
             }
             
             // TODO: ONLY FOR TESTING
             // foreach (var portal in GameManager.Connection.Db.Portal.Iter())
             // {
-            //     Log.Debug("TerrainGenerator: Adding portal location at position " + new Vector3Int((int)portal.Position.X, (int)portal.Position.Y, 0));
+            //     Log.Debug("TerrainManager: Adding portal location at position " + new Vector3Int((int)portal.Position.X, (int)portal.Position.Y, 0));
             //     OnPortalLocAdded(null, portal);
             // }
         }
@@ -70,6 +87,7 @@ namespace pillz.client.Scripts
         {
             var pos = new Vector3Int((int)tile.Position.X, (int)tile.Position.Y, 0);
             tilemap.SetTile(pos, null);
+            Instantiate(crumblePrefab, new Vector3(tile.Position.X, tile.Position.Y), Quaternion.identity);
         }
 
 

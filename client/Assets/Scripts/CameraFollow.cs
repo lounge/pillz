@@ -5,33 +5,21 @@ namespace pillz.client.Scripts
 {
     public class CameraFollow : MonoBehaviour
     {
-
-        [Header("Clamp Settings")] [SerializeField]
-        private Collider2D deathZone;
+  
 
         public float smoothSpeed = 0.125f;
         public Vector3 offset;
 
         private float _fixedZ;
         private Transform _target;
-        private float _minY;
-        private float _minX;
-        private float _maxX;
 
         private Camera _camera;
+        private TerrainManager _terrainManager;
 
         private void Awake()
         {
             _fixedZ = transform.position.z;
             _camera = Camera.main;
-
-            if (deathZone)
-            {
-                var bounds = deathZone.bounds;
-                _minY = bounds.max.y; 
-                _minX = bounds.min.x;
-                _maxX = bounds.max.x;
-            }
         }
 
         private void LateUpdate()
@@ -46,22 +34,22 @@ namespace pillz.client.Scripts
 
             // --- Clamp bottom to be above death zone ---
             var bottomY = desiredPosition.y - halfHeight;
-            if (bottomY < _minY)
+            if (bottomY < TerrainManager.Instance.MinY)
             {
-                desiredPosition.y = _minY + halfHeight;
+                desiredPosition.y = TerrainManager.Instance.MinY + halfHeight;
             }
 
             // --- Clamp horizontal view to death zone bounds ---
             var leftEdge = desiredPosition.x - halfWidth;
             var rightEdge = desiredPosition.x + halfWidth;
 
-            if (leftEdge < _minX)
+            if (leftEdge < TerrainManager.Instance.MinX)
             {
-                desiredPosition.x = _minX + halfWidth;
+                desiredPosition.x = TerrainManager.Instance.MinX + halfWidth;
             }
-            else if (rightEdge > _maxX)
+            else if (rightEdge > TerrainManager.Instance.MaxX)
             {
-                desiredPosition.x = _maxX - halfWidth;
+                desiredPosition.x = TerrainManager.Instance.MaxX - halfWidth;
             }
 
             Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
