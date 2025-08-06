@@ -10,7 +10,7 @@ namespace pillz.client.Scripts
     {
         private Rigidbody2D _rb;
         private float _lastPositionSendTimestamp;
-        private float _explosionRadius = 5f;
+        private float _explosionRadius = 3.5f;
 
         [NonSerialized] private Vector2 _lastPosition;
 
@@ -72,6 +72,7 @@ namespace pillz.client.Scripts
             var hitObject = collision.gameObject;
             
             Log.Debug("ProjectileController: Collision detected with " + hitObject.name);
+            GameManager.Connection.Reducers.DeleteProjectile(EntityId);
 
             if (hitObject.CompareTag(Tags.Terrain))
             {
@@ -88,9 +89,7 @@ namespace pillz.client.Scripts
                 var cellPos = tilemap.WorldToCell(hitPosition);
                 Log.Debug("ProjectileController: Tile hit at cell position " + cellPos);
                 
-                
-
-                GameManager.Connection.Reducers.DeleteTerrainTile(cellPos.x, cellPos.y);
+                GameManager.Connection.Reducers.DeleteTerrainTiles(cellPos.x, cellPos.y, _explosionRadius);
             }
             
             if (hitObject.CompareTag(Tags.Pill))
@@ -101,7 +100,6 @@ namespace pillz.client.Scripts
                 hitPill.ApplyDamage(10);
             }
             
-            GameManager.Connection.Reducers.DeleteProjectile(EntityId);
         }
     }
 }

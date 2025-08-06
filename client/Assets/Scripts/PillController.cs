@@ -54,9 +54,7 @@ namespace pillz.client.Scripts
             
             _pillCanvas = GameObject.Find("Pill HUD");
             
-            var gameHud = GameObject.Find("Game HUD");
-            _dmgDisplay = gameHud.GetComponentInChildren<DmgDisplay>();
-            _fragDisplay = gameHud.GetComponentInChildren<FragDisplay>();
+        
         }
 
         private void OnEnable() => _inputActions.Enable();
@@ -67,7 +65,7 @@ namespace pillz.client.Scripts
             base.Spawn(pill.EntityId, owner);
 
             // Set position from server correction for client placement
-            transform.position = new Vector3(pill.Position.X + 0.5f, pill.Position.Y + 1f, 0);
+            transform.position = new Vector3(pill.Position.X + 0.5f, pill.Position.Y + 2f, 0);
 
             WeaponController = Instantiate(weaponPrefab, transform);
             WeaponController.Initialize(transform, owner, pill.AimDir);
@@ -92,6 +90,13 @@ namespace pillz.client.Scripts
             _inputActions.Player.Move.performed += ctx => _moveInput = ctx.ReadValue<Vector2>();
             _inputActions.Player.Move.canceled += _ => _moveInput = Vector2.zero;
             _inputActions.Player.Jetpack.performed += _ => _jetpackClick = !_jetpackClick;
+            
+            var gameHud = GameObject.Find("Game HUD");
+            var hud = Instantiate(Owner.gameHud, gameHud.transform);
+            
+            _dmgDisplay = hud.GetComponentInChildren<DmgDisplay>();
+            _fragDisplay = hud.GetComponentInChildren<FragDisplay>();
+
 
             _dmgDisplay.SetDmg(pill.Dmg);
             _fragDisplay.SetFrags(pill.Frags);

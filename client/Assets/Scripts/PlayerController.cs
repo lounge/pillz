@@ -6,18 +6,18 @@ namespace pillz.client.Scripts
 {
     public class PlayerController : MonoBehaviour
     {
-        [NonSerialized]
-        public uint PlayerId;
-        
         private static PlayerController _local;
         public bool IsLocalPlayer => this == _local;
         
         public string Username => GameManager.Connection.Db.Player.Id.Find(PlayerId)?.Username;
 
-
+        public GameObject gameHud;
+        
         [NonSerialized] 
         public PillController Pill;
-
+        
+        [NonSerialized]
+        public uint PlayerId;
 
         public void Initialize(Player player)
         {
@@ -26,6 +26,7 @@ namespace pillz.client.Scripts
             {
                 _local = this;
             }
+            
         }
 
         public void OnDelete(EventContext context)

@@ -1,5 +1,10 @@
 [X]  Detect when a mask falls off the map and kill it
-[] Detect when a projectile falls off the map and destroy it
+[]  Detect when a projectile falls off the map and destroy it
+[-]  Projectile explosion  
+    [X] Explosion radius
+    []  Show explosion effect
+    []  Show explosion sound
+    [X]  Show explosion damage
 [X]  Rename project to pillz
     [X]  Rename repo
     [X]  Rename mask classes and vars
@@ -30,6 +35,7 @@
     [X] Bresenham's Line Algorithm
     [X] MST to connect all seeds with Bresenham
     [X] Find and use possible spawn locations
+        [X] Spawn location should be removed if the ground underneath is destroyed
     []  Maybe make thicker
 [X]  Increase projectile speed on left mouse hold
     []  Needs tuning
@@ -40,10 +46,10 @@
     []  Make rigidbody and sync position to server
 [-]  Jetpack movement
     [X]  Toggle jetpack on/off
-    [-]  Jetpack fuel
-        []  Show fuel in HUD
+    [X]  Jetpack fuel
+        [X]  Show fuel in HUD
         [X]  Deplete fuel when used
-        []  Refill fuel over time
+        [X]  Refill fuel over time
 []  Add more weapons
     []  Different weapon types (e.g., rocket, grenade)
     []  Different dmg output    
