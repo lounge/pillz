@@ -506,8 +506,8 @@ MonoBehaviour:
   weaponPrefab: {fileID: -1818467974883061908, guid: 76f4b1fc46e6d48efb97781ece7ae496, type: 3}
   jetpack: {fileID: 7429842420436174916}
   pillHud: {fileID: 2574573869230280460, guid: 9aabcce44c1d54590842f57463ecd9df, type: 3}
-  dmgDisplay: {fileID: 5420862227943291589, guid: 37c3b8150102d490b8c6ef6e6f7fe13a, type: 3}
-  fragDisplay: {fileID: 3850586052932869120, guid: ee9b703e612764b90be075f84a595b3c, type: 3}
+  dmgDisplay: {fileID: 0}
+  fragDisplay: {fileID: 0}
 --- !u!1 &4849669999516418546
 GameObject:
   m_ObjectHideFlags: 0
@@ -532,14 +532,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4849669999516418546}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6388785149561005393}
   - {fileID: 4039776279587135318}
-  m_Father: {fileID: 2530230824823574880}
+  m_Father: {fileID: 6402325274332465627}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5064995099431919621
 GameObject:
@@ -628,7 +628,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1 &9153159217448086376
+--- !u!1 &6487560479560268824
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -636,9 +636,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2530230824823574880}
-  - component: {fileID: 276620239750817654}
-  - component: {fileID: 7429842420436174916}
+  - component: {fileID: 6402325274332465627}
+  - component: {fileID: 1768084493907541455}
   m_Layer: 0
   m_Name: Jetpack
   m_TagString: Untagged
@@ -646,29 +645,29 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2530230824823574880
+--- !u!4 &6402325274332465627
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9153159217448086376}
+  m_GameObject: {fileID: 6487560479560268824}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.004, y: 0.418, z: 0}
-  m_LocalScale: {x: 1.79309, y: 0.2306, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8506958892258638614}
-  m_Father: {fileID: 1478607172872406799}
+  m_Father: {fileID: 2530230824823574880}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &276620239750817654
+--- !u!212 &1768084493907541455
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9153159217448086376}
+  m_GameObject: {fileID: 6487560479560268824}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -717,6 +716,39 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &9153159217448086376
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2530230824823574880}
+  - component: {fileID: 7429842420436174916}
+  m_Layer: 0
+  m_Name: Jetpack
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2530230824823574880
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9153159217448086376}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.004, y: 0.418, z: 0}
+  m_LocalScale: {x: 1.79309, y: 0.2306, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 6402325274332465627}
+  m_Father: {fileID: 1478607172872406799}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7429842420436174916
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -729,4 +761,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d227a816aa1647428a0874f26fdb5f11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  jetpack: {fileID: 6402325274332465627}
   flames: {fileID: 8506958892258638614}

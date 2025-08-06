@@ -7,6 +7,8 @@ namespace pillz.client.Scripts
     {
         [SerializeField] private TextMeshProUGUI usernameText;
         [SerializeField] private TextMeshProUGUI hpText;
+        [SerializeField] private TextMeshProUGUI fuelText;
+
         [SerializeField] private Vector3 offset = new(0, 0.2f, 0); // height above character
 
         private Transform _target;
@@ -28,6 +30,13 @@ namespace pillz.client.Scripts
             if (hpText)
                 hpText.text = $"{hp} mg";
         }
+        
+        public void SetFuel(float fuel)
+        {
+            if (fuelText)
+                fuelText.text = $"{fuel:0} fuel";
+        }
+
 
         public void AttachTo(Transform target)
         {

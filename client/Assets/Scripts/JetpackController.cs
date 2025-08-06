@@ -6,6 +6,7 @@ namespace pillz.client.Scripts
 {
     public class JetpackController : MonoBehaviour
     {
+        public Component jetpack;
         public Component flames;
 
         [NonSerialized] public float Fuel = 100f;
@@ -29,17 +30,20 @@ namespace pillz.client.Scripts
 
             _isEnabled = true;
             gameObject.SetActive(true);
+            jetpack.gameObject.SetActive(true);
         }
 
         public void Disable()
         {
             _isEnabled = false;
-            gameObject.SetActive(false);
+            _throttling = false;
+            jetpack.gameObject.SetActive(false);
             flames.gameObject.SetActive(false);
         }
 
         public void ThrottleOn()
         {
+            Log.Debug("JetpackController: ThrottleOn called.");
             if (!_isEnabled)
             {
                 return;
@@ -57,6 +61,18 @@ namespace pillz.client.Scripts
 
         private void FixedUpdate()
         {
+            Log.Debug($"JetpackController: FixedUpdate called. fuel={Fuel}, isEnabled={_isEnabled}, throttling={_throttling}");
+            // each 10 seconds increase fuel by 1
+            if (Fuel < 100f)
+            {
+                Log.Debug("JetpackController: Regenerating fuel.");
+                Fuel += Time.fixedDeltaTime * 1f; // Adjust fuel regeneration rate
+                if (Fuel > 100f)
+                {
+                    Fuel = 100f;
+                }
+            }
+            
             if (Fuel <= 0f)
             {
                 if (_isEnabled)

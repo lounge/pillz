@@ -25,9 +25,6 @@ namespace pillz.client.Scripts
         [Header("Jetpack")] public JetpackController jetpack;
 
         [Header("Gui")] public PillHud pillHud;
-        public DmgDisplay dmgDisplay;
-        public FragDisplay fragDisplay;
-
 
         private uint _hp = 100;
         private Vector2 _moveInput;
@@ -39,10 +36,10 @@ namespace pillz.client.Scripts
         private PlayerInputActions _inputActions;
         private PlayerInput _lastMovementInput;
         private PillHud _pillHud;
-        private DmgDisplay _dmgDisplay;
-        private FragDisplay _fragDisplay;
-        private GameObject _gameCanvas;
-
+        private GameObject _pillCanvas;
+        
+        [NonSerialized] private DmgDisplay _dmgDisplay;
+        [NonSerialized] private FragDisplay _fragDisplay;
         [NonSerialized] private Camera _mainCamera;
         [NonSerialized] private Rigidbody2D _rb;
         [NonSerialized] public WeaponController WeaponController;
@@ -52,9 +49,14 @@ namespace pillz.client.Scripts
         protected override void Awake()
         {
             jetpack?.gameObject.SetActive(false);
-            _gameCanvas = GameObject.Find("GameCanvas");
             _mainCamera = Camera.main;
             _inputActions = new PlayerInputActions();
+            
+            _pillCanvas = GameObject.Find("Pill HUD");
+            
+            var gameHud = GameObject.Find("Game HUD");
+            _dmgDisplay = gameHud.GetComponentInChildren<DmgDisplay>();
+            _fragDisplay = gameHud.GetComponentInChildren<FragDisplay>();
         }
 
         private void OnEnable() => _inputActions.Enable();
@@ -70,9 +72,10 @@ namespace pillz.client.Scripts
             WeaponController = Instantiate(weaponPrefab, transform);
             WeaponController.Initialize(transform, owner, pill.AimDir);
 
-            _pillHud = Instantiate(pillHud, _gameCanvas.transform);
+            _pillHud = Instantiate(pillHud, _pillCanvas.transform);
             _pillHud.AttachTo(transform);
             _pillHud.SetHp(pill.Hp);
+            _pillHud.SetFuel(jetpack?.Fuel ?? 0);
             _pillHud.SetUsername(owner.Username);
 
             if (Owner && (!Owner.IsLocalPlayer || !GameManager.IsConnected()))
@@ -90,11 +93,8 @@ namespace pillz.client.Scripts
             _inputActions.Player.Move.canceled += _ => _moveInput = Vector2.zero;
             _inputActions.Player.Jetpack.performed += _ => _jetpackClick = !_jetpackClick;
 
-            _dmgDisplay = Instantiate(dmgDisplay, Owner.transform);
-            dmgDisplay.SetDmg(pill.Dmg);
-
-            _fragDisplay = Instantiate(fragDisplay, Owner.transform);
-            fragDisplay.SetFrags(pill.Frags);
+            _dmgDisplay.SetDmg(pill.Dmg);
+            _fragDisplay.SetFrags(pill.Frags);
         }
 
         private void FixedUpdate()
@@ -115,6 +115,8 @@ namespace pillz.client.Scripts
             {
                 NormalMovement();
             }
+            
+            _pillHud?.SetFuel(jetpack?.Fuel ?? 0);
 
             var playerInput = new PlayerInput(_rb.linearVelocity, _rb.position, !FocusHandler.HasFocus);
             if (!playerInput.Equals(_lastMovementInput) &&
@@ -143,8 +145,6 @@ namespace pillz.client.Scripts
         private void JetpackMovement()
         {
             jetpack?.Enable();
-            Log.Debug("JetpackMovement: Jetpack is enabled, applying jetpack force.");
-
             if (_isJumpHeld)
             {
                 Log.Debug("PillMovement: Jump pressed, applying jump force.");

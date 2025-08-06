@@ -72,7 +72,7 @@ namespace pillz.client.Scripts
             
             Log.Debug("ProjectileController: Collision detected with " + hitObject.name);
 
-            if (hitObject.CompareTag(Tags.Ground))
+            if (hitObject.CompareTag(Tags.Terrain))
             {
                 var contact = collision.GetContact(0);
                 var hitPosition = contact.point;
