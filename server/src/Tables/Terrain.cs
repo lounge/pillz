@@ -9,4 +9,5 @@ public partial struct Terrain {
     public uint Id;
     
     public DbVector2 Position;
+    public bool IsSpawnable;
 }
