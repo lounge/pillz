@@ -1,8 +1,11 @@
 [X]  Detect when a mask falls off the map and kill it
-[]  Detect when a projectile falls off the map and destroy it
+[X]  Detect when a projectile falls off the map and destroy it
+[]  Stop player from moving outside the map
+    []  Stop in max Y
 [-]  Projectile explosion  
     [X] Explosion radius
-    []  Show explosion effect
+    [X]  Show explosion effect
+    [X]  Particles
     []  Show explosion sound
     [X]  Show explosion damage
 [X]  Rename project to pillz
@@ -22,10 +25,8 @@
     []  First player to join is host
         []  Host can change map
         []  Host can start game
-[]  Add player names to HUD
-[]  Add player names to DeathScreen
 [-]  Detect and store dmg given
-    []  Increase dmg points when destroying tiles?
+    []  Increase dmg points or new field destruct when destroying tiles?
     [X] Show dmg given on in HUD
     [] Show dmg given on DeathScreen
 [-] Detect and store kill count
