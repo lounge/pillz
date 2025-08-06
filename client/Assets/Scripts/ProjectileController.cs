@@ -10,6 +10,7 @@ namespace pillz.client.Scripts
     {
         private Rigidbody2D _rb;
         private float _lastPositionSendTimestamp;
+        private float _explosionRadius = 5f;
 
         [NonSerialized] private Vector2 _lastPosition;
 
@@ -86,8 +87,10 @@ namespace pillz.client.Scripts
 
                 var cellPos = tilemap.WorldToCell(hitPosition);
                 Log.Debug("ProjectileController: Tile hit at cell position " + cellPos);
+                
+                
 
-                GameManager.Connection.Reducers.DeleteGroundTile(cellPos.x, cellPos.y);
+                GameManager.Connection.Reducers.DeleteTerrainTile(cellPos.x, cellPos.y);
             }
             
             if (hitObject.CompareTag(Tags.Pill))

@@ -5,28 +5,33 @@ using SpawnLocation = pillz.server.Tables.SpawnLocation;
 
 namespace pillz.server.Reducers;
 
-public partial class Ground
+public partial class Terrain
 {
     [Reducer]
-    public static void AddGroundTile(ReducerContext ctx, int x, int y)
+    public static void AddTerrainTile(ReducerContext ctx, int x, int y)
     {
-        ctx.Db.Ground.Insert(new pillz.server.Tables.Ground
+        ctx.Db.Terrain.Insert(new pillz.server.Tables.Terrain
         {
             Position = new DbVector2(x, y)
         });
     }
 
     [Reducer]
-    public static void DeleteGroundTile(ReducerContext ctx, int x, int y)
+    public static void DeleteTerrainTile(ReducerContext ctx, int x, int y)
     {
-        var tile = ctx.Db.Ground.Iter().FirstOrDefault(t => (int)t.Position.X == x && (int)t.Position.Y == y);
-        ctx.Db.Ground.Id.Delete(tile.Id);
+        var tile = ctx.Db.Terrain.Iter().FirstOrDefault(t => (int)t.Position.X == x && (int)t.Position.Y == y);
+        ctx.Db.Terrain.Id.Delete(tile.Id);
 
-        Log.Info($"Deleted ground tile at ({x}, {y}) with id {tile.Id}.");
+        Log.Info($"Deleted terrain tile at ({x}, {y}) with id {tile.Id}.");
+    }
+    
+    [Reducer]
+    public static void DeleteTerrainTiles(ReducerContext ctx, float radiu)
+    {
     }
 
     [Reducer]
-    public static void GenerateGround(ReducerContext ctx, int seed)
+    public static void GenerateTerrain(ReducerContext ctx, int seed)
     {
         var world = ctx.Db.World.Iter().FirstOrDefault();
 
@@ -40,7 +45,7 @@ public partial class Ground
 
     private static void GenerateTiles(ReducerContext ctx, int seed)
     {
-        Log.Debug($"[GenerateTiles] Generating ground with seed {seed}...");
+        Log.Debug($"[GenerateTiles] Generating terrain with seed {seed}...");
 
         const int width = 300;
         const int height = 200;
@@ -53,31 +58,31 @@ public partial class Ground
         var halfHeight = height / 2;
 
         var rng = new Random(seed);
-        var ground = new bool[width, height];
+        var  terrain = new bool[width, height];
 
         // STEP 1: Natural base layer with height jitter and sine waves
-        var groundHeights = BaseLayer(width, rng, ground);
+        var  terrainHeights = BaseLayer(width, rng,  terrain);
 
         // STEP 2: Place sparse random seed pixels for tunnels
-        var seeds = GenerateRandomSeeds(seedCount, rng, margin, width, height, ground);
+        var seeds = GenerateRandomSeeds(seedCount, rng, margin, width, height,  terrain);
 
         // STEP 3: MST to connect all seeds with Bresenham
-        ConnectSeeds(seeds, ground);
+        ConnectSeeds(seeds,  terrain);
 
         // STEP 4: Tunnel drops to base only if near base
-        ConnectToGround(seeds, groundHeights, connectThreshold, ground);
+        ConnectToGround(seeds,  terrainHeights, connectThreshold,  terrain);
 
         // STEP 5: Growth iterations with 8-way neighbors and bias
-        GrowthGeneration(growthIterations, width, height, ground, rng);
+        GrowthGeneration(growthIterations, width, height,  terrain, rng);
 
         // STEP 6: Write to database (centered)
         for (var x = 0; x < width; x++)
         {
             for (var y = 0; y < height; y++)
             {
-                if (ground[x, y])
+                if ( terrain[x, y])
                 {
-                    ctx.Db.Ground.Insert(new pillz.server.Tables.Ground
+                    ctx.Db.Terrain.Insert(new pillz.server.Tables.Terrain
                     {
                         Position = new DbVector2(x - halfWidth, y - halfHeight)
                     });
@@ -86,11 +91,11 @@ public partial class Ground
         }
 
         // STEP 7: Spawn and Portal locations
-        GenerateSpawnLocations(ctx, width, height, ground, halfWidth, halfHeight);
-        GeneratePortalLocations(ctx, width, height, ground, halfWidth, halfHeight);
+        GenerateSpawnLocations(ctx, width, height,  terrain, halfWidth, halfHeight);
+        GeneratePortalLocations(ctx, width, height,  terrain, halfWidth, halfHeight);
     }
     
-    private static void GenerateSpawnLocations(ReducerContext ctx, int width, int height, bool[,] ground, int halfWidth,
+    private static void GenerateSpawnLocations(ReducerContext ctx, int width, int height, bool[,]  terrain, int halfWidth,
         int halfHeight)
     {
         for (var x = 2; x < width - 2; x++)
@@ -98,11 +103,11 @@ public partial class Ground
             for (var y = 2; y < height - 3; y++) // ensure we can check y+3 safely
             {
                 // This tile and the three above must be empty
-                if (ground[x, y] || ground[x, y + 1] || ground[x, y + 2] || ground[x, y + 3])
+                if ( terrain[x, y] ||  terrain[x, y + 1] ||  terrain[x, y + 2] ||  terrain[x, y + 3])
                     continue;
 
                 // Ground below
-                if (!ground[x, y - 1]) continue;
+                if (! terrain[x, y - 1]) continue;
 
                 var gx = x - halfWidth;
                 var gy = y - halfHeight;
@@ -113,7 +118,7 @@ public partial class Ground
         }
     }
     
-    private static void GeneratePortalLocations(ReducerContext ctx, int width, int height, bool[,] ground, 
+    private static void GeneratePortalLocations(ReducerContext ctx, int width, int height, bool[,]  terrain, 
         int halfWidth, int halfHeight)
     {
         float minAllowedY = -40f;
@@ -129,15 +134,15 @@ public partial class Ground
             for (var y = 2; y < height - 5; y++) // leave space above for 3-tile portal, and 2 tiles below for checks
             {
                 var spaceClear =
-                    !ground[x, y]     && !ground[x + 1, y] &&
-                    !ground[x, y + 1] && !ground[x + 1, y + 1] &&
-                    !ground[x, y + 2] && !ground[x + 1, y + 2];
+                    ! terrain[x, y]     && ! terrain[x + 1, y] &&
+                    ! terrain[x, y + 1] && ! terrain[x + 1, y + 1] &&
+                    ! terrain[x, y + 2] && ! terrain[x + 1, y + 2];
 
                 if (!spaceClear)
                     continue;
 
-                // Ensure solid ground directly below either side
-                var hasGroundBelow = ground[x, y - 1] || ground[x + 1, y - 1];
+                // Ensure solid  terrain directly below either side
+                var hasGroundBelow =  terrain[x, y - 1] ||  terrain[x + 1, y - 1];
                 if (!hasGroundBelow)
                     continue;
 
@@ -194,21 +199,21 @@ public partial class Ground
     }
 
 
-    private static void ConnectToGround(List<(int x, int y)> seeds, int[] groundHeights, int connectThreshold,
-        bool[,] ground)
+    private static void ConnectToGround(List<(int x, int y)> seeds, int[]  terrainHeights, int connectThreshold,
+        bool[,]  terrain)
     {
         foreach (var (x, y) in seeds)
         {
-            var baseY = groundHeights[x];
+            var baseY =  terrainHeights[x];
             if (y - baseY <= connectThreshold)
             {
                 for (var yy = y; yy >= baseY; yy--)
-                    ground[x, yy] = true;
+                     terrain[x, yy] = true;
             }
         }
     }
 
-    private static void GrowthGeneration(int growthIterations, int width, int height, bool[,] ground, Random rng)
+    private static void GrowthGeneration(int growthIterations, int width, int height, bool[,]  terrain, Random rng)
     {
         for (var i = 0; i < growthIterations; i++)
         {
@@ -218,7 +223,7 @@ public partial class Ground
             {
                 for (var y = 1; y < height - 1; y++)
                 {
-                    if (ground[x, y]) continue;
+                    if ( terrain[x, y]) continue;
 
                     var count = 0;
                     for (var dx = -1; dx <= 1; dx++)
@@ -226,7 +231,7 @@ public partial class Ground
                         for (var dy = -1; dy <= 1; dy++)
                         {
                             if (dx == 0 && dy == 0) continue;
-                            if (ground[x + dx, y + dy]) count++;
+                            if ( terrain[x + dx, y + dy]) count++;
                         }
                     }
 
@@ -251,12 +256,12 @@ public partial class Ground
 
             foreach (var (x, y) in growList)
             {
-                ground[x, y] = true;
+                 terrain[x, y] = true;
             }
         }
     }
 
-    private static void ConnectSeeds(List<(int x, int y)> seeds, bool[,] ground)
+    private static void ConnectSeeds(List<(int x, int y)> seeds, bool[,]  terrain)
     {
         var connected = new List<(int x, int y)> { seeds[0] };
         var remaining = new List<(int x, int y)>(seeds.Skip(1));
@@ -285,7 +290,7 @@ public partial class Ground
 
             foreach (var (x, y) in BresenhamLine(x1, y1, x2, y2))
             {
-                ground[x, y] = true;
+                 terrain[x, y] = true;
             }
 
             connected.Add((x2, y2));
@@ -294,7 +299,7 @@ public partial class Ground
     }
 
     private static List<(int x, int y)> GenerateRandomSeeds(int seedCount, Random rng, int margin, int width,
-        int height, bool[,] ground)
+        int height, bool[,]  terrain)
     {
         var seeds = new List<(int x, int y)>();
         for (var i = 0; i < seedCount; i++)
@@ -302,9 +307,9 @@ public partial class Ground
             var x = rng.Next(margin, width - margin);
             var y = rng.Next(15, height - margin);
 
-            if (!ground[x, y])
+            if (! terrain[x, y])
             {
-                ground[x, y] = true;
+                 terrain[x, y] = true;
                 seeds.Add((x, y));
 
                 // Add chunk
@@ -313,7 +318,7 @@ public partial class Ground
                     for (int dy = -1; dy <= 1; dy++)
                     {
                         if (rng.NextDouble() < 0.8)
-                            ground[x + dx, y + dy] = true;
+                             terrain[x + dx, y + dy] = true;
                     }
                 }
             }
@@ -322,22 +327,22 @@ public partial class Ground
         return seeds;
     }
 
-    private static int[] BaseLayer(int width, Random rng, bool[,] ground)
+    private static int[] BaseLayer(int width, Random rng, bool[,]  terrain)
     {
-        var groundHeights = new int[width];
+        var  terrainHeights = new int[width];
         for (var x = 0; x < width; x++)
         {
             var noise = Math.Sin((x + rng.NextDouble()) * 0.1);
             var h = 8 + (int)(noise * 4) + rng.Next(2); // more organic variation
-            groundHeights[x] = h;
+             terrainHeights[x] = h;
 
             for (var y = 0; y < h; y++)
             {
-                ground[x, y] = true;
+                 terrain[x, y] = true;
             }
         }
 
-        return groundHeights;
+        return  terrainHeights;
     }
 
     private static IEnumerable<(int x, int y)> BresenhamLine(int x0, int y0, int x1, int y1)

@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using SpacetimeDB;
 using SpacetimeDB.Types;
 using UnityEngine;
+using Terrain = SpacetimeDB.Types.Terrain;
 
 namespace pillz.client.Scripts
 {
@@ -75,7 +76,7 @@ namespace pillz.client.Scripts
             Connection.Db.World.OnInsert += WorldOnInsert;
             Connection.Db.World.OnUpdate += WorldOnUpdate;
 
-            Connection.Db.Ground.OnDelete += OnTileRemoved;
+            Connection.Db.Terrain.OnDelete += OnTileRemoved;
 
             Connection.Db.Portal.OnInsert += PortalOnInsert;
             Connection.Db.Portal.OnUpdate += PortalOnUpdate;
@@ -129,7 +130,7 @@ namespace pillz.client.Scripts
             var seed = Guid.NewGuid().GetHashCode();
             Log.Debug($"Generating world with seed: {seed}");
 
-            Connection.Reducers.GenerateGround(seed);
+            Connection.Reducers.GenerateTerrain(seed);
 
             RenderWorld(Connection.Db.World.Iter().FirstOrDefault());
         }
@@ -153,17 +154,17 @@ namespace pillz.client.Scripts
             if (world.IsGenerated)
             {
                 Log.Debug("WorldOnUpdate: World table updated, generating ground...");
-                GroundGenerator.Instance.Render();
+                TerrainGenerator.Instance.Render();
             }
         }
 
         #endregion
 
-        #region Ground Handlers
+        #region Terrain Handlers
 
-        private static void OnTileRemoved(EventContext ctx, Ground row)
+        private static void OnTileRemoved(EventContext ctx, Terrain row)
         {
-            GroundGenerator.Instance.OnTileRemoved(ctx, row);
+            TerrainGenerator.Instance.OnTileRemoved(ctx, row);
         }
 
         #endregion

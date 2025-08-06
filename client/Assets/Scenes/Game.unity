@@ -3611,7 +3611,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tilemap: {fileID: 1721189161}
-  groundTile: {fileID: 11400000, guid: 4d9bea930014145dda0ef9f0d28b8407, type: 2}
+  terrainTile: {fileID: 11400000, guid: 4d9bea930014145dda0ef9f0d28b8407, type: 2}
 --- !u!1 &2014742980
 GameObject:
   m_ObjectHideFlags: 0
