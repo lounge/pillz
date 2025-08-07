@@ -1,13 +1,19 @@
 [X]  Detect when a mask falls off the map and kill it
 [X]  Detect when a projectile falls off the map and destroy it
-[]  Stop player from moving outside the map
+[]  Player prefabs dont get destroyd correctly when remote player dies (PLayers dict in game manager)
+[-]  Stop player from moving outside the map
+    [X]  Stop in min, max X
     []  Stop in max Y
 [-]  Projectile explosion  
     [X] Explosion radius
     [X]  Show explosion effect
     [X]  Particles
-    []  Show explosion sound
     [X]  Show explosion damage
+    []  Show explosion sound
+    [-]  Apply force to player if in explosion radius
+        [X] Force applied if directly hit
+        [X] Force applied if in explosion radius
+        []  Show knockback effect
 [X]  Rename project to pillz
     [X]  Rename repo
     [X]  Rename mask classes and vars
@@ -46,6 +52,8 @@
     [X]  Fine tune portal spawn positon
     []  Make rigidbody and sync position to server
 [-]  Jetpack movement
+    []  Faster more precise movement
+    [X]  Sync jetpack activity to server
     [X]  Toggle jetpack on/off
     [X]  Jetpack fuel
         [X]  Show fuel in HUD
