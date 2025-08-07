@@ -173,7 +173,7 @@ namespace pillz.client.Scripts
         
         private static void PortalOnInsert(EventContext context, Portal insertedValue)
         {
-            var portalController = PrefabManager.SpawnPortal(insertedValue);
+            var portalController = SpawnManager.Instance.SpawnPortal(insertedValue);
             Portals.Add(insertedValue.Id, portalController);
         }
         
@@ -196,7 +196,7 @@ namespace pillz.client.Scripts
             Log.Debug(
                 $"PillOnInsert: Inserting pill for player {insertedValue.PlayerId} with entity ID {insertedValue.EntityId} position {insertedValue.Position}");
             var player = GetOrCreatePlayer(insertedValue.PlayerId);
-            var entityController = PrefabManager.SpawnPill(insertedValue, player);
+            var entityController = SpawnManager.Instance.SpawnPill(insertedValue, player);
             Entities.Add(insertedValue.EntityId, entityController);
         }
 
@@ -302,7 +302,7 @@ namespace pillz.client.Scripts
 
             Log.Debug("Creating new player controller for player ID: " + playerId);
             var player = Connection.Db.Player.Id.Find(playerId);
-            playerController = PrefabManager.SpawnPlayer(player);
+            playerController = SpawnManager.Instance.SpawnPlayer(player);
             Players.Add(playerId, playerController);
 
             return playerController;

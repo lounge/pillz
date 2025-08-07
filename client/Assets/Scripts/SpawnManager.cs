@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace pillz.client.Scripts
 {
-    public class PrefabManager : MonoBehaviour
+    public class SpawnManager : MonoBehaviour
     {
-        private static PrefabManager _instance;
+        public static SpawnManager Instance;
         
         [SerializeField] private PlayerController playerPrefab;
         [SerializeField] private PillController pillPrefab;
@@ -14,22 +14,22 @@ namespace pillz.client.Scripts
         
         private void Awake()
         {
-            _instance = this;
+            Instance = this;
         }
 
-        public static PlayerController SpawnPlayer(Player player)
+        public PlayerController SpawnPlayer(Player player)
         {
-            var playerController = Instantiate(_instance.playerPrefab);
+            var playerController = Instantiate(Instance.playerPrefab);
             playerController.name = $"Player_{player.Username}";
             playerController.Init(player);
             return playerController;
         }
         
-        public static PillController SpawnPill(Pill pill, PlayerController owner)
+        public PillController SpawnPill(Pill pill, PlayerController owner)
         {
             Log.Debug($"PrefabManager1: Spawning pill at position {pill.Position} with aim direction {pill.AimDir}.");
             
-            var entityController = Instantiate(_instance.pillPrefab, owner.transform);
+            var entityController = Instantiate(Instance.pillPrefab, owner.transform);
             entityController.name = $"Pill_{owner.Username}";
 
             entityController.Spawn(pill, owner);
@@ -38,9 +38,9 @@ namespace pillz.client.Scripts
             return entityController;
         }
 
-        public static PortalController SpawnPortal(Portal portal)
+        public PortalController SpawnPortal(Portal portal)
         {
-            var portalController = Instantiate(_instance.portalPrefab);
+            var portalController = Instantiate(Instance.portalPrefab);
             portalController.name = $"Portal_{portal.Id}";
             
             portalController.Spawn(portal);
