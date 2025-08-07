@@ -1,3 +1,4 @@
+using pillz.server.Tables;
 using SpacetimeDB;
 using DbVector2 = pillz.server.Tables.DbVector2;
 using Entity = pillz.server.Tables.Entity;
@@ -70,12 +71,11 @@ public static partial class Player
         });
 
         Log.Info($"Spawned pill at ({pill.Position.X}, {entity.Position.Y}) with id: {entity.Id}.");
-        
         Log.Info($"Spawned entity at ({entity.Position.X}, {entity.Position.Y}) with id: {entity.Id}.");
     }
 
     [Reducer]
-    public static void UpdatePlayerInput(ReducerContext ctx, PlayerInput input)
+    public static void UpdatePlayer(ReducerContext ctx, PlayerInput input, PlayerAttributes? attrs)
     {
         var player = ctx.Db.Player.Identity.Find(ctx.Sender) ?? throw new Exception("Player not found");
         foreach (var p in ctx.Db.Pill.PlayerId.Filter(player.Id))
@@ -83,6 +83,13 @@ public static partial class Player
             var pill = p;
             pill.Direction = input.Direction;
             pill.Position = input.Position;
+            
+            if (attrs != null)
+            {
+                pill.Fuel = attrs.Value.Fuel;
+                pill.JetpackEnabled = attrs.Value.JetpackEnabled;
+                pill.IsThrottling = attrs.Value.IsThrottling;
+            }
 
             player.IsPaused = input.IsPaused;
             ctx.Db.Player.Identity.Update(player);
@@ -92,7 +99,7 @@ public static partial class Player
     }
     
     [Reducer]
-    public static void ApplyDamage(ReducerContext ctx, uint playerId, uint damage)
+    public static void ApplyDamage(ReducerContext ctx, uint playerId, uint damage, DbVector2? force = null)
     {
         uint fragCount = 0;
         var enemy = ctx.Db.Player.Id.Find(playerId)  ?? throw new Exception("Player not found");
@@ -101,6 +108,7 @@ public static partial class Player
             var pill = p;
             var hp = Math.Max(0, pill.Hp - damage);
             pill.Hp = hp;
+            pill.Force = force;
             
             if (hp <= 0)
             {
@@ -119,6 +127,20 @@ public static partial class Player
             pill.Frags += fragCount;
             ctx.Db.Pill.EntityId.Update(pill);
             Log.Debug($"Updated pill with id {pill.EntityId} damage to {pill.Dmg} after giving damage {damage} fragCount {fragCount}.");
+        }
+    }
+    
+    [Reducer]
+    public static void ForceApplied(ReducerContext ctx, uint playerId)
+    {
+        var enemy = ctx.Db.Player.Id.Find(playerId)  ?? throw new Exception("Player not found");
+        foreach (var p in ctx.Db.Pill.PlayerId.Filter(enemy.Id))
+        {
+            var pill = p;
+            pill.Force = null;
+            
+            ctx.Db.Pill.EntityId.Update(pill);
+            Log.Debug($"Updated pill with id {pill.EntityId} force to null after applying force.");
         }
     }
 

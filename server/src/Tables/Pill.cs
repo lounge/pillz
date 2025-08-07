@@ -15,5 +15,9 @@ public partial struct Pill
     public uint Hp;
     public uint Dmg;
     public uint Frags;
+    public float Fuel;
+    public bool JetpackEnabled;
+    public bool IsThrottling;
     public DbVector2 AimDir;
+    public DbVector2? Force;
 }
