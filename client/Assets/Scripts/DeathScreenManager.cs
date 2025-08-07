@@ -10,7 +10,8 @@ namespace pillz.client.Scripts
         [SerializeField] private TMP_InputField usernameInput;
         [SerializeField] private Button respawnButton;
         
-        public static DeathScreenManager Instance;
+        public static DeathScreenManager Instance { get; private set; }
+        
         private string _username;
 
         private void Awake()

@@ -103,9 +103,6 @@ namespace pillz.client.Scripts
                 .SubscribeToAllTables();
         }
 
-       
-
-
         #region Connection Handlers
 
         private static void HandleConnectError(Exception ex)
@@ -133,6 +130,8 @@ namespace pillz.client.Scripts
             Connection.Reducers.GenerateTerrain(seed);
 
             RenderWorld(Connection.Db.World.Iter().FirstOrDefault());
+            
+            StartScreenManager.Instance.Show();
         }
 
         #endregion
