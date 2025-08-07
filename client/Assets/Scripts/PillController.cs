@@ -202,7 +202,7 @@ namespace pillz.client.Scripts
                 }
 
                 var targetX = _airborneXDirection * moveSpeed;
-                _rb.linearVelocityX *= airDragFactor;
+                // _rb.linearVelocityX *= airDragFactor;
                 _rb.linearVelocityX = Mathf.Lerp(_rb.linearVelocityX, targetX, smoothing);
             }
 
