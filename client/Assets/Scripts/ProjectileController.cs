@@ -8,12 +8,11 @@ namespace pillz.client.Scripts
 {
     public class ProjectileController : EntityController
     {
-        public GameObject explosionPrefab;
-
+        [SerializeField] private GameObject explosionPrefab;
+        [SerializeField] private const float ExplosionRadius = 3.5f;
         
         private Rigidbody2D _rb;
         private float _lastPositionSendTimestamp;
-        private float _explosionRadius = 3.5f;
 
         [NonSerialized] private Vector2 _lastPosition;
 
@@ -96,7 +95,7 @@ namespace pillz.client.Scripts
                 var cellPos = tilemap.WorldToCell(hitPosition);
                 Log.Debug("ProjectileController: Tile hit at cell position " + cellPos);
                 
-                GameManager.Connection.Reducers.DeleteTerrainTiles(cellPos.x, cellPos.y, _explosionRadius);
+                GameManager.Connection.Reducers.DeleteTerrainTiles(cellPos.x, cellPos.y, ExplosionRadius);
             }
             
             if (hitObject.CompareTag(Tags.Pill))

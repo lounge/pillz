@@ -7,17 +7,18 @@ namespace pillz.client.Scripts
 {
     public abstract class EntityController : MonoBehaviour
     {
-        private const float LerpDurationSec = 0.1f;
-        private float _lerpTime;
-        private Vector3 _lerpTargetPosition;
-        private Camera _mainCamera;
         [NonSerialized] private Vector3 _lastPosition;
         [NonSerialized] private Rigidbody2D _entityRb;
         [NonSerialized] public PlayerController Owner;
         
         protected uint EntityId;
         protected const float SendUpdatesFrequency = 1f / SendUpdatesPerSec;
+        
         private const int SendUpdatesPerSec = 20;
+        private const float LerpDurationSec = 0.1f;
+        private float _lerpTime;
+        private Vector3 _lerpTargetPosition;
+        private Camera _mainCamera;
 
         protected virtual void Awake()
         {

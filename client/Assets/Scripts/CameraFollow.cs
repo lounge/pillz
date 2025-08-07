@@ -5,14 +5,11 @@ namespace pillz.client.Scripts
 {
     public class CameraFollow : MonoBehaviour
     {
-  
-
-        public float smoothSpeed = 0.125f;
-        public Vector3 offset;
+        [SerializeField] private float smoothSpeed = 0.125f;
+        [SerializeField] private Vector3 offset;
 
         private float _fixedZ;
         private Transform _target;
-
         private Camera _camera;
         private TerrainManager _terrainManager;
 
@@ -32,14 +29,14 @@ namespace pillz.client.Scripts
             var halfHeight = _camera.orthographicSize;
             var halfWidth = halfHeight * _camera.aspect;
 
-            // --- Clamp bottom to be above death zone ---
+            //  Clamp bottom to be above death zone
             var bottomY = desiredPosition.y - halfHeight;
             if (bottomY < TerrainManager.Instance.MinY)
             {
                 desiredPosition.y = TerrainManager.Instance.MinY + halfHeight;
             }
 
-            // --- Clamp horizontal view to death zone bounds ---
+            //  Clamp horizontal view to death zone bounds
             var leftEdge = desiredPosition.x - halfWidth;
             var rightEdge = desiredPosition.x + halfWidth;
 

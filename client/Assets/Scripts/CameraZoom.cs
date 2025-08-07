@@ -6,7 +6,7 @@ namespace pillz.client.Scripts
     public class CameraZoom : MonoBehaviour
     {
         [SerializeField] private float zoomStepSize = 5f;
-        [SerializeField] private float zoomLerpSpeed = 10f; // Higher = faster transition
+        [SerializeField] private float zoomLerpSpeed = 10f;
         [SerializeField] private float minZoom = 8f;
         [SerializeField] private float maxZoom = 100f;
 

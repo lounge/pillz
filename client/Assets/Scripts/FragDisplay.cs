@@ -7,7 +7,6 @@ namespace pillz.client.Scripts
     {
         [SerializeField] private TextMeshProUGUI fragsText;
 
-
         public void SetFrags(float frags)
         {
             if (fragsText)

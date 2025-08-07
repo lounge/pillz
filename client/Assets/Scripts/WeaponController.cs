@@ -9,11 +9,10 @@ namespace pillz.client.Scripts
     {
         [SerializeField] private Transform weapon;
         [SerializeField] private float weaponDistance = 1.5f;
-
-        [Header("Projectile Settings")] [SerializeField]
-        private ProjectileController projectilePrefab;
-
         [SerializeField] private float projectileSpeed = 20f;
+
+        [Header("Projectile Settings")] 
+        [SerializeField] private ProjectileController projectilePrefab;
 
         private Camera _mainCamera;
         private PlayerInputActions _inputActions;

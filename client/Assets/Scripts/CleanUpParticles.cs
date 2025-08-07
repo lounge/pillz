@@ -5,7 +5,8 @@ namespace pillz.client.Scripts
     public class CleanUpParticles : MonoBehaviour
     {
         private ParticleSystem _ps;
-        public float destroyAfterSeconds = 0f;
+        
+        [SerializeField] private float destroyAfterSeconds;
 
         private void Start()
         {

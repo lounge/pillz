@@ -8,10 +8,9 @@ namespace pillz.client.Scripts
     {
         private static PlayerController _local;
         public bool IsLocalPlayer => this == _local;
-        
         public string Username => GameManager.Connection.Db.Player.Id.Find(PlayerId)?.Username;
 
-        public GameObject gameHud;
+        [SerializeField] private GameObject gameHud;
         
         [NonSerialized] 
         public PillController Pill;

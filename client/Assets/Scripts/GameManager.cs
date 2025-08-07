@@ -19,7 +19,7 @@ namespace pillz.client.Scripts
 
         public static GameManager Instance { get; private set; }
         public static Identity LocalIdentity { get; private set; }
-        public static DbConnection Connection { get; set; }
+        public static DbConnection Connection { get; private set; }
 
         private static readonly Dictionary<uint, EntityController> Entities = new();
         private static readonly Dictionary<uint, PlayerController> Players = new();

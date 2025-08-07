@@ -13,8 +13,8 @@ namespace pillz.client.Scripts
     {
         public static TerrainManager Instance { get; private set; }
         
-        [Header("Clamp Settings")] [SerializeField]
-        private Collider2D deathZone;
+        [Header("Clamp Settings")]
+        [SerializeField] private Collider2D deathZone;
 
         public Tilemap tilemap;
         public TileBase terrainTile;

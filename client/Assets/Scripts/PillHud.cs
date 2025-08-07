@@ -8,7 +8,6 @@ namespace pillz.client.Scripts
         [SerializeField] private TextMeshProUGUI usernameText;
         [SerializeField] private TextMeshProUGUI hpText;
         [SerializeField] private TextMeshProUGUI fuelText;
-
         [SerializeField] private Vector3 offset = new(0, 0.2f, 0); // height above character
 
         private Transform _target;

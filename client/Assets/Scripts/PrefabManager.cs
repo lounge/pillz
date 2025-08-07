@@ -7,9 +7,10 @@ namespace pillz.client.Scripts
     public class PrefabManager : MonoBehaviour
     {
         private static PrefabManager _instance;
-        public PlayerController playerPrefab;
-        public PillController pillPrefab;
-        public PortalController portalPrefab;
+        
+        [SerializeField] private PlayerController playerPrefab;
+        [SerializeField] private PillController pillPrefab;
+        [SerializeField] private PortalController portalPrefab;
         
         private void Awake()
         {
