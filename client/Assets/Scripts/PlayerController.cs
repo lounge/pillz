@@ -28,6 +28,11 @@ namespace pillz.client.Scripts
             
         }
 
+        public GameObject GetHud()
+        {
+            return gameHud;
+        }
+
         public void OnDelete(EventContext context)
         {
             Destroy(gameObject);

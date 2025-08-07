@@ -90,7 +90,7 @@ namespace pillz.client.Scripts
             _inputActions.Player.Jetpack.performed += _ => _jetpackClick = !_jetpackClick;
 
             var gameHud = GameObject.Find("Game HUD");
-            var hud = Instantiate(Owner.gameHud, gameHud.transform);
+            var hud = Instantiate(Owner.GetHud(), gameHud.transform);
 
             _dmgDisplay = hud.GetComponentInChildren<DmgDisplay>();
             _fragDisplay = hud.GetComponentInChildren<FragDisplay>();
