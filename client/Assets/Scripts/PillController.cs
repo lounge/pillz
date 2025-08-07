@@ -66,7 +66,7 @@ namespace pillz.client.Scripts
             transform.position = new Vector3(pill.Position.X + 0.5f, pill.Position.Y + 2f, 0);
 
             WeaponController = Instantiate(weaponPrefab, transform);
-            WeaponController.Initialize(transform, owner, pill.AimDir);
+            WeaponController.Init(transform, owner, pill.AimDir);
 
             _pillHud = Instantiate(pillHud, _pillCanvas.transform);
             _pillHud.AttachTo(transform);

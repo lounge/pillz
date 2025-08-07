@@ -20,7 +20,7 @@ namespace pillz.client.Scripts
         {
             var playerController = Instantiate(_instance.playerPrefab);
             playerController.name = $"Player_{player.Username}";
-            playerController.Initialize(player);
+            playerController.Init(player);
             return playerController;
         }
         

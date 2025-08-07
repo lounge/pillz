@@ -38,7 +38,7 @@ namespace pillz.client.Scripts
                 _inputActions?.Disable();
         }
 
-        public void Initialize(Transform parent, PlayerController owner, DbVector2 aimDir)
+        public void Init(Transform parent, PlayerController owner, DbVector2 aimDir)
         {
             _owner = owner;
             _parentTransform = parent;

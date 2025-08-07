@@ -19,7 +19,7 @@ namespace pillz.client.Scripts
         [NonSerialized]
         public uint PlayerId;
 
-        public void Initialize(Player player)
+        public void Init(Player player)
         {
             PlayerId = player.Id;
             if (player.Identity == GameManager.LocalIdentity)

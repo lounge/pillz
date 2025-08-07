@@ -1,4 +1,3 @@
-using System;
 using SpacetimeDB;
 using UnityEngine;
 
@@ -6,13 +5,19 @@ namespace pillz.client.Scripts
 {
     public class JetpackController : MonoBehaviour
     {
-        public Component jetpack;
-        public Component flames;
+        [SerializeField] private Component jetpack;
+        [SerializeField] private Component flames;
 
-        [NonSerialized] public float Fuel = 100f;
+        public float Fuel { get; private set; } = 100f;
+
         private bool _isEnabled;
-
-        private bool _throttling;
+        private bool _isThrottling;
+        private float _refuelCooldownTimer;
+        
+        private const float MaxFuel = 100f;
+        private const float BurnRate = 10f;      // Units per second
+        private const float RefuelRate = 5f;     // Units per second
+        private const float RefuelCooldown = 5f; // Seconds after last throttle off
 
 
         private void Awake()
@@ -30,53 +35,60 @@ namespace pillz.client.Scripts
 
             _isEnabled = true;
             gameObject.SetActive(true);
-            jetpack.gameObject.SetActive(true);
+            jetpack?.gameObject.SetActive(true);
         }
 
         public void Disable()
         {
             _isEnabled = false;
-            _throttling = false;
-            jetpack.gameObject.SetActive(false);
-            flames.gameObject.SetActive(false);
+            _isThrottling = false;
+
+            jetpack?.gameObject.SetActive(false);
+            flames?.gameObject.SetActive(false);
         }
 
         public void ThrottleOn()
         {
-            Log.Debug("JetpackController: ThrottleOn called.");
-            if (!_isEnabled)
-            {
+            if (_isThrottling || !_isEnabled || Fuel <= 0f)
                 return;
-            }
 
-            _throttling = true;
-            flames.gameObject.SetActive(true);
+            _isThrottling = true;
+            flames?.gameObject.SetActive(true);
+
+            _refuelCooldownTimer = RefuelCooldown;
         }
 
         public void ThrottleOff()
         {
-            _throttling = false;
-            flames.gameObject.SetActive(false);
+            if (!_isThrottling)
+                return;
+            
+            _isThrottling = false;
+            flames?.gameObject.SetActive(false);
+            
+            _refuelCooldownTimer = RefuelCooldown;
         }
 
         private void FixedUpdate()
         {
-            Log.Debug($"JetpackController: FixedUpdate called. fuel={Fuel}, isEnabled={_isEnabled}, throttling={_throttling}");
-            // each 10 seconds increase fuel by 1
-            if (Fuel < 100f)
+            // Countdown cooldown timer
+            if (!_isThrottling && _refuelCooldownTimer > 0f)
             {
-                Log.Debug("JetpackController: Regenerating fuel.");
-                Fuel += Time.fixedDeltaTime * 1f; // Adjust fuel regeneration rate
-                if (Fuel > 100f)
-                {
-                    Fuel = 100f;
-                }
+                _refuelCooldownTimer -= Time.fixedDeltaTime;
+                Log.Debug($"JetpackController: Countdown cooldown timer. Current value: {_refuelCooldownTimer}");
+                
+                if (_refuelCooldownTimer < 0f)
+                    _refuelCooldownTimer = 0f;
             }
-            
-            if (Fuel <= 0f)
+
+            // Burn fuel while throttling
+            if (_isThrottling)
             {
-                if (_isEnabled)
+                Fuel -= Time.fixedDeltaTime * BurnRate;
+                if (Fuel <= 0f)
                 {
+                    Fuel = 0f;
+                    _isThrottling = false;
                     Disable();
 
                     if (transform.parent.TryGetComponent(out PillController pill))
@@ -84,19 +96,15 @@ namespace pillz.client.Scripts
                         pill.OnJetpackDepleted();
                     }
                 }
-
-                return;
             }
 
-            if (_throttling)
+            // Refuel only when cooldown has expired and not throttling
+            if (!_isThrottling && _refuelCooldownTimer <= 0f && Fuel < MaxFuel)
             {
-                Fuel -= Time.fixedDeltaTime * 10f; // Adjust consumption rate
-                if (Fuel < 0f)
-                {
-                    Fuel = 0f;
-                }
-
-                Debug.Log($"Jetpack Fuel: {Fuel}");
+                Log.Debug($"JetpackController: Refueling. Current fuel: {Fuel}");
+                Fuel += Time.fixedDeltaTime * RefuelRate;
+                if (Fuel > MaxFuel)
+                    Fuel = MaxFuel;
             }
         }
     }

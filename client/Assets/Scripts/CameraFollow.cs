@@ -26,7 +26,7 @@ namespace pillz.client.Scripts
         {
             if (!_target || !_camera) return;
 
-            Vector3 desiredPosition = _target.position + offset;
+            var desiredPosition = _target.position + offset;
             desiredPosition.z = _fixedZ;
 
             var halfHeight = _camera.orthographicSize;
@@ -52,10 +52,10 @@ namespace pillz.client.Scripts
                 desiredPosition.x = TerrainManager.Instance.MaxX - halfWidth;
             }
 
-            Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
+            var smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
             transform.position = smoothedPosition;
 
-            Log.Debug($"CameraFollow Following target: {_target.name} at position: {transform.position}");
+            // Log.Debug($"CameraFollow Following target: {_target.name} at position: {transform.position}");
         }
 
         public void SetTarget(Transform newTarget)
