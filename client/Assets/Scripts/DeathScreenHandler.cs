@@ -4,38 +4,42 @@ using UnityEngine.UI;
 
 namespace pillz.client.Scripts
 {
-    public class StartScreenManager : MonoBehaviour
+    public class DeathScreenHandler : MonoBehaviour
     {
-        [SerializeField] private TMP_InputField usernameInput;
-        [SerializeField] private Button playButton;
         
-        public static StartScreenManager Instance { get; private set; }
+        [SerializeField] private TMP_InputField usernameInput;
+        [SerializeField] private Button respawnButton;
+        
+        public static DeathScreenHandler Instance { get; private set; }
+        
+        private string _username;
 
         private void Awake()
         {
             Instance = this;
             gameObject.SetActive(false);
-            playButton.interactable = false;
+            respawnButton.interactable = false;
             usernameInput.onValueChanged.AddListener(OnUsernameChanged);
-            playButton.onClick.AddListener(OnPlayClicked);
+            respawnButton.onClick.AddListener(OnRespawnClicked);
         }
 
-        public void Show()
+        public void Show(PlayerController player)
         {
+            usernameInput.text = player.Username;
             gameObject.SetActive(true);
         }
-        
+
         private void OnUsernameChanged(string text)
         {
-            playButton.interactable = !string.IsNullOrWhiteSpace(text);
+            respawnButton.interactable = !string.IsNullOrWhiteSpace(text);
         }
 
-        private void OnPlayClicked()
+        private void OnRespawnClicked()
         {
             string username = usernameInput.text.Trim();
             if (!string.IsNullOrEmpty(username))
             {
-                GameManager.Connection.Reducers.EnterGame(username, TerrainManager.Instance.GetRandomSpawnPosition());
+                GameHandler.Connection.Reducers.EnterGame(username, TerrainHandler.Instance.GetRandomSpawnPosition());
                 gameObject.SetActive(false);
             }
         }

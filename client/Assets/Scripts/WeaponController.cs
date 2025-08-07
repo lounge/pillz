@@ -72,7 +72,7 @@ namespace pillz.client.Scripts
                 var mouseWorldPosition = _mainCamera.ScreenToWorldPoint(_lookInput);
                 direction = (mouseWorldPosition - _parentTransform.position);
         
-                GameManager.Connection.Reducers.Aim(_lookInput);
+                GameHandler.Connection.Reducers.Aim(_lookInput);
             }
             else
             {
@@ -106,7 +106,7 @@ namespace pillz.client.Scripts
             
             Debug.Log($"Mouse was held for {heldDuration} seconds. Speed: {speed:0.00}");
             
-            GameManager.Connection.Reducers.ShootProjectile(new DbVector2(weapon.position.x, weapon.position.y), speed);
+            GameHandler.Connection.Reducers.ShootProjectile(new DbVector2(weapon.position.x, weapon.position.y), speed);
         }
 
         public ProjectileController Shoot(Projectile projectile, PlayerController player, Vector2 position,

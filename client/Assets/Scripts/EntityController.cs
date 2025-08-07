@@ -39,7 +39,7 @@ namespace pillz.client.Scripts
 
             // Use provided position if available, otherwise fall back to DB
             var pos = initialPosition ??
-                      (Vector2)(GameManager.Connection.Db.Entity.Id.Find(entityId)?.Position ?? Vector2.zero);
+                      (Vector2)(GameHandler.Connection.Db.Entity.Id.Find(entityId)?.Position ?? Vector2.zero);
             _lerpTargetPosition = transform.position = pos;
         }
 
@@ -86,17 +86,17 @@ namespace pillz.client.Scripts
                 return OutOfBound.None;
             }
 
-            if (transform.position.x < TerrainManager.Instance.MinX)
+            if (transform.position.x < TerrainHandler.Instance.MinX)
             {
                 return OutOfBound.Left;
             }
 
-            if (transform.position.x > TerrainManager.Instance.MaxX)
+            if (transform.position.x > TerrainHandler.Instance.MaxX)
             {
                 return OutOfBound.Right;
             }
 
-            if (transform.position.y < TerrainManager.Instance.MinY)
+            if (transform.position.y < TerrainHandler.Instance.MinY)
             {
                 return OutOfBound.Bottom;
             }

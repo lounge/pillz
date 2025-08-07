@@ -11,7 +11,7 @@ namespace pillz.client.Scripts
         private float _fixedZ;
         private Transform _target;
         private Camera _camera;
-        private TerrainManager _terrainManager;
+        private TerrainHandler _terrainHandler;
 
         private void Awake()
         {
@@ -31,22 +31,22 @@ namespace pillz.client.Scripts
 
             //  Clamp bottom to be above death zone
             var bottomY = desiredPosition.y - halfHeight;
-            if (bottomY < TerrainManager.Instance.MinY)
+            if (bottomY < TerrainHandler.Instance.MinY)
             {
-                desiredPosition.y = TerrainManager.Instance.MinY + halfHeight;
+                desiredPosition.y = TerrainHandler.Instance.MinY + halfHeight;
             }
 
             //  Clamp horizontal view to death zone bounds
             var leftEdge = desiredPosition.x - halfWidth;
             var rightEdge = desiredPosition.x + halfWidth;
 
-            if (leftEdge < TerrainManager.Instance.MinX)
+            if (leftEdge < TerrainHandler.Instance.MinX)
             {
-                desiredPosition.x = TerrainManager.Instance.MinX + halfWidth;
+                desiredPosition.x = TerrainHandler.Instance.MinX + halfWidth;
             }
-            else if (rightEdge > TerrainManager.Instance.MaxX)
+            else if (rightEdge > TerrainHandler.Instance.MaxX)
             {
-                desiredPosition.x = TerrainManager.Instance.MaxX - halfWidth;
+                desiredPosition.x = TerrainHandler.Instance.MaxX - halfWidth;
             }
 
             var smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);

@@ -78,7 +78,7 @@ namespace pillz.client.Scripts
 
             _rb = GetComponent<Rigidbody2D>();
             
-            if (Owner && (!Owner.IsLocalPlayer || !GameManager.IsConnected()))
+            if (Owner && (!Owner.IsLocalPlayer || !GameHandler.IsConnected()))
             {
                 Log.Debug("PillMovement: Not local player or not connected, skipping movement init.");
                 return;
@@ -104,7 +104,7 @@ namespace pillz.client.Scripts
 
         private void FixedUpdate()
         {
-            if (!GameManager.IsConnected())
+            if (!GameHandler.IsConnected())
             {
                 return;
             }
@@ -140,7 +140,7 @@ namespace pillz.client.Scripts
             if (Time.time - _lastMovementSendTimestamp >= SendUpdatesFrequency) // !playerInput.Equals(_lastMovementInput) &&
             {
                 _lastMovementSendTimestamp = Time.time;
-                GameManager.Connection.Reducers.UpdatePlayer(playerInput, playerAttrs);
+                GameHandler.Connection.Reducers.UpdatePlayer(playerInput, playerAttrs);
             }
 
             _lastMovementInput = playerInput;
@@ -180,11 +180,11 @@ namespace pillz.client.Scripts
         {
             if (IsOutOfBounds() == OutOfBound.Left)
             {
-                transform.position = new Vector3(TerrainManager.Instance.MaxX - 1f, transform.position.y, 0);
+                transform.position = new Vector3(TerrainHandler.Instance.MaxX - 1f, transform.position.y, 0);
             }
             else if (IsOutOfBounds() == OutOfBound.Right)
             {
-                transform.position = new Vector3(TerrainManager.Instance.MinX + 1f, transform.position.y, 0);
+                transform.position = new Vector3(TerrainHandler.Instance.MinX + 1f, transform.position.y, 0);
             }
 
             var inputX = _moveInput.x;
@@ -235,7 +235,7 @@ namespace pillz.client.Scripts
             {
                 Log.Debug($"PillController: Applying force {force.X}, {force.Y} to pill.");
                 _rb.AddForce(new Vector2(force.X, force.Y), ForceMode2D.Impulse);
-                GameManager.Connection.Reducers.ForceApplied(Owner.PlayerId);
+                GameHandler.Connection.Reducers.ForceApplied(Owner.PlayerId);
             }
         }
 
@@ -246,7 +246,7 @@ namespace pillz.client.Scripts
 
         public void ApplyDamage(uint damage, Vector2 force)
         {
-            GameManager.Connection.Reducers.ApplyDamage(Owner.PlayerId, damage, force == Vector2.zero ? null : new DbVector2(force.x, force.y));
+            GameHandler.Connection.Reducers.ApplyDamage(Owner.PlayerId, damage, force == Vector2.zero ? null : new DbVector2(force.x, force.y));
 
             Log.Debug($"PillController: Applied {damage} damage, remaining HP: {_hp}");
         }
@@ -305,10 +305,10 @@ namespace pillz.client.Scripts
             if (Owner.IsLocalPlayer)
             {
                 Log.Debug("PillController: Local player pill destroyed, showing death screen.");
-                DeathScreenManager.Instance.Show(Owner);
+                DeathScreenHandler.Instance.Show(Owner);
             }
 
-            GameManager.Connection.Reducers.DeletePill(Owner.PlayerId);
+            GameHandler.Connection.Reducers.DeletePill(Owner.PlayerId);
         }
     }
 }

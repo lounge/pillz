@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace pillz.client.Scripts
 {
-    public class SpawnManager : MonoBehaviour
+    public class PrefabSpawner : MonoBehaviour
     {
-        public static SpawnManager Instance;
+        public static PrefabSpawner Instance;
         
         [SerializeField] private PlayerController playerPrefab;
         [SerializeField] private PillController pillPrefab;

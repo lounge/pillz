@@ -9,9 +9,9 @@ using Terrain = SpacetimeDB.Types.Terrain;
 
 namespace pillz.client.Scripts
 {
-    public class TerrainManager : MonoBehaviour
+    public class TerrainHandler : MonoBehaviour
     {
-        public static TerrainManager Instance { get; private set; }
+        public static TerrainHandler Instance { get; private set; }
         
         [Header("Clamp Settings")]
         [SerializeField] private Collider2D deathZone;
@@ -47,7 +47,7 @@ namespace pillz.client.Scripts
         public void Render()
         {
             Log.Debug("TerrainManager: Generating terrain...");
-            foreach (var tile in GameManager.Connection.Db.Terrain.Iter())
+            foreach (var tile in GameHandler.Connection.Db.Terrain.Iter())
             {
                 OnTerrainAdded(null, tile);
             }
@@ -97,7 +97,7 @@ namespace pillz.client.Scripts
             // var spawnLocations = GameManager.Connection.Db.SpawnLocation.Iter().FirstOrDefault(); //ToList();
             // return spawnLocations!.Position;
 
-            var spawnLocations = GameManager.Connection.Db.Terrain.Iter().Where(x => x.IsSpawnable).ToList();
+            var spawnLocations = GameHandler.Connection.Db.Terrain.Iter().Where(x => x.IsSpawnable).ToList();
             if (spawnLocations.Count == 0)
             {
                 throw new System.Exception("No spawn locations available.");

@@ -9,7 +9,7 @@ using Terrain = SpacetimeDB.Types.Terrain;
 
 namespace pillz.client.Scripts
 {
-    public class GameManager : MonoBehaviour
+    public class GameHandler : MonoBehaviour
     {
         private const string SpacetimeDbUrl = "http://localhost:3000";
         private const string SpacetimeDbName = "pillz";
@@ -17,7 +17,7 @@ namespace pillz.client.Scripts
         [UsedImplicitly] private static event Action OnConnected;
         [UsedImplicitly] private static event Action OnSubscriptionApplied;
 
-        public static GameManager Instance { get; private set; }
+        public static GameHandler Instance { get; private set; }
         public static Identity LocalIdentity { get; private set; }
         public static DbConnection Connection { get; private set; }
 
@@ -131,7 +131,7 @@ namespace pillz.client.Scripts
 
             RenderWorld(Connection.Db.World.Iter().FirstOrDefault());
             
-            StartScreenManager.Instance.Show();
+            StartScreenHandler.Instance.Show();
         }
 
         #endregion
@@ -153,7 +153,7 @@ namespace pillz.client.Scripts
             if (world.IsGenerated)
             {
                 Log.Debug("WorldOnUpdate: World table updated, generating ground...");
-                TerrainManager.Instance.Render();
+                TerrainHandler.Instance.Render();
             }
         }
 
@@ -163,7 +163,7 @@ namespace pillz.client.Scripts
 
         private static void OnTileRemoved(EventContext ctx, Terrain row)
         {
-            TerrainManager.Instance.OnTileRemoved(ctx, row);
+            TerrainHandler.Instance.OnTileRemoved(ctx, row);
         }
 
         #endregion
@@ -172,7 +172,7 @@ namespace pillz.client.Scripts
         
         private static void PortalOnInsert(EventContext context, Portal insertedValue)
         {
-            var portalController = SpawnManager.Instance.SpawnPortal(insertedValue);
+            var portalController = PrefabSpawner.Instance.SpawnPortal(insertedValue);
             Portals.Add(insertedValue.Id, portalController);
         }
         
@@ -195,7 +195,7 @@ namespace pillz.client.Scripts
             Log.Debug(
                 $"PillOnInsert: Inserting pill for player {insertedValue.PlayerId} with entity ID {insertedValue.EntityId} position {insertedValue.Position}");
             var player = GetOrCreatePlayer(insertedValue.PlayerId);
-            var entityController = SpawnManager.Instance.SpawnPill(insertedValue, player);
+            var entityController = PrefabSpawner.Instance.SpawnPill(insertedValue, player);
             Entities.Add(insertedValue.EntityId, entityController);
         }
 
@@ -301,7 +301,7 @@ namespace pillz.client.Scripts
 
             Log.Debug("Creating new player controller for player ID: " + playerId);
             var player = Connection.Db.Player.Id.Find(playerId);
-            playerController = SpawnManager.Instance.SpawnPlayer(player);
+            playerController = PrefabSpawner.Instance.SpawnPlayer(player);
             Players.Add(playerId, playerController);
 
             return playerController;

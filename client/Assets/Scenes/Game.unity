@@ -130,7 +130,7 @@ GameObject:
   - component: {fileID: 66960492}
   - component: {fileID: 66960491}
   m_Layer: 0
-  m_Name: PrefabManager
+  m_Name: PrefabSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -367,7 +367,7 @@ GameObject:
   - component: {fileID: 352796544}
   - component: {fileID: 352796547}
   m_Layer: 0
-  m_Name: GameManager
+  m_Name: GameHandler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

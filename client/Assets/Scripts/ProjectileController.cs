@@ -38,7 +38,7 @@ namespace pillz.client.Scripts
 
         protected override void Update()
         {
-            if (Owner && (!Owner.IsLocalPlayer || !GameManager.IsConnected()))
+            if (Owner && (!Owner.IsLocalPlayer || !GameHandler.IsConnected()))
             {
                 Log.Debug("ProjectileController: Not local player or not connected, skipping projectile update.");
                 return;
@@ -50,12 +50,12 @@ namespace pillz.client.Scripts
                 Log.Debug("ProjectileController: Projectile position changed, updating velocity.");
 
                 _lastPositionSendTimestamp = Time.time;
-                GameManager.Connection.Reducers.UpdateProjectile(_rb.linearVelocity, _rb.position);
+                GameHandler.Connection.Reducers.UpdateProjectile(_rb.linearVelocity, _rb.position);
             }
 
             if (IsOutOfBounds() != OutOfBound.None)
             {
-                GameManager.Connection.Reducers.DeleteProjectile(EntityId);
+                GameHandler.Connection.Reducers.DeleteProjectile(EntityId);
             }
 
             _lastPosition = _rb.linearVelocity;
@@ -81,7 +81,7 @@ namespace pillz.client.Scripts
             }
 
             Log.Debug("ProjectileController: Collision detected with " + hitObject.name);
-            GameManager.Connection.Reducers.DeleteProjectile(EntityId);
+            GameHandler.Connection.Reducers.DeleteProjectile(EntityId);
 
             if (hitObject.CompareTag(Tags.Terrain))
             {
@@ -97,7 +97,7 @@ namespace pillz.client.Scripts
                 var cellPos = tilemap.WorldToCell(hitPosition);
                 Log.Debug("ProjectileController: Tile hit at cell position " + cellPos);
 
-                GameManager.Connection.Reducers.DeleteTerrainTiles(cellPos.x, cellPos.y, ExplosionRadius);
+                GameHandler.Connection.Reducers.DeleteTerrainTiles(cellPos.x, cellPos.y, ExplosionRadius);
             }
 
             if (hitObject.CompareTag(Tags.Pill))

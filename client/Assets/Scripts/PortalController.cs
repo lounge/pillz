@@ -35,7 +35,7 @@ namespace pillz.client.Scripts
                 if (pillController && pillController.Owner.IsLocalPlayer && !pillController.InPortal && pillController.PortalCoolDown <= 0f)
                 {
                     Log.Debug("PortalController: Pill entered portal, teleporting...");
-                    var connectedPortal = GameManager.Connection.Db.Portal.Id.Find(_connectedPortalId);
+                    var connectedPortal = GameHandler.Connection.Db.Portal.Id.Find(_connectedPortalId);
                     if (connectedPortal != null)
                     {
                         pillController.transform.position = new Vector3(connectedPortal.Position.X, connectedPortal.Position.Y, 0);
