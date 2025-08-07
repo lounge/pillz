@@ -51,7 +51,6 @@ namespace pillz.client.Scripts
             jetpack?.gameObject.SetActive(false);
             _mainCamera = Camera.main;
             _inputActions = new PlayerInputActions();
-
             _pillCanvas = GameObject.Find("Pill HUD");
         }
 

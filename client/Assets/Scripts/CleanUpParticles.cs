@@ -8,7 +8,7 @@ namespace pillz.client.Scripts
         
         [SerializeField] private float destroyAfterSeconds;
 
-        private void Start()
+        private void Awake()
         {
             _ps = GetComponent<ParticleSystem>();
         }

@@ -15,9 +15,8 @@ namespace pillz.client.Scripts
 
         private void Awake()
         {
-            gameObject.SetActive(false);
-            
             Instance = this;
+            gameObject.SetActive(false);
             respawnButton.interactable = false;
             usernameInput.onValueChanged.AddListener(OnUsernameChanged);
             respawnButton.onClick.AddListener(OnRespawnClicked);
