@@ -32,7 +32,8 @@ namespace pillz.client.Scripts
         {
             return gameHud;
         }
-
+        
+        
         public void OnDelete(EventContext context)
         {
             Destroy(gameObject);

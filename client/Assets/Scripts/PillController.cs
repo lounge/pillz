@@ -1,4 +1,5 @@
 using System;
+using JetBrains.Annotations;
 using pillz.client.Assets.Input;
 using SpacetimeDB;
 using SpacetimeDB.Types;
@@ -35,16 +36,18 @@ namespace pillz.client.Scripts
         private float _lastMovementSendTimestamp;
         private PlayerInputActions _inputActions;
         private PlayerInput _lastMovementInput;
+        
         private PillHud _pillHud;
         private GameObject _pillCanvas;
 
+        [NonSerialized] private Rigidbody2D _rb;
         [NonSerialized] private DmgDisplay _dmgDisplay;
         [NonSerialized] private FragDisplay _fragDisplay;
         [NonSerialized] private Camera _mainCamera;
-        [NonSerialized] private Rigidbody2D _rb;
         [NonSerialized] public WeaponController WeaponController;
         [NonSerialized] public bool InPortal;
         [NonSerialized] public float PortalCoolDown;
+        private GameObject _gameHud;
 
         protected override void Awake()
         {
@@ -73,13 +76,14 @@ namespace pillz.client.Scripts
             _pillHud.SetFuel(jetpack?.Fuel ?? 0);
             _pillHud.SetUsername(owner.Username);
 
+            _rb = GetComponent<Rigidbody2D>();
+            
             if (Owner && (!Owner.IsLocalPlayer || !GameManager.IsConnected()))
             {
                 Log.Debug("PillMovement: Not local player or not connected, skipping movement init.");
                 return;
             }
 
-            _rb = GetComponent<Rigidbody2D>();
             _mainCamera.GetComponent<CameraFollow>()?.SetTarget(transform);
 
             _inputActions.Player.Jump.started += _ => _isJumpHeld = true;
@@ -89,10 +93,10 @@ namespace pillz.client.Scripts
             _inputActions.Player.Jetpack.performed += _ => _jetpackClick = !_jetpackClick;
 
             var gameHud = GameObject.Find("Game HUD");
-            var hud = Instantiate(Owner.GetHud(), gameHud.transform);
+            _gameHud = Instantiate(Owner.GetHud(), gameHud.transform);
 
-            _dmgDisplay = hud.GetComponentInChildren<DmgDisplay>();
-            _fragDisplay = hud.GetComponentInChildren<FragDisplay>();
+            _dmgDisplay = _gameHud.GetComponentInChildren<DmgDisplay>();
+            _fragDisplay = _gameHud.GetComponentInChildren<FragDisplay>();
 
             _dmgDisplay.SetDmg(pill.Dmg);
             _fragDisplay.SetFrags(pill.Frags);
@@ -100,11 +104,18 @@ namespace pillz.client.Scripts
 
         private void FixedUpdate()
         {
-            if (!Owner.IsLocalPlayer || !GameManager.IsConnected())
+            if (!GameManager.IsConnected())
             {
                 return;
             }
-
+            
+            if (!Owner.IsLocalPlayer)
+            {
+                return;
+            }
+            
+            _pillHud?.SetFuel(jetpack?.Fuel ?? 0);
+            
             CheckPortalState();
 
             _isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
@@ -117,14 +128,19 @@ namespace pillz.client.Scripts
                 NormalMovement();
             }
 
-            _pillHud?.SetFuel(jetpack?.Fuel ?? 0);
-
+            PlayerAttributes playerAttrs = null;
+            if (jetpack)
+            {
+                Log.Debug($"PillMovement: Jetpack. Fuel: {jetpack.Fuel}, IsEnabled: {jetpack.IsEnabled}");
+                playerAttrs = new PlayerAttributes(jetpack.Fuel, jetpack.IsEnabled, jetpack.IsThrottling);
+            }
             var playerInput = new PlayerInput(_rb.linearVelocity, _rb.position, !FocusHandler.HasFocus);
-            if (!playerInput.Equals(_lastMovementInput) &&
-                Time.time - _lastMovementSendTimestamp >= SendUpdatesFrequency)
+            
+            // TODO: better way to handle this
+            if (Time.time - _lastMovementSendTimestamp >= SendUpdatesFrequency) // !playerInput.Equals(_lastMovementInput) &&
             {
                 _lastMovementSendTimestamp = Time.time;
-                GameManager.Connection.Reducers.UpdatePlayerInput(playerInput);
+                GameManager.Connection.Reducers.UpdatePlayer(playerInput, playerAttrs);
             }
 
             _lastMovementInput = playerInput;
@@ -156,10 +172,10 @@ namespace pillz.client.Scripts
             {
                 jetpack?.ThrottleOff();
             }
-        
+
             CalculateMovement();
         }
- 
+
         private void CalculateMovement()
         {
             if (IsOutOfBounds() == OutOfBound.Left)
@@ -170,7 +186,7 @@ namespace pillz.client.Scripts
             {
                 transform.position = new Vector3(TerrainManager.Instance.MinX + 1f, transform.position.y, 0);
             }
-        
+
             var inputX = _moveInput.x;
             if (_isGrounded)
             {
@@ -184,12 +200,12 @@ namespace pillz.client.Scripts
                 {
                     _airborneXDirection = inputX;
                 }
-        
+
                 var targetX = _airborneXDirection * moveSpeed;
                 _rb.linearVelocityX *= airDragFactor;
                 _rb.linearVelocityX = Mathf.Lerp(_rb.linearVelocityX, targetX, smoothing);
             }
-        
+
             _pillHud.transform.position = _rb.transform.position;
         }
 
@@ -197,9 +213,14 @@ namespace pillz.client.Scripts
         {
             _hp = newVal.Hp;
             _pillHud?.SetHp(_hp);
+            _pillHud?.SetFuel(newVal.Fuel);
             _dmgDisplay?.SetDmg(newVal.Dmg);
             _fragDisplay?.SetFrags(newVal.Frags);
+            
+            jetpack?.SetVisuals(newVal.JetpackEnabled, newVal.IsThrottling);
+            
             WeaponController?.SetAimDir(newVal.AimDir);
+            ApplyForce(newVal.Force);
 
             if (_hp <= 0)
             {
@@ -208,14 +229,24 @@ namespace pillz.client.Scripts
             }
         }
 
+        private void ApplyForce([CanBeNull] DbVector2 force)
+        {
+            if (force is not null)
+            {
+                Log.Debug($"PillController: Applying force {force.X}, {force.Y} to pill.");
+                _rb.AddForce(new Vector2(force.X, force.Y), ForceMode2D.Impulse);
+                GameManager.Connection.Reducers.ForceApplied(Owner.PlayerId);
+            }
+        }
+
         public void OnJetpackDepleted()
         {
             _jetpackClick = false;
         }
 
-        public void ApplyDamage(uint damage)
+        public void ApplyDamage(uint damage, Vector2 force)
         {
-            GameManager.Connection.Reducers.ApplyDamage(Owner.PlayerId, damage);
+            GameManager.Connection.Reducers.ApplyDamage(Owner.PlayerId, damage, force == Vector2.zero ? null : new DbVector2(force.x, force.y));
 
             Log.Debug($"PillController: Applied {damage} damage, remaining HP: {_hp}");
         }
@@ -237,6 +268,11 @@ namespace pillz.client.Scripts
             if (Owner)
             {
                 Destroy(Owner.gameObject);
+            }
+
+            if (_gameHud)
+            {
+                Destroy(_gameHud.gameObject);
             }
 
             _inputActions?.Disable();

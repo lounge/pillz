@@ -10,10 +10,10 @@ namespace pillz.client.Scripts
         [NonSerialized] private Vector3 _lastPosition;
         [NonSerialized] private Rigidbody2D _entityRb;
         [NonSerialized] public PlayerController Owner;
-        
+
         protected uint EntityId;
         protected const float SendUpdatesFrequency = 1f / SendUpdatesPerSec;
-        
+
         private const int SendUpdatesPerSec = 20;
         private const float LerpDurationSec = 0.1f;
         private float _lerpTime;
@@ -54,25 +54,27 @@ namespace pillz.client.Scripts
             Destroy(gameObject);
         }
 
-        public virtual void Update()
+        protected virtual void Update()
         {
             if (!Owner || Owner.IsLocalPlayer)
-            {
-                Log.Debug("EntityController: Not updating local player entity.");
                 return;
-            }
 
             _lerpTime = Mathf.Min(_lerpTime + Time.deltaTime, LerpDurationSec);
             var t = _lerpTime / LerpDurationSec;
-            transform.position = Vector3.Lerp(transform.position, _lerpTargetPosition, t);
+            var target = _lerpTargetPosition;
+            var delta = (target - transform.position).sqrMagnitude;
 
-            if (_entityRb && !transform.position.Equals(_lastPosition))
+            // Only correct if drifting too far
+            if (delta > 0.01f)
+            {
+                transform.position = Vector3.Lerp(transform.position, target, t);
+            
+            }
+
+            if (_entityRb)
             {
                 _entityRb.position = transform.position;
                 _entityRb.linearVelocity = Vector2.zero;
-
-                Log.Debug(
-                    $"EntityController: TYPE: {this} Update {EntityId} pos: {transform.position} target: {_lerpTargetPosition}");
             }
         }
 
@@ -88,10 +90,12 @@ namespace pillz.client.Scripts
             {
                 return OutOfBound.Left;
             }
+
             if (transform.position.x > TerrainManager.Instance.MaxX)
             {
                 return OutOfBound.Right;
             }
+
             if (transform.position.y < TerrainManager.Instance.MinY)
             {
                 return OutOfBound.Bottom;

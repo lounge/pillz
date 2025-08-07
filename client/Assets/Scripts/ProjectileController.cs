@@ -9,10 +9,10 @@ namespace pillz.client.Scripts
     public class ProjectileController : EntityController
     {
         [SerializeField] private GameObject explosionPrefab;
-        [SerializeField] private const float ExplosionRadius = 3.5f;
-        
+
         private Rigidbody2D _rb;
         private float _lastPositionSendTimestamp;
+        private const float ExplosionRadius = 3.5f;
 
         [NonSerialized] private Vector2 _lastPosition;
 
@@ -36,22 +36,23 @@ namespace pillz.client.Scripts
             Log.Debug($"ProjectileController: Remote synced to position {transform.position}");
         }
 
-        public override void Update()
+        protected override void Update()
         {
             if (Owner && (!Owner.IsLocalPlayer || !GameManager.IsConnected()))
             {
                 Log.Debug("ProjectileController: Not local player or not connected, skipping projectile update.");
                 return;
             }
-            
-            if (!_rb.linearVelocity.Equals(_lastPosition) && Time.time - _lastPositionSendTimestamp >= SendUpdatesFrequency)
+
+            if (!_rb.linearVelocity.Equals(_lastPosition) &&
+                Time.time - _lastPositionSendTimestamp >= SendUpdatesFrequency)
             {
                 Log.Debug("ProjectileController: Projectile position changed, updating velocity.");
 
                 _lastPositionSendTimestamp = Time.time;
                 GameManager.Connection.Reducers.UpdateProjectile(_rb.linearVelocity, _rb.position);
             }
-            
+
             if (IsOutOfBounds() != OutOfBound.None)
             {
                 GameManager.Connection.Reducers.DeleteProjectile(EntityId);
@@ -71,18 +72,19 @@ namespace pillz.client.Scripts
         private void OnCollisionEnter2D(Collision2D collision)
         {
             var hitObject = collision.gameObject;
-            
+            var contact = collision.GetContact(0);
+
+
             if (explosionPrefab)
             {
                 Instantiate(explosionPrefab, transform.position, Quaternion.identity);
             }
-            
+
             Log.Debug("ProjectileController: Collision detected with " + hitObject.name);
             GameManager.Connection.Reducers.DeleteProjectile(EntityId);
 
             if (hitObject.CompareTag(Tags.Terrain))
             {
-                var contact = collision.GetContact(0);
                 var hitPosition = contact.point;
 
                 var tilemap = hitObject.GetComponentInParent<Tilemap>();
@@ -94,18 +96,44 @@ namespace pillz.client.Scripts
 
                 var cellPos = tilemap.WorldToCell(hitPosition);
                 Log.Debug("ProjectileController: Tile hit at cell position " + cellPos);
-                
+
                 GameManager.Connection.Reducers.DeleteTerrainTiles(cellPos.x, cellPos.y, ExplosionRadius);
             }
-            
+
             if (hitObject.CompareTag(Tags.Pill))
             {
                 var hitPill = hitObject.GetComponent<PillController>();
-                
+
                 Log.Debug("ProjectileController: Hit a pill, deleting projectile. Applying damage");
-                hitPill.ApplyDamage(10);
+
+
+                var force = ApplyExplosionForce(hitPill.GetComponent<Rigidbody2D>(), contact.point, ExplosionRadius, 50f);
+
+
+                hitPill.ApplyDamage(10, force);
             }
-            
+        }
+
+        public static Vector2 ApplyExplosionForce(Rigidbody2D body, Vector2 explosionPosition, float explosionRadius,
+            float maxForce)
+        {
+            Vector2 direction = body.position - explosionPosition;
+            float distance = direction.magnitude;
+
+            // Ignore if outside of explosion range
+            if (distance > explosionRadius)
+                return Vector2.zero;
+
+            // Normalize direction vector
+            direction.Normalize();
+
+            // Invert falloff: closer = stronger force
+            float falloff = 1f - (distance / explosionRadius);
+            float force = maxForce * falloff;
+
+            // return body.AddForce(, ForceMode2D.Impulse);
+
+            return direction * force;
         }
     }
 }
