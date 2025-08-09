@@ -2,6 +2,7 @@ using System;
 using SpacetimeDB;
 using SpacetimeDB.Types;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace pillz.client.Scripts
 {
@@ -10,9 +11,9 @@ namespace pillz.client.Scripts
         [NonSerialized] private Vector3 _lastPosition;
         [NonSerialized] private Rigidbody2D _entityRb;
         [NonSerialized] public PlayerController Owner;
+        [NonSerialized] public const float SendUpdatesFrequency = 1f / SendUpdatesPerSec;
 
         protected uint EntityId;
-        protected const float SendUpdatesFrequency = 1f / SendUpdatesPerSec;
 
         private const int SendUpdatesPerSec = 20;
         private const float LerpDurationSec = 0.1f;

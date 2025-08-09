@@ -132,6 +132,7 @@ namespace pillz.client.Scripts
             RenderWorld(Connection.Db.World.Iter().FirstOrDefault());
             
             StartScreenHandler.Instance.Show();
+            
         }
 
         #endregion
@@ -238,7 +239,7 @@ namespace pillz.client.Scripts
 
             var spawnPos = (Vector2)entity.Position;
 
-            var entityController = player.Pill.WeaponController.Shoot(insertedValue, player, spawnPos, insertedValue.Speed);
+            var entityController = player.Pill.Shoot(insertedValue, player, spawnPos, insertedValue.Speed);
             Entities.Add(insertedValue.EntityId, entityController);
         }
 

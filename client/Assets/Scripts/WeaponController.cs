@@ -11,8 +11,8 @@ namespace pillz.client.Scripts
         [SerializeField] private float weaponDistance = 1.5f;
         [SerializeField] private float projectileSpeed = 20f;
 
-        [Header("Projectile Settings")] 
-        [SerializeField] private ProjectileController projectilePrefab;
+        [Header("Projectile Settings")] [SerializeField]
+        private ProjectileController projectilePrefab;
 
         private Camera _mainCamera;
         private PlayerInputActions _inputActions;
@@ -24,6 +24,19 @@ namespace pillz.client.Scripts
         private PlayerController _owner;
         private Vector2 _aimDir;
         private float _fireStartTime;
+        private WeaponType _type;
+
+        public void Enable()
+        {
+            gameObject.SetActive(true);
+            weapon.gameObject.SetActive(true);
+        }
+
+        public void Disable()
+        {
+            gameObject.SetActive(false);
+            weapon.gameObject.SetActive(false);
+        }
 
         private void OnEnable()
         {
@@ -37,20 +50,22 @@ namespace pillz.client.Scripts
                 _inputActions?.Disable();
         }
 
-        public void Init(Transform parent, PlayerController owner, DbVector2 aimDir)
+        public void Init(WeaponType type, Transform parent, PlayerController owner, DbVector2 aimDir)
         {
+            _type = type;
             _owner = owner;
             _parentTransform = parent;
             _mainCamera = Camera.main;
             _aimDir = aimDir;
-            
+
             if (_owner.IsLocalPlayer)
             {
                 _inputActions = new PlayerInputActions();
                 _inputActions.Player.Look.performed += ctx => _lookInput = ctx.ReadValue<Vector2>();
-                _inputActions.Player.Attack.started += OnClick;
-                _inputActions.Player.Attack.canceled += OnRelease;
-                
+
+                _inputActions.Player.PrimaryAttack.started += OnClick;
+                _inputActions.Player.PrimaryAttack.canceled += ctx => OnRelease(ctx, _type);
+
                 _inputActions.Enable();
             }
         }
@@ -71,12 +86,11 @@ namespace pillz.client.Scripts
 
                 var mouseWorldPosition = _mainCamera.ScreenToWorldPoint(_lookInput);
                 direction = (mouseWorldPosition - _parentTransform.position);
-        
+
                 GameHandler.Connection.Reducers.Aim(_lookInput);
             }
             else
             {
-                
                 if (_aimDir.sqrMagnitude < 0.01f)
                     return;
 
@@ -93,26 +107,11 @@ namespace pillz.client.Scripts
             weapon.position = weaponPosition;
         }
 
-        private void OnClick(InputAction.CallbackContext ctx)
-        {
-            _fireStartTime = Time.time;
-        }
-        
-        private void OnRelease(InputAction.CallbackContext ctx)
-        {
-            var heldDuration = Time.time - _fireStartTime;
-            var durationClamp = Mathf.Clamp(heldDuration, 0.5f, 2f);
-            var speed = projectileSpeed * durationClamp * 3;
-            
-            Debug.Log($"Mouse was held for {heldDuration} seconds. Speed: {speed:0.00}");
-            
-            GameHandler.Connection.Reducers.ShootProjectile(new DbVector2(weapon.position.x, weapon.position.y), speed);
-        }
-
-        public ProjectileController Shoot(Projectile projectile, PlayerController player, Vector2 position,
-            float speed)
+ 
+        public ProjectileController Shoot(Projectile projectile, PlayerController player, Vector2 position, float speed)
         {
             var projectileController = Instantiate(projectilePrefab, weapon.position, Quaternion.identity);
+
             projectileController.Spawn(projectile, player, position, _weaponDirection.normalized * speed);
 
             // Log.Debug(
@@ -120,5 +119,22 @@ namespace pillz.client.Scripts
 
             return projectileController;
         }
+        
+        public void OnClick(InputAction.CallbackContext ctx)
+        {
+            _fireStartTime = Time.time;
+        }
+
+        private void OnRelease(InputAction.CallbackContext ctx, WeaponType type)
+        {
+            var heldDuration = Time.time - _fireStartTime;
+            var durationClamp = Mathf.Clamp(heldDuration, 0.5f, 2f);
+            var speed = projectileSpeed * durationClamp * 3;
+
+            Debug.Log($"Mouse was held for {heldDuration} seconds. Speed: {speed:0.00}");
+
+            GameHandler.Connection.Reducers.ShootProjectile(new DbVector2(weapon.position.x, weapon.position.y), speed);
+        }
+
     }
 }

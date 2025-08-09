@@ -503,7 +503,8 @@ MonoBehaviour:
   groundCheckRadius: 0.2
   airDragFactor: 0.95
   smoothing: 0.15
-  weaponPrefab: {fileID: -1818467974883061908, guid: 76f4b1fc46e6d48efb97781ece7ae496, type: 3}
+  primaryWeaponPrefab: {fileID: -1818467974883061908, guid: 76f4b1fc46e6d48efb97781ece7ae496, type: 3}
+  secondaryWeaponPrefab: {fileID: -1818467974883061908, guid: abdae60edaf124e5d8414c78e0a93bfc, type: 3}
   jetpack: {fileID: 7429842420436174916}
   pillHud: {fileID: 2574573869230280460, guid: 9aabcce44c1d54590842f57463ecd9df, type: 3}
 --- !u!1 &4849669999516418546

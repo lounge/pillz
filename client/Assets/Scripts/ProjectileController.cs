@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using pillz.client.Scripts.AbilityEffects;
 using SpacetimeDB;
 using SpacetimeDB.Types;
 using UnityEngine;
@@ -9,10 +11,13 @@ namespace pillz.client.Scripts
     public class ProjectileController : EntityController
     {
         [SerializeField] private GameObject explosionPrefab;
+        [SerializeField] private float maxForce = 50f;
+        [SerializeField] private uint maxDamage = 20;
+        [SerializeField] private float explosionRadius = 3.5f;
 
         private Rigidbody2D _rb;
         private float _lastPositionSendTimestamp;
-        private const float ExplosionRadius = 3.5f;
+        private AbilityData _abilityData;
 
         [NonSerialized] private Vector2 _lastPosition;
 
@@ -20,6 +25,15 @@ namespace pillz.client.Scripts
         {
             gameObject.SetActive(true);
             _rb = GetComponent<Rigidbody2D>();
+
+            _abilityData = new AbilityData
+            {
+                Effects = new List<AbilityEffect>
+                {
+                    new DamageEffect { Damage = maxDamage },
+                    new KnockbackEffect { Force = maxForce, ExplosionRadius = explosionRadius}
+                }
+            };
         }
 
         public override void OnEntityUpdated(Entity newVal)
@@ -97,43 +111,27 @@ namespace pillz.client.Scripts
                 var cellPos = tilemap.WorldToCell(hitPosition);
                 Log.Debug("ProjectileController: Tile hit at cell position " + cellPos);
 
-                GameHandler.Connection.Reducers.DeleteTerrainTiles(cellPos.x, cellPos.y, ExplosionRadius);
+                if (explosionRadius <= 0f)
+                {
+                    GameHandler.Connection.Reducers.DeleteTerrainTile(cellPos.x, cellPos.y);
+                }
+                else
+                {
+                    GameHandler.Connection.Reducers.DeleteTerrainTiles(cellPos.x, cellPos.y, explosionRadius);
+                }
             }
 
             if (hitObject.CompareTag(Tags.Pill))
             {
+                Log.Debug("ProjectileController: Hit a pill. Applying effects");
+                
                 var hitPill = hitObject.GetComponent<PillController>();
 
-                Log.Debug("ProjectileController: Hit a pill, deleting projectile. Applying damage");
-
-
-                var force = ApplyExplosionForce(hitPill.GetComponent<Rigidbody2D>(), contact.point, ExplosionRadius, 50f);
-
-
-                hitPill.ApplyDamage(10, force);
+                foreach (var effect in _abilityData.Effects)
+                {
+                    effect.Execute(hitPill.Owner.PlayerId, hitPill.GetComponent<Rigidbody2D>(), contact.point);
+                }
             }
-        }
-
-        public static Vector2 ApplyExplosionForce(Rigidbody2D body, Vector2 explosionPosition, float explosionRadius,
-            float maxForce)
-        {
-            Vector2 direction = body.position - explosionPosition;
-            float distance = direction.magnitude;
-
-            // Ignore if outside of explosion range
-            if (distance > explosionRadius)
-                return Vector2.zero;
-
-            // Normalize direction vector
-            direction.Normalize();
-
-            // Invert falloff: closer = stronger force
-            float falloff = 1f - (distance / explosionRadius);
-            float force = maxForce * falloff;
-
-            // return body.AddForce(, ForceMode2D.Impulse);
-
-            return direction * force;
         }
     }
 }
