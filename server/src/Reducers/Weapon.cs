@@ -1,3 +1,4 @@
+using pillz.server.Tables;
 using SpacetimeDB;
 using DbVector2 = pillz.server.Tables.DbVector2;
 using Entity = pillz.server.Tables.Entity;
@@ -8,7 +9,7 @@ namespace pillz.server.Reducers;
 public static partial class Weapon
 {
     [Reducer]
-    public static void ShootProjectile(ReducerContext ctx, DbVector2 position, float speed)
+    public static void ShootProjectile(ReducerContext ctx,  DbVector2 position, float speed)
     {
         var player = ctx.Db.Player.Identity.Find(ctx.Sender) ??
                      throw new Exception("Player not found in the database.");

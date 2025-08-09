@@ -52,7 +52,7 @@ public static partial class Player
         Log.Info($"{ctx.Sender} is entering the game with name {username}.");
         var player = ctx.Db.Player.Identity.Find(ctx.Sender) ??
                      throw new Exception("Player not found in the database.");
-        
+
         player.Username = username;
         ctx.Db.Player.Identity.Update(player);
 
@@ -61,7 +61,7 @@ public static partial class Player
             Position = spawnPosition,
         });
 
-        var pill =ctx.Db.Pill.Insert(new Pill
+        var pill = ctx.Db.Pill.Insert(new Pill
         {
             EntityId = entity.Id,
             PlayerId = player.Id,
@@ -75,7 +75,7 @@ public static partial class Player
     }
 
     [Reducer]
-    public static void UpdatePlayer(ReducerContext ctx, PlayerInput input, PlayerAttributes? attrs)
+    public static void UpdatePlayer(ReducerContext ctx, PlayerInput input)
     {
         var player = ctx.Db.Player.Identity.Find(ctx.Sender) ?? throw new Exception("Player not found");
         foreach (var p in ctx.Db.Pill.PlayerId.Filter(player.Id))
@@ -83,62 +83,86 @@ public static partial class Player
             var pill = p;
             pill.Direction = input.Direction;
             pill.Position = input.Position;
+            pill.SelectedWeapon = input.SelectedWeapon;
             
-            if (attrs != null)
-            {
-                pill.Fuel = attrs.Value.Fuel;
-                pill.JetpackEnabled = attrs.Value.JetpackEnabled;
-                pill.IsThrottling = attrs.Value.IsThrottling;
-            }
-
             player.IsPaused = input.IsPaused;
             ctx.Db.Player.Identity.Update(player);
             ctx.Db.Pill.EntityId.Update(pill);
             // Log.Debug($"Updated pill with id {pill.EntityId} direction to ({pill.Velocity.X}, {pill.Velocity.Y}).");
         }
     }
-    
+
     [Reducer]
-    public static void ApplyDamage(ReducerContext ctx, uint playerId, uint damage, DbVector2? force = null)
+    public static void UpdateJetpack(ReducerContext ctx, JetpackInput input)
+    {
+        var player = ctx.Db.Player.Identity.Find(ctx.Sender) ?? throw new Exception("Player not found");
+        foreach (var p in ctx.Db.Pill.PlayerId.Filter(player.Id))
+        {
+            var pill = p;
+            pill.Jetpack.Fuel = input.Fuel;
+            pill.Jetpack.Enabled = input.Enabled;
+            pill.Jetpack.Throttling = input.Throttling;
+            ;
+            ctx.Db.Pill.EntityId.Update(pill);
+            // Log.Debug($"Updated pill with id {pill.EntityId} direction to ({pill.Velocity.X}, {pill.Velocity.Y}).");
+        }
+    }
+
+    [Reducer]
+    public static void ApplyDamage(ReducerContext ctx, uint playerId, uint damage)
     {
         uint fragCount = 0;
-        var enemy = ctx.Db.Player.Id.Find(playerId)  ?? throw new Exception("Player not found");
+        var enemy = ctx.Db.Player.Id.Find(playerId) ?? throw new Exception("Player not found");
         foreach (var p in ctx.Db.Pill.PlayerId.Filter(enemy.Id))
         {
             var pill = p;
             var hp = Math.Max(0, pill.Hp - damage);
             pill.Hp = hp;
-            pill.Force = force;
-            
+
             if (hp <= 0)
             {
                 fragCount++;
             }
-            
+
             ctx.Db.Pill.EntityId.Update(pill);
             Log.Debug($"Updated pill with id {pill.EntityId} HP to {pill.Hp} after taking damage {damage}.");
         }
-        
-        var player = ctx.Db.Player.Identity.Find(ctx.Sender) ??  throw new Exception("Player not found");
+
+        var player = ctx.Db.Player.Identity.Find(ctx.Sender) ?? throw new Exception("Player not found");
         foreach (var p in ctx.Db.Pill.PlayerId.Filter(player.Id))
         {
             var pill = p;
             pill.Dmg += damage;
             pill.Frags += fragCount;
             ctx.Db.Pill.EntityId.Update(pill);
-            Log.Debug($"Updated pill with id {pill.EntityId} damage to {pill.Dmg} after giving damage {damage} fragCount {fragCount}.");
+            Log.Debug(
+                $"Updated pill with id {pill.EntityId} damage to {pill.Dmg} after giving damage {damage} fragCount {fragCount}.");
         }
     }
-    
+
+    [Reducer]
+    public static void ApplyForce(ReducerContext ctx, uint playerId, DbVector2? force = null)
+    {
+        var enemy = ctx.Db.Player.Id.Find(playerId) ?? throw new Exception("Player not found");
+        foreach (var p in ctx.Db.Pill.PlayerId.Filter(enemy.Id))
+        {
+            var pill = p;
+            pill.Force = force;
+
+            ctx.Db.Pill.EntityId.Update(pill);
+            Log.Debug($"Updated pill with id {pill.EntityId} force to ({force?.X}, {force?.Y}) after applying force.");
+        }
+    }
+
     [Reducer]
     public static void ForceApplied(ReducerContext ctx, uint playerId)
     {
-        var enemy = ctx.Db.Player.Id.Find(playerId)  ?? throw new Exception("Player not found");
+        var enemy = ctx.Db.Player.Id.Find(playerId) ?? throw new Exception("Player not found");
         foreach (var p in ctx.Db.Pill.PlayerId.Filter(enemy.Id))
         {
             var pill = p;
             pill.Force = null;
-            
+
             ctx.Db.Pill.EntityId.Update(pill);
             Log.Debug($"Updated pill with id {pill.EntityId} force to null after applying force.");
         }
@@ -161,7 +185,7 @@ public static partial class Player
             ctx.Db.Pill.EntityId.Delete(entity.Id);
             ctx.Db.Projectile.PlayerId.Delete(player.Value.Id);
         }
-        
+
         Log.Debug($"Deleted pill with id {player.Value.Id}.");
     }
 }

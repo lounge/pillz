@@ -11,13 +11,11 @@ public partial struct Pill
     public uint PlayerId;
     public DbVector2 Direction;
     public DbVector2 Position;
-    public bool IsGrounded;
     public uint Hp;
     public uint Dmg;
     public uint Frags;
-    public float Fuel;
-    public bool JetpackEnabled;
-    public bool IsThrottling;
+    public Jetpack Jetpack;
     public DbVector2 AimDir;
     public DbVector2? Force;
+    public WeaponType SelectedWeapon;
 }
