@@ -169,6 +169,7 @@ namespace pillz.client.Scripts
                 Log.Debug("PillMovement: Jump pressed, applying jump force.");
                 jetpack?.ThrottleOn();
                 _rb.linearVelocityY = Mathf.Lerp(_rb.linearVelocityY, jumpForce, 0.2f);
+                _airborneXDirection = _moveInput.x;
             }
             else
             {
@@ -204,7 +205,6 @@ namespace pillz.client.Scripts
                 }
 
                 var targetX = _airborneXDirection * moveSpeed;
-                // _rb.linearVelocityX *= airDragFactor;
                 _rb.linearVelocityX = Mathf.Lerp(_rb.linearVelocityX, targetX, smoothing);
             }
 
@@ -342,7 +342,5 @@ namespace pillz.client.Scripts
 
             GameHandler.Connection.Reducers.DeletePill(Owner.PlayerId);
         }
-
-       
     }
 }

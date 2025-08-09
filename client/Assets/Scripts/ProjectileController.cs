@@ -30,8 +30,8 @@ namespace pillz.client.Scripts
             {
                 Effects = new List<AbilityEffect>
                 {
-                    new DamageEffect { Damage = maxDamage },
-                    new KnockbackEffect { Force = maxForce, ExplosionRadius = explosionRadius}
+                    new DamageEffect { MaxDamage = maxDamage },
+                    new KnockbackEffect { MaxForce = maxForce }
                 }
             };
         }
@@ -88,7 +88,6 @@ namespace pillz.client.Scripts
             var hitObject = collision.gameObject;
             var contact = collision.GetContact(0);
 
-
             if (explosionPrefab)
             {
                 Instantiate(explosionPrefab, transform.position, Quaternion.identity);
@@ -96,6 +95,8 @@ namespace pillz.client.Scripts
 
             Log.Debug("ProjectileController: Collision detected with " + hitObject.name);
             GameHandler.Connection.Reducers.DeleteProjectile(EntityId);
+            
+            _abilityData.ApplyExplosionAt(contact.point, explosionRadius);
 
             if (hitObject.CompareTag(Tags.Terrain))
             {
@@ -118,18 +119,6 @@ namespace pillz.client.Scripts
                 else
                 {
                     GameHandler.Connection.Reducers.DeleteTerrainTiles(cellPos.x, cellPos.y, explosionRadius);
-                }
-            }
-
-            if (hitObject.CompareTag(Tags.Pill))
-            {
-                Log.Debug("ProjectileController: Hit a pill. Applying effects");
-                
-                var hitPill = hitObject.GetComponent<PillController>();
-
-                foreach (var effect in _abilityData.Effects)
-                {
-                    effect.Execute(hitPill.Owner.PlayerId, hitPill.GetComponent<Rigidbody2D>(), contact.point);
                 }
             }
         }

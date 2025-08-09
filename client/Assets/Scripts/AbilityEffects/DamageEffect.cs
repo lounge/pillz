@@ -1,17 +1,16 @@
-using SpacetimeDB;
 using UnityEngine;
 
 namespace pillz.client.Scripts.AbilityEffects
 {
     public class DamageEffect : AbilityEffect
     {
-        public uint Damage { get; set; }
+        public uint MaxDamage { get; set; }
 
-        public override void Execute(uint playerId, Rigidbody2D target, Vector2 contactPoint)
+        public override void Execute(uint playerId, Rigidbody2D target, in ExplosionHit hit)
         {
-            GameHandler.Connection.Reducers.ApplyDamage(playerId, Damage);
-
-            Log.Debug("AbilityEffect: Executing damage effect with damage: " + Damage);
+            // Scale damage by proximity (at least 1)
+            var dmg = (uint)Mathf.Max(1, Mathf.RoundToInt(MaxDamage * hit.Falloff));
+            GameHandler.Connection.Reducers.ApplyDamage(playerId, dmg);
         }
     }
 }
