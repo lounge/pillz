@@ -11,8 +11,8 @@ public partial struct Pill
     public uint PlayerId;
     public DbVector2 Direction;
     public DbVector2 Position;
-    public uint Hp;
-    public uint Dmg;
+    public int Hp;
+    public int Dmg;
     public uint Frags;
     public Jetpack Jetpack;
     public DbVector2 AimDir;

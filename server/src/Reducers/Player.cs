@@ -109,16 +109,17 @@ public static partial class Player
     }
 
     [Reducer]
-    public static void ApplyDamage(ReducerContext ctx, uint playerId, uint damage)
+    public static void ApplyDamage(ReducerContext ctx, uint playerId, int damage)
     {
         uint fragCount = 0;
         var enemy = ctx.Db.Player.Id.Find(playerId) ?? throw new Exception("Player not found");
         foreach (var p in ctx.Db.Pill.PlayerId.Filter(enemy.Id))
         {
             var pill = p;
+            
             var hp = Math.Max(0, pill.Hp - damage);
             pill.Hp = hp;
-
+            
             if (hp <= 0)
             {
                 fragCount++;
