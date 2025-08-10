@@ -24,7 +24,7 @@ namespace pillz.client.Scripts
                 usernameText.text = username;
         }
 
-        public void SetHp(uint hp)
+        public void SetHp(int hp)
         {
             if (hpText)
                 hpText.text = $"{hp} mg";

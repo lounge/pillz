@@ -1,4 +1,4 @@
-namespace pillz.client.Scripts
+namespace pillz.client.Scripts.Constants
 {
     public static class Tags
     {

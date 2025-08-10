@@ -13,8 +13,9 @@ GameObject:
   - component: {fileID: -7521457859861907659}
   - component: {fileID: 8155380346980627207}
   - component: {fileID: 4165104554183277221}
+  - component: {fileID: 3735842774155866163}
   m_Layer: 0
-  m_Name: Bullet
+  m_Name: Grenade
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -80,7 +81,7 @@ SpriteRenderer:
   m_SortingLayer: 2
   m_SortingOrder: 10
   m_Sprite: {fileID: -2135585597343286014, guid: 5aa8b770bc43046bc8d993d0d5b7f4a5, type: 3}
-  m_Color: {r: 1, g: 0.9803922, b: 0.9803922, a: 1}
+  m_Color: {r: 0.9622642, g: 0.040850822, b: 0.15088825, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -105,7 +106,7 @@ Rigidbody2D:
   m_Mass: 0.0001
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 0
+  m_GravityScale: 2
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -175,7 +176,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16c4d60bac3b84a4d8a753089835bed2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explosionPrefab: {fileID: 0}
-  maxForce: 5
-  maxDamage: 1
-  explosionRadius: 0
+  projectileConfig: {fileID: 11400000, guid: ff5c1cd4522e74f4db4c00dcd4d6a829, type: 2}
+  collisionRelay: {fileID: 0}
+--- !u!114 &3735842774155866163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 842978576711658570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4039cf23f0c4df19d9a721ddee74b64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  terrainTag: Terrain

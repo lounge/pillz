@@ -1,10 +1,9 @@
-using pillz.client.Scripts.AbilityEffects;
+using System.Collections.Generic;
+using pillz.client.Scripts.Constants;
+using UnityEngine;
 
-namespace pillz.client.Scripts
+namespace pillz.client.Scripts.AbilityEffects
 {
-    using System.Collections.Generic;
-    using UnityEngine;
-
     public class AbilityData
     {
         public List<AbilityEffect> Effects = new();
@@ -20,16 +19,16 @@ namespace pillz.client.Scripts
             var colliders = Physics2D.OverlapCircleAll(contactPoint, radius);
             foreach (var col in colliders)
             {
-                if (!col || !col.CompareTag(pillTag)) 
+                if (!col || !col.CompareTag(pillTag))
                     continue;
 
                 var pill = col.GetComponent<PillController>();
-                var rb   = col.attachedRigidbody;
-                if (!pill || !rb) 
+                var rb = col.attachedRigidbody;
+                if (!pill || !rb)
                     continue;
 
                 var dir = rb.position - contactPoint;
-                var dist  = dir.magnitude;
+                var dist = dir.magnitude;
                 if (dist <= Mathf.Epsilon)
                 {
                     dir = Vector2.up;
@@ -44,10 +43,10 @@ namespace pillz.client.Scripts
                 var hit = new ExplosionHit
                 {
                     ContactPoint = contactPoint,
-                    Radius       = radius,
-                    Distance     = dist,
-                    Falloff      = falloff,
-                    Direction    = dir
+                    Radius = radius,
+                    Distance = dist,
+                    Falloff = falloff,
+                    Direction = dir
                 };
 
                 // Fan out to effects
@@ -58,5 +57,4 @@ namespace pillz.client.Scripts
             }
         }
     }
-
 }

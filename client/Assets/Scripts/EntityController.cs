@@ -13,7 +13,7 @@ namespace pillz.client.Scripts
         [NonSerialized] public PlayerController Owner;
         [NonSerialized] public const float SendUpdatesFrequency = 1f / SendUpdatesPerSec;
 
-        protected uint EntityId;
+        [NonSerialized] public uint EntityId;
 
         private const int SendUpdatesPerSec = 20;
         private const float LerpDurationSec = 0.1f;

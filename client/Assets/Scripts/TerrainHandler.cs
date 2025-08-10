@@ -4,7 +4,6 @@ using SpacetimeDB;
 using SpacetimeDB.Types;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using Random = UnityEngine.Random;
 using Terrain = SpacetimeDB.Types.Terrain;
 
 namespace pillz.client.Scripts
@@ -94,17 +93,17 @@ namespace pillz.client.Scripts
         public DbVector2 GetRandomSpawnPosition()
         {
             // TODO: ONLY FOR TESTING
-            // var spawnLocations = GameManager.Connection.Db.SpawnLocation.Iter().FirstOrDefault(); //ToList();
-            // return spawnLocations!.Position;
+            var spawnLocations = GameHandler.Connection.Db.Terrain.Iter().Where(x => x.IsSpawnable).FirstOrDefault(); //ToList();
+            return spawnLocations!.Position;
 
-            var spawnLocations = GameHandler.Connection.Db.Terrain.Iter().Where(x => x.IsSpawnable).ToList();
-            if (spawnLocations.Count == 0)
-            {
-                throw new System.Exception("No spawn locations available.");
-            }
-
-            int index = Random.Range(0, spawnLocations.Count);
-            return spawnLocations[index].Position;
+            // var spawnLocations = GameHandler.Connection.Db.Terrain.Iter().Where(x => x.IsSpawnable).ToList();
+            // if (spawnLocations.Count == 0)
+            // {
+            //     throw new Exception("No spawn locations available.");
+            // }
+            //
+            // int index = Random.Range(0, spawnLocations.Count);
+            // return spawnLocations[index].Position;
         }
     }
 }

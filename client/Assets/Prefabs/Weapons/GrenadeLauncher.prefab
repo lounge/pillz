@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2616092348292719961}
   - component: {fileID: -1818467974883061908}
   m_Layer: 0
-  m_Name: GunPrefab
+  m_Name: GrenadeLauncher
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47,8 +47,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weapon: {fileID: 8709204359804051046}
   weaponDistance: 1.5
-  projectileSpeed: 50
-  projectilePrefab: {fileID: 4165104554183277221, guid: da00c7f32bac94bdf83b6db009c2e0a9, type: 3}
+  projectileSpeed: 10
+  projectilePrefab: {fileID: 4165104554183277221, guid: b807338ce5d9a432197d5f73603e7fc0, type: 3}
 --- !u!1 &1779554001655125816
 GameObject:
   m_ObjectHideFlags: 0
@@ -126,7 +126,7 @@ SpriteRenderer:
   m_SortingLayer: 2
   m_SortingOrder: 10
   m_Sprite: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

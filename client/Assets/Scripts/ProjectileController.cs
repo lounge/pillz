@@ -1,39 +1,27 @@
-using System;
-using System.Collections.Generic;
 using pillz.client.Scripts.AbilityEffects;
-using SpacetimeDB;
+using pillz.client.Scripts.ScriptableObjects;
 using SpacetimeDB.Types;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 namespace pillz.client.Scripts
 {
     public class ProjectileController : EntityController
     {
-        [SerializeField] private GameObject explosionPrefab;
-        [SerializeField] private float maxForce = 50f;
-        [SerializeField] private uint maxDamage = 20;
-        [SerializeField] private float explosionRadius = 3.5f;
-
+        [Header("Data")]
+        [SerializeField] private ProjectileConfig projectileConfig;
+        
         private Rigidbody2D _rb;
-        private float _lastPositionSendTimestamp;
         private AbilityData _abilityData;
-
-        [NonSerialized] private Vector2 _lastPosition;
+        private Vector2 _lastPosition;
+        private float _lastPositionSendTimestamp;
 
         protected override void Awake()
         {
             gameObject.SetActive(true);
             _rb = GetComponent<Rigidbody2D>();
-
-            _abilityData = new AbilityData
-            {
-                Effects = new List<AbilityEffect>
-                {
-                    new DamageEffect { MaxDamage = maxDamage },
-                    new KnockbackEffect { MaxForce = maxForce }
-                }
-            };
+            
+            var collisionRelay = GetComponent<ProjectileCollisionRelay>();
+            collisionRelay.Init(projectileConfig);
         }
 
         public override void OnEntityUpdated(Entity newVal)
@@ -46,23 +34,18 @@ namespace pillz.client.Scripts
             transform.position = (Vector2)newVal.Position;
             _rb.position = transform.position;
             _rb.linearVelocity = Vector2.zero;
-
-            Log.Debug($"ProjectileController: Remote synced to position {transform.position}");
         }
 
         protected override void Update()
         {
             if (Owner && (!Owner.IsLocalPlayer || !GameHandler.IsConnected()))
             {
-                Log.Debug("ProjectileController: Not local player or not connected, skipping projectile update.");
                 return;
             }
 
             if (!_rb.linearVelocity.Equals(_lastPosition) &&
                 Time.time - _lastPositionSendTimestamp >= SendUpdatesFrequency)
             {
-                Log.Debug("ProjectileController: Projectile position changed, updating velocity.");
-
                 _lastPositionSendTimestamp = Time.time;
                 GameHandler.Connection.Reducers.UpdateProjectile(_rb.linearVelocity, _rb.position);
             }
@@ -79,48 +62,6 @@ namespace pillz.client.Scripts
         {
             base.Spawn(projectile.EntityId, owner, position);
             _rb.linearVelocity = velocity;
-
-            Log.Debug($"ProjectileController: Shooting projectile from with direction {velocity}.");
-        }
-
-        private void OnCollisionEnter2D(Collision2D collision)
-        {
-            var hitObject = collision.gameObject;
-            var contact = collision.GetContact(0);
-
-            if (explosionPrefab)
-            {
-                Instantiate(explosionPrefab, transform.position, Quaternion.identity);
-            }
-
-            Log.Debug("ProjectileController: Collision detected with " + hitObject.name);
-            GameHandler.Connection.Reducers.DeleteProjectile(EntityId);
-            
-            _abilityData.ApplyExplosionAt(contact.point, explosionRadius);
-
-            if (hitObject.CompareTag(Tags.Terrain))
-            {
-                var hitPosition = contact.point;
-
-                var tilemap = hitObject.GetComponentInParent<Tilemap>();
-                if (!tilemap)
-                {
-                    Log.Error("ProjectileController: Tilemap not found on Ground collision.");
-                    return;
-                }
-
-                var cellPos = tilemap.WorldToCell(hitPosition);
-                Log.Debug("ProjectileController: Tile hit at cell position " + cellPos);
-
-                if (explosionRadius <= 0f)
-                {
-                    GameHandler.Connection.Reducers.DeleteTerrainTile(cellPos.x, cellPos.y);
-                }
-                else
-                {
-                    GameHandler.Connection.Reducers.DeleteTerrainTiles(cellPos.x, cellPos.y, explosionRadius);
-                }
-            }
         }
     }
 }

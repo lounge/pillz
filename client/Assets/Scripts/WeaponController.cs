@@ -111,11 +111,7 @@ namespace pillz.client.Scripts
         public ProjectileController Shoot(Projectile projectile, PlayerController player, Vector2 position, float speed)
         {
             var projectileController = Instantiate(projectilePrefab, weapon.position, Quaternion.identity);
-
             projectileController.Spawn(projectile, player, position, _weaponDirection.normalized * speed);
-
-            // Log.Debug(
-            //     $"WeaponController: Shooting projectile from {weapon.position} with direction {_weaponDirection.normalized} and speed {projectileSpeed}.");
 
             return projectileController;
         }
@@ -135,6 +131,5 @@ namespace pillz.client.Scripts
 
             GameHandler.Connection.Reducers.ShootProjectile(new DbVector2(weapon.position.x, weapon.position.y), speed);
         }
-
     }
 }

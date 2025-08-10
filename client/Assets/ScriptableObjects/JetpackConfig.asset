@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94ee281227c043619c61cf6195a02b24, type: 3}
+  m_Name: JetpackConfig
+  m_EditorClassIdentifier: 
+  maxFuel: 100
+  burnRate: 10
+  refuelRate: 5
+  refuelCooldown: 5
+  force: 15
