@@ -19,7 +19,7 @@ namespace pillz.client.Scripts
 
         public PlayerController SpawnPlayer(Player player)
         {
-            var playerController = Instantiate(Instance.playerPrefab);
+            var playerController = Instantiate(playerPrefab);
             playerController.name = $"Player_{player.Username}";
             playerController.Init(player);
             return playerController;
@@ -29,7 +29,7 @@ namespace pillz.client.Scripts
         {
             Log.Debug($"PrefabManager1: Spawning pill at position {pill.Position} with aim direction {pill.AimDir}.");
             
-            var entityController = Instantiate(Instance.pillPrefab, owner.transform);
+            var entityController = Instantiate(pillPrefab, owner.transform);
             entityController.name = $"Pill_{owner.Username}";
 
             entityController.Spawn(pill, owner);
@@ -40,7 +40,7 @@ namespace pillz.client.Scripts
 
         public PortalController SpawnPortal(Portal portal)
         {
-            var portalController = Instantiate(Instance.portalPrefab);
+            var portalController = Instantiate(portalPrefab);
             portalController.name = $"Portal_{portal.Id}";
             
             portalController.Spawn(portal);

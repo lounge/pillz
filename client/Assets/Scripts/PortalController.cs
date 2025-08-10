@@ -6,8 +6,6 @@ namespace pillz.client.Scripts
 {
     public class PortalController : MonoBehaviour
     {
-        [SerializeField] private float portalCoolDown = 2f;
-
         private uint _connectedPortalId;
 
         public void Spawn(Portal portal)

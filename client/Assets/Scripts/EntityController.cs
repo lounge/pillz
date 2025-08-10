@@ -32,7 +32,6 @@ namespace pillz.client.Scripts
             Owner = owner;
             _mainCamera = Camera.main;
 
-
             if (Owner.IsLocalPlayer)
             {
                 return;
@@ -77,32 +76,6 @@ namespace pillz.client.Scripts
                 _entityRb.position = transform.position;
                 _entityRb.linearVelocity = Vector2.zero;
             }
-        }
-
-        protected OutOfBound IsOutOfBounds()
-        {
-            if (!_mainCamera)
-            {
-                Log.Debug("EntityController: No main camera found, cannot check out of bounds.");
-                return OutOfBound.None;
-            }
-
-            if (transform.position.x < TerrainHandler.Instance.MinX)
-            {
-                return OutOfBound.Left;
-            }
-
-            if (transform.position.x > TerrainHandler.Instance.MaxX)
-            {
-                return OutOfBound.Right;
-            }
-
-            if (transform.position.y < TerrainHandler.Instance.MinY)
-            {
-                return OutOfBound.Bottom;
-            }
-
-            return OutOfBound.None;
         }
     }
 }

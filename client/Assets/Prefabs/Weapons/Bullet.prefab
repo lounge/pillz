@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 8155380346980627207}
   - component: {fileID: 4165104554183277221}
   - component: {fileID: 9220758388897613138}
+  - component: {fileID: 6197717744170721301}
   m_Layer: 0
   m_Name: Bullet
   m_TagString: Untagged
@@ -177,7 +178,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   projectileConfig: {fileID: 11400000, guid: 0befb5add08fc4839acf88c8f76eae06, type: 2}
-  collisionRelay: {fileID: 0}
+  outOfBoundsEmitter: {fileID: 0}
 --- !u!114 &9220758388897613138
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -191,3 +192,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   terrainTag: Terrain
+--- !u!114 &6197717744170721301
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 842978576711658570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c06767318f224d078207b7a7a67da991, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 0}
+  source: 1
+  minX: -100
+  maxX: 100
+  minY: -50
+  boundsCollider: {fileID: 0}
+  tick: 1
+  onStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  onExitLeft:
+    m_PersistentCalls:
+      m_Calls: []
+  onExitRight:
+    m_PersistentCalls:
+      m_Calls: []
+  onExitBottom:
+    m_PersistentCalls:
+      m_Calls: []
+  onEnterBounds:
+    m_PersistentCalls:
+      m_Calls: []
