@@ -1,6 +1,6 @@
 [X]  Detect when a mask falls off the map and kill it
 [X]  Detect when a projectile falls off the map and destroy it
-[]  Player prefabs dont get destroyd correctly when remote player dies (PLayers dict in game manager)
+[X]  Player prefabs dont get destroyd correctly when remote player dies (PLayers dict in game manager)
 [-]  Stop player from moving outside the map
     [X]  Stop in min, max X
     []  Stop in max Y
@@ -52,16 +52,16 @@
     [X]  Fine tune portal spawn positon
     []  Make rigidbody and sync position to server
 [-]  Jetpack movement
-    []  Faster more precise movement
+    [X]  Faster more precise movement
     [X]  Sync jetpack activity to server
     [X]  Toggle jetpack on/off
     [X]  Jetpack fuel
         [X]  Show fuel in HUD
         [X]  Deplete fuel when used
         [X]  Refill fuel over time
-[]  Add more weapons
-    []  Different weapon types (e.g., rocket, grenade)
-    []  Different dmg output    
-    []  Weapon switching mechanism    
+[X]  Add more weapons
+    [X]  Different weapon types (e.g., rocket, grenade)
+    [X]  Different dmg output    
+    [X]  Weapon switching mechanism    
 []  Add multiple masks per player
     []  Toggle between players masks
