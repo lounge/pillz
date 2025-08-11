@@ -8,7 +8,6 @@ public partial struct Ammo
     [PrimaryKey, AutoInc]
     public uint Id;
     public WeaponType AmmoType;
-    public int Amount;
     public DbVector2 Position;
 
 }

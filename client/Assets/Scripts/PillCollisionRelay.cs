@@ -33,7 +33,7 @@ namespace pillz.client.Scripts
                 Log.Debug($"Pill {_pill.EntityId} picked up ammo {ammoController.Ammo.Id}");
                 
                 
-                GameInit.Connection.Reducers.IncreaseAmmo(ammoController.Ammo.Amount, ammoController.Ammo.AmmoType);
+                GameInit.Connection.Reducers.IncreaseAmmo(ammoController.AmmoAmount, ammoController.Ammo.AmmoType);
                 GameInit.Connection.Reducers.DeleteAmmo(ammoController.Ammo.Id);
             }
         }

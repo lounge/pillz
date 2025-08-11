@@ -108,7 +108,7 @@ public partial class Game
         {
             for (var i = primaryCount; i < primaryMaxCount; i++)
             {
-                Spawn(WeaponType.Primary, 35);
+                Spawn(WeaponType.Primary);
             }
         }
         
@@ -116,11 +116,11 @@ public partial class Game
         {
             for (var i = secondaryCount; i < secondaryMaxCount; i++)
             {
-                Spawn(WeaponType.Secondary, 10);
+                Spawn(WeaponType.Secondary);
             }
         }
 
-        void Spawn(WeaponType type, int amount)
+        void Spawn(WeaponType type)
         {
             var rnd = new Random();
             var index = rnd.Next(0, spawnLocations.Count);
@@ -129,8 +129,7 @@ public partial class Game
             var ammo = ctx.Db.Ammo.Insert(new Ammo
             {
                 Position = spawnLoc,
-                AmmoType = type,
-                Amount = amount
+                AmmoType = type
             });
 
             Log.Debug(

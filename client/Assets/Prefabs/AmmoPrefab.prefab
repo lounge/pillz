@@ -51,6 +51,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   primary: {fileID: 4003120346307099862}
   secondary: {fileID: 8398557483846126796}
+  primaryAmmoAmount: 35
+  secondaryAmmoAmount: 15
 --- !u!50 &4825477044382774559
 Rigidbody2D:
   serializedVersion: 5

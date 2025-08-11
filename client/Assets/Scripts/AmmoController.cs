@@ -1,3 +1,4 @@
+using System;
 using SpacetimeDB;
 using SpacetimeDB.Types;
 using UnityEngine;
@@ -8,9 +9,12 @@ namespace pillz.client.Scripts
     {
         [SerializeField] private GameObject primary;
         [SerializeField] private GameObject secondary;
+        [SerializeField] private int primaryAmmoAmount = 35;
+        [SerializeField] private int secondaryAmmoAmount = 15;
         
+        [NonSerialized] public Ammo Ammo;
+        [NonSerialized] public int AmmoAmount;
         
-        public Ammo Ammo;
         private float _lastSend;
         private Vector3 _lastSent;
         private OutOfBoundsEmitter _outOfBoundsEmitter;
@@ -32,20 +36,22 @@ namespace pillz.client.Scripts
             primary.SetActive(false);
             secondary.SetActive(false);
         }
-
+        
         public void Spawn(Ammo ammo)
         {
             Ammo = ammo;
 
             transform.position = new Vector3(ammo.Position.X + 0.5f, ammo.Position.Y + 2f, 0);
 
-            switch (Ammo.AmmoType)
+            switch (ammo.AmmoType)
             {
                 case WeaponType.Primary:
                     primary.SetActive(true);
+                    AmmoAmount = primaryAmmoAmount;
                     break;
                 case WeaponType.Secondary:
                     secondary.SetActive(true);
+                    AmmoAmount = secondaryAmmoAmount;
                     break;
             }
         }
