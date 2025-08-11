@@ -9,7 +9,7 @@ namespace pillz.server.Reducers;
 public static partial class Weapon
 {
     [Reducer]
-    public static void SetAmmo(ReducerContext ctx, int primaryAmmo, int secondaryAmmo)
+    public static void InitAmmo(ReducerContext ctx, int primaryAmmo, int secondaryAmmo)
     {
         var player = ctx.Db.Player.Identity.Find(ctx.Sender) ??
                      throw new Exception("Player not found in the database.");

@@ -109,6 +109,38 @@ public static partial class Player
             // Log.Debug($"Updated pill with id {pill.EntityId} direction to ({pill.Velocity.X}, {pill.Velocity.Y}).");
         }
     }
+    
+    [Reducer]
+    public static void InitStims(ReducerContext ctx, int stims)
+    {
+        var player = ctx.Db.Player.Identity.Find(ctx.Sender) ?? throw new Exception("Player not found");
+        foreach (var p in ctx.Db.Pill.PlayerId.Filter(player.Id))
+        {
+            var pill = p;
+            pill.Stims = stims;
+            ctx.Db.Pill.EntityId.Update(pill);
+        }
+    }
+    
+    [Reducer]
+    public static void Stim(ReducerContext ctx, int strength)
+    {
+        var player = ctx.Db.Player.Identity.Find(ctx.Sender) ?? throw new Exception("Player not found");
+        foreach (var p in ctx.Db.Pill.PlayerId.Filter(player.Id))
+        {
+            if (p.Stims <= 0 || p.Hp >= 100)
+            {
+                Log.Debug("Cannot use stim: No stims left or HP is already full.");
+                return;
+            }
+            
+            var pill = p;
+            pill.Hp += strength;
+            pill.Stims -= 1;
+            ctx.Db.Pill.EntityId.Update(pill);
+            Log.Debug($"Updated pill with id {pill.EntityId} HP to {pill.Hp} and stims to {pill.Stims} after using stim.");
+        }
+    }
 
     [Reducer]
     public static void ApplyDamage(ReducerContext ctx, uint playerId, int damage)

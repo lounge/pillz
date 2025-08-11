@@ -20,4 +20,5 @@ public partial struct Pill
     public WeaponType SelectedWeapon;
     public Weapon PrimaryWeapon;
     public Weapon SecondaryWeapon;
+    public int Stims;
 }
