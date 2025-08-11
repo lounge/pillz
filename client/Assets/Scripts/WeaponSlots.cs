@@ -23,7 +23,7 @@ namespace pillz.client.Scripts
 
             _selected = WeaponType.Primary;
             
-            GameInit.Connection.Reducers.SetAmmo(_primary.GetAmmo(), _secondary.GetAmmo());
+            GameInit.Connection.Reducers.InitAmmo(_primary.GetAmmo(), _secondary.GetAmmo());
         }
 
         public void Select(WeaponType type)

@@ -11,6 +11,7 @@ namespace pillz.client.Scripts
         [Header("Data")] 
         [SerializeField] private MovementConfig movementConfig;
         [SerializeField] private JetpackConfig jetpackConfig;
+        [SerializeField] private StimConfig stimConfig;
 
         [Header("Modules")] 
         [SerializeField] private PillInputReader inputReader;
@@ -26,9 +27,9 @@ namespace pillz.client.Scripts
         private Rigidbody2D _rb;
         private Camera _cam;
         private PlayerInput _lastSent;
-        private ScoreDisplay _scoreDisplay;
+        private HudDisplay _hudDisplay;
         private GameObject _gameHud;
-        private AmmoDisplay _ammoDisplay;
+        private int _stims;
         
         private float _lastSend;
 
@@ -38,6 +39,7 @@ namespace pillz.client.Scripts
             
             _cam = Camera.main;
             _rb = GetComponent<Rigidbody2D>();
+            _stims = stimConfig.amount;
 
             transform.position = new Vector3(pill.Position.X + 0.5f, pill.Position.Y + 2f, 0);
             
@@ -61,15 +63,17 @@ namespace pillz.client.Scripts
             _gameHud = GameObject.Find("Game HUD");
             _gameHud = Instantiate(Owner.GetHud(), _gameHud.transform);
 
-            _scoreDisplay = _gameHud.GetComponentInChildren<ScoreDisplay>();
-            _scoreDisplay.SetDmg(pill.Dmg);
-            _scoreDisplay.SetFrags(pill.Frags);
-            
-            _ammoDisplay = _gameHud.GetComponentInChildren<AmmoDisplay>();
-            _ammoDisplay.SetPrimary(weapons.GetPrimary().GetAmmo());
-            _ammoDisplay.SetSecondary(weapons.GetSecondary().GetAmmo());
+            _hudDisplay = _gameHud.GetComponentInChildren<HudDisplay>();
+            _hudDisplay.SetStim(_stims);
+            _hudDisplay.SetDmg(pill.Dmg);
+            _hudDisplay.SetFrags(pill.Frags);
+            _hudDisplay.SetPrimary(weapons.GetPrimary().GetAmmo());
+            _hudDisplay.SetSecondary(weapons.GetSecondary().GetAmmo());
 
             _cam?.GetComponent<CameraFollow>()?.SetTarget(transform);
+            
+            GameInit.Connection.Reducers.InitStims(stimConfig.amount);
+            
         }
 
         private void FixedUpdate()
@@ -89,6 +93,11 @@ namespace pillz.client.Scripts
             else
             {
                 jetpack.ThrottleOff();
+            }
+
+            if (intent.Stim)
+            {
+                GameInit.Connection.Reducers.Stim(stimConfig.strength);
             }
 
             jetpack.Tick();
@@ -129,11 +138,11 @@ namespace pillz.client.Scripts
 
             jetpack.OnJetpackUpdated(newVal.Jetpack);
             
-            _scoreDisplay?.SetDmg(newVal.Dmg);
-            _scoreDisplay?.SetFrags(newVal.Frags);
-            
-            _ammoDisplay?.SetPrimary(newVal.PrimaryWeapon.Ammo);
-            _ammoDisplay?.SetSecondary(newVal.SecondaryWeapon.Ammo);
+            _hudDisplay?.SetStim(newVal.Stims);
+            _hudDisplay?.SetDmg(newVal.Dmg);
+            _hudDisplay?.SetFrags(newVal.Frags);
+            _hudDisplay?.SetPrimary(newVal.PrimaryWeapon.Ammo);
+            _hudDisplay?.SetSecondary(newVal.SecondaryWeapon.Ammo);
             
             Log.Debug($"AMMO CHECK: Primary={newVal.PrimaryWeapon.Ammo} Secondary={newVal.SecondaryWeapon.Ammo}");
 

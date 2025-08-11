@@ -218,6 +218,15 @@ namespace pillz.client.Assets.Input
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Stim"",
+                    ""type"": ""Button"",
+                    ""id"": ""1a7985c5-ebac-452c-94e0-567ca5b34aa8"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -658,6 +667,17 @@ namespace pillz.client.Assets.Input
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""SecondaryWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""55a0b3fb-fe7c-4a9a-b04d-9981deac4db3"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Stim"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1259,6 +1279,7 @@ namespace pillz.client.Assets.Input
             m_Player_Jetpack = m_Player.FindAction("Jetpack", throwIfNotFound: true);
             m_Player_PrimaryWeapon = m_Player.FindAction("PrimaryWeapon", throwIfNotFound: true);
             m_Player_SecondaryWeapon = m_Player.FindAction("SecondaryWeapon", throwIfNotFound: true);
+            m_Player_Stim = m_Player.FindAction("Stim", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
             m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1366,6 +1387,7 @@ namespace pillz.client.Assets.Input
         private readonly InputAction m_Player_Jetpack;
         private readonly InputAction m_Player_PrimaryWeapon;
         private readonly InputAction m_Player_SecondaryWeapon;
+        private readonly InputAction m_Player_Stim;
         /// <summary>
         /// Provides access to input actions defined in input action map "Player".
         /// </summary>
@@ -1434,6 +1456,10 @@ namespace pillz.client.Assets.Input
             /// </summary>
             public InputAction @SecondaryWeapon => m_Wrapper.m_Player_SecondaryWeapon;
             /// <summary>
+            /// Provides access to the underlying input action "Player/Stim".
+            /// </summary>
+            public InputAction @Stim => m_Wrapper.m_Player_Stim;
+            /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
             public InputActionMap Get() { return m_Wrapper.m_Player; }
@@ -1501,6 +1527,9 @@ namespace pillz.client.Assets.Input
                 @SecondaryWeapon.started += instance.OnSecondaryWeapon;
                 @SecondaryWeapon.performed += instance.OnSecondaryWeapon;
                 @SecondaryWeapon.canceled += instance.OnSecondaryWeapon;
+                @Stim.started += instance.OnStim;
+                @Stim.performed += instance.OnStim;
+                @Stim.canceled += instance.OnStim;
             }
 
             /// <summary>
@@ -1554,6 +1583,9 @@ namespace pillz.client.Assets.Input
                 @SecondaryWeapon.started -= instance.OnSecondaryWeapon;
                 @SecondaryWeapon.performed -= instance.OnSecondaryWeapon;
                 @SecondaryWeapon.canceled -= instance.OnSecondaryWeapon;
+                @Stim.started -= instance.OnStim;
+                @Stim.performed -= instance.OnStim;
+                @Stim.canceled -= instance.OnStim;
             }
 
             /// <summary>
@@ -1952,6 +1984,13 @@ namespace pillz.client.Assets.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnSecondaryWeapon(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Stim" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnStim(InputAction.CallbackContext context);
         }
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

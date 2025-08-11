@@ -9,5 +9,6 @@ namespace pillz.client.Scripts
         public bool JumpHeld;
         public bool ToggleJetpack;
         public WeaponType SelectWeapon;
+        public bool Stim;
     }
 }

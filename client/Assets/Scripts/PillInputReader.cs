@@ -21,6 +21,8 @@ namespace pillz.client.Scripts
             _actions.Player.Jump.started += _ => _current.JumpHeld = true;
             _actions.Player.Jump.canceled += _ => _current.JumpHeld = false;
             _actions.Player.Jetpack.performed += _ => _current.ToggleJetpack = true;
+            _actions.Player.Stim.performed += _ => _current.Stim = true;
+            
             _actions.Player.PrimaryWeapon.performed += _ => _current.SelectWeapon = WeaponType.Primary;
             _actions.Player.SecondaryWeapon.performed += _ => _current.SelectWeapon = WeaponType.Secondary;
         }
@@ -35,8 +37,12 @@ namespace pillz.client.Scripts
             intent.ToggleJetpack = _current.ToggleJetpack;
             _current.ToggleJetpack = false;
             
-            intent.SelectWeapon = _current.SelectWeapon != WeaponType.None ? _current.SelectWeapon : WeaponType.Primary;;
+            intent.Stim = _current.Stim;
+            _current.Stim = false;
             
+            intent.SelectWeapon = _current.SelectWeapon != WeaponType.None ? _current.SelectWeapon : WeaponType.Primary;
+            
+            Log.Debug($"PillInputReader: Consuming frame intent. Current={intent.Stim} {intent.JumpHeld} {intent.ToggleJetpack} {intent.SelectWeapon} {intent.Move}");
             return intent;
         }
     }

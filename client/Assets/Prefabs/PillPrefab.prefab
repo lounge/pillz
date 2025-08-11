@@ -1012,13 +1012,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movementConfig: {fileID: 11400000, guid: 003da006d38e0405a981d8ad9a109c65, type: 2}
   jetpackConfig: {fileID: 11400000, guid: ebb09580c462748e3b8d149d68dec8ad, type: 2}
+  stimConfig: {fileID: 11400000, guid: 9963da9e999f94d1284d5977d00f3800, type: 2}
   inputReader: {fileID: 392599036858511783}
   mover: {fileID: 7600362200220459848}
   boundary: {fileID: 287434761774246131}
   jetpack: {fileID: 5456931286535303721}
   weapons: {fileID: 8426579267939972147}
   portalState: {fileID: 1442433058460366503}
-  deathScreen: {fileID: 7247835872720211768, guid: 4657744aa0c0a4381a3390341f49b037, type: 3}
   pillHud: {fileID: 2158790630833352706}
 --- !u!114 &4741005030873740878
 MonoBehaviour:
