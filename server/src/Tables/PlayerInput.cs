@@ -7,7 +7,7 @@ public partial struct PlayerInput
     public DbVector2 Position;
     public bool IsPaused;
     public WeaponType SelectedWeapon;
-    
+
     public PlayerInput(DbVector2 direction, DbVector2 position, bool isPaused, WeaponType selectedWeapon)
     {
         Direction = direction;

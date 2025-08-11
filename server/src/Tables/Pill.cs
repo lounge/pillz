@@ -18,4 +18,6 @@ public partial struct Pill
     public DbVector2 AimDir;
     public DbVector2? Force;
     public WeaponType SelectedWeapon;
+    public Weapon PrimaryWeapon;
+    public Weapon SecondaryWeapon;
 }

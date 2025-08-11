@@ -67,7 +67,9 @@ public static partial class Player
             PlayerId = player.Id,
             Direction = new DbVector2(0, 0),
             Position = entity.Position,
-            Hp = 100
+            Hp = 100,
+            PrimaryWeapon = new Tables.Weapon(),
+            SecondaryWeapon = new Tables.Weapon()
         });
 
         Log.Info($"Spawned pill at ({pill.Position.X}, {entity.Position.Y}) with id: {entity.Id}.");
@@ -84,7 +86,7 @@ public static partial class Player
             pill.Direction = input.Direction;
             pill.Position = input.Position;
             pill.SelectedWeapon = input.SelectedWeapon;
-
+            
             player.IsPaused = input.IsPaused;
             ctx.Db.Player.Identity.Update(player);
             ctx.Db.Pill.EntityId.Update(pill);
@@ -102,7 +104,7 @@ public static partial class Player
             pill.Jetpack.Fuel = input.Fuel;
             pill.Jetpack.Enabled = input.Enabled;
             pill.Jetpack.Throttling = input.Throttling;
-            ;
+            
             ctx.Db.Pill.EntityId.Update(pill);
             // Log.Debug($"Updated pill with id {pill.EntityId} direction to ({pill.Velocity.X}, {pill.Velocity.Y}).");
         }
