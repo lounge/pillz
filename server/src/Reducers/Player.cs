@@ -84,7 +84,7 @@ public static partial class Player
             pill.Direction = input.Direction;
             pill.Position = input.Position;
             pill.SelectedWeapon = input.SelectedWeapon;
-            
+
             player.IsPaused = input.IsPaused;
             ctx.Db.Player.Identity.Update(player);
             ctx.Db.Pill.EntityId.Update(pill);
@@ -116,16 +116,20 @@ public static partial class Player
         foreach (var p in ctx.Db.Pill.PlayerId.Filter(enemy.Id))
         {
             var pill = p;
-            
+
             var hp = Math.Max(0, pill.Hp - damage);
             pill.Hp = hp;
-            
+
             if (hp <= 0)
             {
                 fragCount++;
+                DeletePill(ctx, playerId);
+            }
+            else
+            {
+                ctx.Db.Pill.EntityId.Update(pill);
             }
 
-            ctx.Db.Pill.EntityId.Update(pill);
             Log.Debug($"Updated pill with id {pill.EntityId} HP to {pill.Hp} after taking damage {damage}.");
         }
 
