@@ -84,6 +84,13 @@ public partial class Game
     [Reducer]
     public static void SpawnPrimaryAmmo(ReducerContext ctx, SpawnAmmoTimer timer)
     {
+        var world = ctx.Db.World.Iter().FirstOrDefault();
+        if (!world.IsGenerated)
+        {
+            Log.Error("World is not generated yet. Cannot spawn ammo.");
+            return;
+        }
+
         const int primaryMaxCount = 20;
         const int secondaryMaxCount = 10;
 
@@ -101,7 +108,7 @@ public partial class Game
         {
             for (var i = primaryCount; i < primaryMaxCount; i++)
             {
-                Spawn(WeaponType.Primary, 10);
+                Spawn(WeaponType.Primary, 35);
             }
         }
         
@@ -109,7 +116,7 @@ public partial class Game
         {
             for (var i = secondaryCount; i < secondaryMaxCount; i++)
             {
-                Spawn(WeaponType.Secondary, 5);
+                Spawn(WeaponType.Secondary, 10);
             }
         }
 
