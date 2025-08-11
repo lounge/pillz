@@ -26,9 +26,10 @@ namespace pillz.client.Scripts
         private Rigidbody2D _rb;
         private Camera _cam;
         private PlayerInput _lastSent;
-        private DmgDisplay _dmgDisplay;
-        private FragDisplay _fragDisplay;
+        private ScoreDisplay _scoreDisplay;
         private GameObject _gameHud;
+        private AmmoDisplay _ammoDisplay;
+        
         private float _lastSend;
 
         public void Spawn(Pill pill, PlayerController owner)
@@ -60,11 +61,13 @@ namespace pillz.client.Scripts
             _gameHud = GameObject.Find("Game HUD");
             _gameHud = Instantiate(Owner.GetHud(), _gameHud.transform);
 
-            _dmgDisplay = _gameHud.GetComponentInChildren<DmgDisplay>();
-            _fragDisplay = _gameHud.GetComponentInChildren<FragDisplay>();
-
-            _dmgDisplay.SetDmg(pill.Dmg);
-            _fragDisplay.SetFrags(pill.Frags);
+            _scoreDisplay = _gameHud.GetComponentInChildren<ScoreDisplay>();
+            _scoreDisplay.SetDmg(pill.Dmg);
+            _scoreDisplay.SetFrags(pill.Frags);
+            
+            _ammoDisplay = _gameHud.GetComponentInChildren<AmmoDisplay>();
+            _ammoDisplay.SetPrimary(weapons.GetPrimary().GetAmmo());
+            _ammoDisplay.SetSecondary(weapons.GetSecondary().GetAmmo());
 
             _cam?.GetComponent<CameraFollow>()?.SetTarget(transform);
         }
@@ -98,27 +101,17 @@ namespace pillz.client.Scripts
             var p = new PlayerInput(_rb.linearVelocity, _rb.position, !FocusHandler.HasFocus, intent.SelectWeapon);
             if (Time.time - _lastSend >= SendUpdatesFrequency && !p.Equals(_lastSent))
             {
-                _lastSend = Time.time;
                 GameInit.Connection.Reducers.UpdatePlayer(p);
                 _lastSent = p;
+                _lastSend = Time.time;
             }
-        }
-
-        public WeaponSlots GetWeapons()
-        {
-            return weapons;
-        }
-
-        public PortalState GetPortalState()
-        {
-            return portalState;
         }
 
         public override void OnDelete(EventContext ctx)
         {
             base.OnDelete(ctx);
-            Destroy(pillHud.gameObject);
-            Destroy(_gameHud.gameObject);
+            Destroy(pillHud?.gameObject);
+            Destroy(_gameHud?.gameObject);
             Destroy(Owner.gameObject);
             
             if (Owner.IsLocalPlayer)
@@ -132,17 +125,33 @@ namespace pillz.client.Scripts
             pillHud.SetHp(newVal.Hp);
             weapons.SetAim(newVal.AimDir);
             weapons.Select(newVal.SelectedWeapon);
+            weapons.SetAmmo(newVal.PrimaryWeapon.Ammo, newVal.SecondaryWeapon.Ammo);
 
             jetpack.OnJetpackUpdated(newVal.Jetpack);
             
-            _dmgDisplay?.SetDmg(newVal.Dmg);
-            _fragDisplay?.SetFrags(newVal.Frags);
+            _scoreDisplay?.SetDmg(newVal.Dmg);
+            _scoreDisplay?.SetFrags(newVal.Frags);
+            
+            _ammoDisplay?.SetPrimary(newVal.PrimaryWeapon.Ammo);
+            _ammoDisplay?.SetSecondary(newVal.SecondaryWeapon.Ammo);
+            
+            Log.Debug($"AMMO CHECK: Primary={newVal.PrimaryWeapon.Ammo} Secondary={newVal.SecondaryWeapon.Ammo}");
 
             if (newVal.Force is not null)
             {
                 _rb.AddForce(new Vector2(newVal.Force.X, newVal.Force.Y), ForceMode2D.Impulse);
                 GameInit.Connection.Reducers.ForceApplied(Owner.PlayerId);
             }
+        }
+        
+        public WeaponSlots GetWeapons()
+        {
+            return weapons;
+        }
+
+        public PortalState GetPortalState()
+        {
+            return portalState;
         }
     }
 }

@@ -1,4 +1,5 @@
 using pillz.client.Scripts.Constants;
+using SpacetimeDB;
 using UnityEngine;
 
 namespace pillz.client.Scripts
@@ -18,7 +19,23 @@ namespace pillz.client.Scripts
             {
                 GameInit.Connection.Reducers.DeletePill(_pill.Owner.PlayerId);
             }
-            // _pill.Kill();
+        }
+        
+        protected void OnCollisionEnter2D(Collision2D col)
+        {
+            Log.Debug("AmmoController: Collision detected with " + col.gameObject.name);
+            var hitObject = col.gameObject;
+        
+            if (hitObject.CompareTag(Tags.Ammo))
+            {
+                var ammoController = col.gameObject.GetComponent<AmmoController>();
+            
+                Log.Debug($"Pill {_pill.EntityId} picked up ammo {ammoController.Ammo.Id}");
+                
+                
+                GameInit.Connection.Reducers.IncreaseAmmo(ammoController.Ammo.Amount, ammoController.Ammo.AmmoType);
+                GameInit.Connection.Reducers.DeleteAmmo(ammoController.Ammo.Id);
+            }
         }
     }
 }

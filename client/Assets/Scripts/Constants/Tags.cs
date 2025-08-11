@@ -8,5 +8,6 @@ namespace pillz.client.Scripts.Constants
         public const string Terrain = "Terrain";
         public const string UI = "UI";
         public const string DeathZone = "DeathZone";
+        public static string Ammo = "Ammo";
     }
 }

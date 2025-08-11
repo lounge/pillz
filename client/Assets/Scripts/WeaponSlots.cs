@@ -22,6 +22,8 @@ namespace pillz.client.Scripts
             _secondary.Disable();
 
             _selected = WeaponType.Primary;
+            
+            GameInit.Connection.Reducers.SetAmmo(_primary.GetAmmo(), _secondary.GetAmmo());
         }
 
         public void Select(WeaponType type)
@@ -55,6 +57,22 @@ namespace pillz.client.Scripts
         {
             _primary?.SetAimDir(aim);
             _secondary?.SetAimDir(aim);
+        }
+        
+        public void SetAmmo(int primaryAmmo, int secondaryAmmo)
+        {
+            _primary.SetAmmo(primaryAmmo);
+            _secondary.SetAmmo(secondaryAmmo);
+        }
+
+        public WeaponController GetPrimary()
+        {
+            return _primary;
+        }
+        
+        public WeaponController GetSecondary()
+        {
+            return _secondary;
         }
     }
 }

@@ -1,4 +1,5 @@
 using pillz.client.Assets.Input;
+using SpacetimeDB;
 using SpacetimeDB.Types;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -7,10 +8,12 @@ namespace pillz.client.Scripts
 {
     public class WeaponController : MonoBehaviour
     {
+        [Header("Weapon Settings")]
+        [SerializeField] private int ammo = 100;
         [SerializeField] private Transform weapon;
         [SerializeField] private float weaponDistance = 1.5f;
         [SerializeField] private float projectileSpeed = 20f;
-
+        
         [Header("Projectile Settings")] [SerializeField]
         private ProjectileController projectilePrefab;
 
@@ -25,6 +28,7 @@ namespace pillz.client.Scripts
         private Vector2 _aimDir;
         private float _fireStartTime;
         private WeaponType _type;
+        
 
         public void Enable()
         {
@@ -68,11 +72,6 @@ namespace pillz.client.Scripts
 
                 _inputActions.Enable();
             }
-        }
-
-        public void SetAimDir(Vector2 aimDir)
-        {
-            _aimDir = aimDir;
         }
 
         private void Update()
@@ -123,13 +122,35 @@ namespace pillz.client.Scripts
 
         private void OnRelease(InputAction.CallbackContext ctx, WeaponType type)
         {
+            if (ammo <= 0)
+            {
+                Log.Debug("WeaponController: OnRelease called, but ammo is zero or less. Cannot shoot.");
+                return;
+            }
+            
             var heldDuration = Time.time - _fireStartTime;
             var durationClamp = Mathf.Clamp(heldDuration, 0.5f, 2f);
             var speed = projectileSpeed * durationClamp * 3;
-
+            
             Debug.Log($"Mouse was held for {heldDuration} seconds. Speed: {speed:0.00}");
 
-            GameInit.Connection.Reducers.ShootProjectile(new DbVector2(weapon.position.x, weapon.position.y), speed);
+            
+            GameInit.Connection.Reducers.ShootProjectile(new DbVector2(weapon.position.x, weapon.position.y), speed, type, ammo);
+        }
+        
+        public void SetAimDir(Vector2 aimDir)
+        {
+            _aimDir = aimDir;
+        }
+
+        public int GetAmmo()
+        {
+            return ammo;
+        }
+
+        public void SetAmmo(int newAmmo)
+        {
+            ammo = newAmmo;
         }
     }
 }

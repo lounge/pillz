@@ -7,6 +7,7 @@ TagManager:
   - DeathZone
   - Pill
   - Terrain
+  - Ammo
   layers:
   - Default
   - TransparentFX

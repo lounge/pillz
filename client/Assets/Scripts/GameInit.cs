@@ -16,15 +16,25 @@ namespace pillz.client.Scripts
 
         [UsedImplicitly] private static event Action OnConnected;
         [UsedImplicitly] private static event Action OnSubscriptionApplied;
-
+        
         public static GameInit Instance { get; private set; }
         public static Identity LocalIdentity { get; private set; }
         public static DbConnection Connection { get; private set; }
 
+        private PrefabSpawner _prefabSpawner;
+        
         private static readonly Dictionary<uint, EntityController> Entities = new();
         private static readonly Dictionary<uint, PlayerController> Players = new();
         private static readonly Dictionary<uint, PortalController> Portals = new();
+        private static readonly Dictionary<uint, AmmoController> Ammo = new();
 
+        
+
+        private void Awake()
+        {
+            _prefabSpawner = GetComponent<PrefabSpawner>();
+        }
+        
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         private void Start()
         {
@@ -81,6 +91,9 @@ namespace pillz.client.Scripts
 
             Connection.Db.Portal.OnInsert += PortalOnInsert;
             Connection.Db.Portal.OnUpdate += PortalOnUpdate;
+            
+            Connection.Db.Ammo.OnInsert += AmmoOnInsert;
+            Connection.Db.Ammo.OnDelete += AmmoOnDelete;
 
             Connection.Db.Pill.OnInsert += PillOnInsert;
             Connection.Db.Pill.OnUpdate += PillOnUpdate;
@@ -103,6 +116,8 @@ namespace pillz.client.Scripts
                 .OnApplied(HandleSubscriptionApplied)
                 .SubscribeToAllTables();
         }
+
+
 
         #region Connection Handlers
 
@@ -162,9 +177,9 @@ namespace pillz.client.Scripts
 
         #region Portal Handlers
 
-        private static void PortalOnInsert(EventContext context, Portal insertedValue)
+        private void PortalOnInsert(EventContext context, Portal insertedValue)
         {
-            var portalController = PrefabSpawner.Instance.SpawnPortal(insertedValue);
+            var portalController = _prefabSpawner.SpawnPortal(insertedValue);
             Portals.Add(insertedValue.Id, portalController);
         }
 
@@ -182,12 +197,12 @@ namespace pillz.client.Scripts
 
         #region Pill Handlers
 
-        private static void PillOnInsert(EventContext context, Pill insertedValue)
+        private void PillOnInsert(EventContext context, Pill insertedValue)
         {
             Log.Debug(
                 $"PillOnInsert: Inserting pill for player {insertedValue.PlayerId} with entity ID {insertedValue.EntityId} position {insertedValue.Position}");
             var player = GetOrCreatePlayer(insertedValue.PlayerId);
-            var entityController = PrefabSpawner.Instance.SpawnPill(insertedValue, player);
+            var entityController = _prefabSpawner.SpawnPill(insertedValue, player);
             Entities.Add(insertedValue.EntityId, entityController);
         }
 
@@ -216,7 +231,7 @@ namespace pillz.client.Scripts
 
         #region Projectile Handlers
 
-        private static void ProjectileOnInsert(EventContext context, Projectile insertedValue)
+        private void ProjectileOnInsert(EventContext context, Projectile insertedValue)
         {
             var player = GetOrCreatePlayer(insertedValue.PlayerId);
 
@@ -230,7 +245,7 @@ namespace pillz.client.Scripts
 
             var spawnPos = (Vector2)entity.Position;
 
-            var entityController = player.Pill.GetWeapons().Shoot(insertedValue, player, spawnPos, insertedValue.Speed);
+            var entityController = player.Pill?.GetWeapons().Shoot(insertedValue, player, spawnPos, insertedValue.Speed);
             Entities.Add(insertedValue.EntityId, entityController);
         }
 
@@ -239,6 +254,25 @@ namespace pillz.client.Scripts
             if (Entities.Remove(projectile.EntityId, out var entityController))
             {
                 entityController.OnDelete(context);
+            }
+        }
+
+        #endregion
+        
+        #region Ammo Handlers
+
+        private void AmmoOnInsert(EventContext context, Ammo insertedValue)
+        {
+            var ammoController = _prefabSpawner.SpawnAmmo(insertedValue);
+
+            Ammo.Add(insertedValue.Id, ammoController);
+        }
+
+        private void AmmoOnDelete(EventContext context, Ammo deletedValue)
+        {
+            if (Ammo.Remove(deletedValue.Id, out var ammoController))
+            {
+                ammoController.OnDelete(context);
             }
         }
 
@@ -268,7 +302,7 @@ namespace pillz.client.Scripts
 
         #region Player Handlers
 
-        private static void PlayerOnInsert(EventContext context, Player insertedPlayer)
+        private void PlayerOnInsert(EventContext context, Player insertedPlayer)
         {
             GetOrCreatePlayer(insertedPlayer.Id);
         }
@@ -286,14 +320,14 @@ namespace pillz.client.Scripts
             }
         }
 
-        private static PlayerController GetOrCreatePlayer(uint playerId)
+        private PlayerController GetOrCreatePlayer(uint playerId)
         {
             if (Players.TryGetValue(playerId, out var playerController))
                 return playerController;
 
             Log.Debug("Creating new player controller for player ID: " + playerId);
             var player = Connection.Db.Player.Id.Find(playerId);
-            playerController = PrefabSpawner.Instance.SpawnPlayer(player);
+            playerController = _prefabSpawner.SpawnPlayer(player);
             Players.Add(playerId, playerController);
 
             return playerController;
