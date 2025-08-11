@@ -1018,6 +1018,7 @@ MonoBehaviour:
   jetpack: {fileID: 5456931286535303721}
   weapons: {fileID: 8426579267939972147}
   portalState: {fileID: 1442433058460366503}
+  deathScreen: {fileID: 7247835872720211768, guid: 4657744aa0c0a4381a3390341f49b037, type: 3}
   pillHud: {fileID: 2158790630833352706}
 --- !u!114 &4741005030873740878
 MonoBehaviour:

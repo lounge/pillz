@@ -43,10 +43,14 @@ namespace pillz.client.Scripts
             }
         }
 
-        public void Render()
+        public void RenderWorld(World world)
         {
+            if (!world.IsGenerated) 
+                return;
+            
+                
             Log.Debug("TerrainManager: Generating terrain...");
-            foreach (var tile in GameHandler.Connection.Db.Terrain.Iter())
+            foreach (var tile in GameInit.Connection.Db.Terrain.Iter())
             {
                 OnTerrainAdded(null, tile);
             }
@@ -57,6 +61,7 @@ namespace pillz.client.Scripts
             //     Log.Debug("TerrainManager: Adding portal location at position " + new Vector3Int((int)portal.Position.X, (int)portal.Position.Y, 0));
             //     OnPortalLocAdded(null, portal);
             // }
+
         }
 
         private void OnTerrainAdded(EventContext ctx, Terrain tile)
@@ -93,7 +98,7 @@ namespace pillz.client.Scripts
         public DbVector2 GetRandomSpawnPosition()
         {
             // TODO: ONLY FOR TESTING
-            var spawnLocations = GameHandler.Connection.Db.Terrain.Iter().Where(x => x.IsSpawnable).FirstOrDefault(); //ToList();
+            var spawnLocations = GameInit.Connection.Db.Terrain.Iter().FirstOrDefault(x => x.IsSpawnable); //ToList();
             return spawnLocations!.Position;
 
             // var spawnLocations = GameHandler.Connection.Db.Terrain.Iter().Where(x => x.IsSpawnable).ToList();

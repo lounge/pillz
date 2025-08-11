@@ -15,8 +15,10 @@ namespace pillz.client.Scripts
         private void OnTriggerEnter2D(Collider2D col)
         {
             if (col.CompareTag(deathZoneTag))
-                _pill.Kill();
+            {
+                GameInit.Connection.Reducers.DeletePill(_pill.Owner.PlayerId);
+            }
+            // _pill.Kill();
         }
     }
-
 }

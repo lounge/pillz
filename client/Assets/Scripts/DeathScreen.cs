@@ -4,19 +4,27 @@ using UnityEngine.UI;
 
 namespace pillz.client.Scripts
 {
-    public class DeathScreenHandler : MonoBehaviour
+    public class DeathScreen : MonoBehaviour
     {
-        
         [SerializeField] private TMP_InputField usernameInput;
         [SerializeField] private Button respawnButton;
         
-        public static DeathScreenHandler Instance { get; private set; }
+        public static DeathScreen Instance { get; private set; }
         
         private string _username;
 
         private void Awake()
         {
-            Instance = this;
+            if (!Instance)
+            {
+                Instance = this;
+            }
+            else
+            {
+                Destroy(gameObject);
+                return;
+            }
+            
             gameObject.SetActive(false);
             respawnButton.interactable = false;
             usernameInput.onValueChanged.AddListener(OnUsernameChanged);
@@ -39,7 +47,7 @@ namespace pillz.client.Scripts
             string username = usernameInput.text.Trim();
             if (!string.IsNullOrEmpty(username))
             {
-                GameHandler.Connection.Reducers.EnterGame(username, TerrainHandler.Instance.GetRandomSpawnPosition());
+                GameInit.Connection.Reducers.EnterGame(username, TerrainHandler.Instance.GetRandomSpawnPosition());
                 gameObject.SetActive(false);
             }
         }

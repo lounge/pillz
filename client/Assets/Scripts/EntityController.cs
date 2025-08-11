@@ -1,8 +1,6 @@
 using System;
-using SpacetimeDB;
 using SpacetimeDB.Types;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace pillz.client.Scripts
 {
@@ -19,8 +17,7 @@ namespace pillz.client.Scripts
         private const float LerpDurationSec = 0.1f;
         private float _lerpTime;
         private Vector3 _lerpTargetPosition;
-        private Camera _mainCamera;
-
+        
         protected virtual void Awake()
         {
             _entityRb = GetComponent<Rigidbody2D>();
@@ -30,7 +27,6 @@ namespace pillz.client.Scripts
         {
             EntityId = entityId;
             Owner = owner;
-            _mainCamera = Camera.main;
 
             if (Owner.IsLocalPlayer)
             {
@@ -39,7 +35,7 @@ namespace pillz.client.Scripts
 
             // Use provided position if available, otherwise fall back to DB
             var pos = initialPosition ??
-                      (Vector2)(GameHandler.Connection.Db.Entity.Id.Find(entityId)?.Position ?? Vector2.zero);
+                      (Vector2)(GameInit.Connection.Db.Entity.Id.Find(entityId)?.Position ?? Vector2.zero);
             _lerpTargetPosition = transform.position = pos;
         }
 
@@ -68,7 +64,6 @@ namespace pillz.client.Scripts
             if (delta > 0.01f)
             {
                 transform.position = Vector3.Lerp(transform.position, target, t);
-            
             }
 
             if (_entityRb)

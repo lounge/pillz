@@ -85,7 +85,7 @@ namespace pillz.client.Scripts
             _cooldown = config.refuelCooldown;
         }
 
-        public void FixedTick()
+        public void Tick()
         {
             // cooldown
             if (!Throttling && _cooldown > 0f)
@@ -112,7 +112,7 @@ namespace pillz.client.Scripts
             if (Time.time - _lastMovementSendTimestamp >= EntityController.SendUpdatesFrequency &&
                 !jetpackInput.Equals(_lastMovementInput))
             {
-                GameHandler.Connection.Reducers.UpdateJetpack(jetpackInput);
+                GameInit.Connection.Reducers.UpdateJetpack(jetpackInput);
             }
 
             _lastMovementInput = jetpackInput;

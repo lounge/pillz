@@ -9,7 +9,7 @@ using Terrain = SpacetimeDB.Types.Terrain;
 
 namespace pillz.client.Scripts
 {
-    public class GameHandler : MonoBehaviour
+    public class GameInit : MonoBehaviour
     {
         private const string SpacetimeDbUrl = "http://localhost:3000";
         private const string SpacetimeDbName = "pillz";
@@ -17,7 +17,7 @@ namespace pillz.client.Scripts
         [UsedImplicitly] private static event Action OnConnected;
         [UsedImplicitly] private static event Action OnSubscriptionApplied;
 
-        public static GameHandler Instance { get; private set; }
+        public static GameInit Instance { get; private set; }
         public static Identity LocalIdentity { get; private set; }
         public static DbConnection Connection { get; private set; }
 
@@ -28,10 +28,11 @@ namespace pillz.client.Scripts
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         private void Start()
         {
+            Instance = this;
+
             // Clear cached connection data to ensure proper connection
             PlayerPrefs.DeleteAll();
 
-            Instance = this;
             Application.targetFrameRate = 60;
 
             // In order to build a connection to SpacetimeDB we need to register
@@ -128,35 +129,25 @@ namespace pillz.client.Scripts
             Log.Debug($"Generating world with seed: {seed}");
 
             Connection.Reducers.GenerateTerrain(seed);
-
-            RenderWorld(Connection.Db.World.Iter().FirstOrDefault());
             
-            StartScreenHandler.Instance.Show();
-            
+            TerrainHandler.Instance.RenderWorld(Connection.Db.World.Iter().FirstOrDefault());
+            StartScreen.Instance.Show();
         }
 
         #endregion
 
         #region World Handlers
 
-        private void WorldOnInsert(EventContext ctx, World insertedValue)
+        private static void WorldOnInsert(EventContext ctx, World insertedValue)
         {
             Log.Debug("WorldOnInsert: World table inserted");
         }
 
-        private void WorldOnUpdate(EventContext ctx, World oldWorld, World newWorld)
+        private static void WorldOnUpdate(EventContext ctx, World oldWorld, World newWorld)
         {
-            RenderWorld(newWorld);
+            TerrainHandler.Instance.RenderWorld(newWorld);
         }
 
-        private static void RenderWorld(World world)
-        {
-            if (world.IsGenerated)
-            {
-                Log.Debug("WorldOnUpdate: World table updated, generating ground...");
-                TerrainHandler.Instance.Render();
-            }
-        }
 
         #endregion
 
@@ -168,15 +159,15 @@ namespace pillz.client.Scripts
         }
 
         #endregion
-        
+
         #region Portal Handlers
-        
+
         private static void PortalOnInsert(EventContext context, Portal insertedValue)
         {
             var portalController = PrefabSpawner.Instance.SpawnPortal(insertedValue);
             Portals.Add(insertedValue.Id, portalController);
         }
-        
+
         private static void PortalOnUpdate(EventContext context, Portal oldRow, Portal newRow)
         {
             if (!Portals.TryGetValue(newRow.Id, out var portalController))
@@ -186,7 +177,7 @@ namespace pillz.client.Scripts
 
             portalController.OnPortalUpdated(newRow);
         }
-        
+
         #endregion
 
         #region Pill Handlers

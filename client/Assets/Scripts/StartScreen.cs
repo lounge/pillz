@@ -4,16 +4,25 @@ using UnityEngine.UI;
 
 namespace pillz.client.Scripts
 {
-    public class StartScreenHandler : MonoBehaviour
+    public class StartScreen : MonoBehaviour
     {
         [SerializeField] private TMP_InputField usernameInput;
         [SerializeField] private Button playButton;
         
-        public static StartScreenHandler Instance { get; private set; }
+        public static StartScreen Instance { get; private set; }
 
         private void Awake()
         {
-            Instance = this;
+            if (!Instance)
+            {
+                Instance = this;
+            }
+            else
+            {
+                Destroy(gameObject);
+                return;
+            }
+            
             gameObject.SetActive(false);
             playButton.interactable = false;
             usernameInput.onValueChanged.AddListener(OnUsernameChanged);
@@ -35,7 +44,7 @@ namespace pillz.client.Scripts
             string username = usernameInput.text.Trim();
             if (!string.IsNullOrEmpty(username))
             {
-                GameHandler.Connection.Reducers.EnterGame(username, TerrainHandler.Instance.GetRandomSpawnPosition());
+                GameInit.Connection.Reducers.EnterGame(username, TerrainHandler.Instance.GetRandomSpawnPosition());
                 gameObject.SetActive(false);
             }
         }

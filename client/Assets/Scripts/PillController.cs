@@ -19,6 +19,8 @@ namespace pillz.client.Scripts
         [SerializeField] private JetpackModule jetpack;
         [SerializeField] private WeaponSlots weapons;
         [SerializeField] private PortalState portalState;
+        
+        [Header("UI")]
         [SerializeField] private PillHud pillHud;
 
         private Rigidbody2D _rb;
@@ -32,24 +34,24 @@ namespace pillz.client.Scripts
         public void Spawn(Pill pill, PlayerController owner)
         {
             base.Spawn(pill.EntityId, owner);
-
-            _rb = GetComponent<Rigidbody2D>();
+            
             _cam = Camera.main;
+            _rb = GetComponent<Rigidbody2D>();
 
             transform.position = new Vector3(pill.Position.X + 0.5f, pill.Position.Y + 2f, 0);
-
+            
             var hudCanvas = GameObject.Find("Pill HUD");
             pillHud = Instantiate(pillHud, hudCanvas.transform);
             pillHud.AttachTo(transform);
             pillHud.SetUsername(owner.Username);
             pillHud.SetHp(pill.Hp);
             pillHud.SetFuel(jetpack.Fuel);
-
+            
             mover.Init(movementConfig, _rb);
             jetpack.Init(jetpackConfig, pillHud);
             weapons.Init(transform, owner, pill.AimDir);
 
-            if (Owner && (!Owner.IsLocalPlayer || !GameHandler.IsConnected()))
+            if (Owner && (!Owner.IsLocalPlayer || !GameInit.IsConnected()))
             {
                 Log.Debug("PillMovement: Not local player or not connected, skipping movement init.");
                 return;
@@ -69,11 +71,7 @@ namespace pillz.client.Scripts
 
         private void FixedUpdate()
         {
-            if (!GameHandler.IsConnected() || !Owner.IsLocalPlayer) return;
-
-            jetpack.FixedTick();
-            portalState.Tick();
-            boundary.Tick(_rb);
+            if (!GameInit.IsConnected() || !Owner.IsLocalPlayer) return;
 
             var intent = inputReader.ConsumeFrameIntent();
             if (intent.ToggleJetpack)
@@ -90,14 +88,18 @@ namespace pillz.client.Scripts
                 jetpack.ThrottleOff();
             }
 
+            jetpack.Tick();
+            portalState.Tick();
+            boundary.Tick(_rb);
             mover.Tick(intent, jetActive, jetpack.Throttling);
+            
             pillHud.SetFuel(jetpack.Fuel);
 
             var p = new PlayerInput(_rb.linearVelocity, _rb.position, !FocusHandler.HasFocus, intent.SelectWeapon);
             if (Time.time - _lastSend >= SendUpdatesFrequency && !p.Equals(_lastSent))
             {
                 _lastSend = Time.time;
-                GameHandler.Connection.Reducers.UpdatePlayer(p);
+                GameInit.Connection.Reducers.UpdatePlayer(p);
                 _lastSent = p;
             }
         }
@@ -118,6 +120,11 @@ namespace pillz.client.Scripts
             Destroy(pillHud.gameObject);
             Destroy(_gameHud.gameObject);
             Destroy(Owner.gameObject);
+            
+            if (Owner.IsLocalPlayer)
+            {
+                DeathScreen.Instance.Show(Owner);
+            }
         }
 
         public void OnPillUpdated(Pill newVal)
@@ -134,23 +141,8 @@ namespace pillz.client.Scripts
             if (newVal.Force is not null)
             {
                 _rb.AddForce(new Vector2(newVal.Force.X, newVal.Force.Y), ForceMode2D.Impulse);
-                GameHandler.Connection.Reducers.ForceApplied(Owner.PlayerId);
+                GameInit.Connection.Reducers.ForceApplied(Owner.PlayerId);
             }
-
-            if (newVal.Hp <= 0)
-            {
-                Kill();
-            }
-        }
-
-        public void Kill()
-        {
-            if (Owner.IsLocalPlayer)
-            {
-                DeathScreenHandler.Instance.Show(Owner);
-            }
-
-            GameHandler.Connection.Reducers.DeletePill(Owner.PlayerId);
         }
     }
 }

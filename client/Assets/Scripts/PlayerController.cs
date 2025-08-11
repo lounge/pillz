@@ -8,7 +8,7 @@ namespace pillz.client.Scripts
     {
         private static PlayerController _local;
         public bool IsLocalPlayer => this == _local;
-        public string Username => GameHandler.Connection.Db.Player.Id.Find(PlayerId)?.Username;
+        public string Username => GameInit.Connection.Db.Player.Id.Find(PlayerId)?.Username;
 
         [SerializeField] private GameObject gameHud;
         
@@ -21,7 +21,7 @@ namespace pillz.client.Scripts
         public void Init(Player player)
         {
             PlayerId = player.Id;
-            if (player.Identity == GameHandler.LocalIdentity)
+            if (player.Identity == GameInit.LocalIdentity)
             {
                 _local = this;
             }

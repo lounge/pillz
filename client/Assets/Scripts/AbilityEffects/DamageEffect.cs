@@ -10,7 +10,7 @@ namespace pillz.client.Scripts.AbilityEffects
         {
             // Scale damage by proximity (at least 1)
             var dmg = Mathf.Max(1, Mathf.RoundToInt(MaxDamage * hit.Falloff));
-            GameHandler.Connection.Reducers.ApplyDamage(playerId, dmg);
+            GameInit.Connection.Reducers.ApplyDamage(playerId, dmg);
         }
     }
 }
