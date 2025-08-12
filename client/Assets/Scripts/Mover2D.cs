@@ -19,7 +19,7 @@ namespace pillz.client.Scripts
             _rb = rb;
         }
 
-        public void Tick(PillIntent intent, bool jetpackActive, bool jetpackThrottling)
+        public void Tick(PillIntent intent, bool jetpackThrottling)
         {
             _isGrounded = Physics2D.OverlapCircle(groundCheck.position, config.groundCheckRadius, config.groundLayer);
 

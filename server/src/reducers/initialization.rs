@@ -46,7 +46,7 @@ pub fn init(ctx: &ReducerContext) -> Result<(), String> {
     ctx.db.spawn_ammo_timer().insert(
         SpawnAmmoTimer {
             scheduled_id: 0,
-            scheduled_at: ScheduleAt::Interval(TimeDuration::from_duration(Duration::from_secs(10)))
+            scheduled_at: ScheduleAt::Interval(TimeDuration::from_duration(Duration::from_secs(30)))
         },
     );
 

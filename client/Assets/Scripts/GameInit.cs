@@ -26,9 +26,6 @@ namespace pillz.client.Scripts
         private static readonly Dictionary<uint, EntityController> Entities = new();
         private static readonly Dictionary<uint, PlayerController> Players = new();
         private static readonly Dictionary<uint, PortalController> Portals = new();
-        private static readonly Dictionary<uint, AmmoController> Ammo = new();
-
-        
 
         private void Awake()
         {
@@ -94,14 +91,12 @@ namespace pillz.client.Scripts
             Connection.Db.Portal.OnUpdate += PortalOnUpdate;
             
             Connection.Db.Ammo.OnInsert += AmmoOnInsert;
-            Connection.Db.Ammo.OnDelete += AmmoOnDelete;
 
             Connection.Db.Pill.OnInsert += PillOnInsert;
             Connection.Db.Pill.OnUpdate += PillOnUpdate;
             Connection.Db.Pill.OnDelete += PillOnDelete;
 
             Connection.Db.Projectile.OnInsert += ProjectileOnInsert;
-            Connection.Db.Projectile.OnDelete += ProjectileOnDelete;
 
             Connection.Db.Entity.OnUpdate += EntityOnUpdate;
             Connection.Db.Entity.OnDelete += EntityOnDelete;
@@ -119,8 +114,6 @@ namespace pillz.client.Scripts
                 .OnApplied(HandleSubscriptionApplied)
                 .SubscribeToAllTables();
         }
-
-
 
         #region Connection Handlers
 
@@ -251,15 +244,7 @@ namespace pillz.client.Scripts
             var entityController = player.Pill?.Weapons.Shoot(insertedValue, player, spawnPos, insertedValue.Speed);
             Entities.Add(insertedValue.EntityId, entityController);
         }
-
-        private void ProjectileOnDelete(EventContext context, Projectile projectile)
-        {
-            if (Entities.Remove(projectile.EntityId, out var entityController))
-            {
-                entityController.OnDelete(context);
-            }
-        }
-
+        
         #endregion
         
         #region Ammo Handlers
@@ -269,14 +254,6 @@ namespace pillz.client.Scripts
             var ammoController = _prefabSpawner.SpawnAmmo(insertedValue);
 
             Entities.Add(insertedValue.EntityId, ammoController);
-        }
-
-        private void AmmoOnDelete(EventContext context, Ammo deletedValue)
-        {
-            if (Entities.Remove(deletedValue.EntityId, out var ammoController))
-            {
-                ammoController.OnDelete(context);
-            }
         }
 
         #endregion

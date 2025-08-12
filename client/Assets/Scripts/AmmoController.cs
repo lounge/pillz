@@ -77,10 +77,5 @@ namespace pillz.client.Scripts
                 _lastSent = transform.position;
             }
         }
-
-        public override void OnDelete(EventContext context)
-        {
-            Destroy(gameObject);
-        }
     }
 }

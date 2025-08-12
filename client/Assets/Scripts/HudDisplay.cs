@@ -7,7 +7,6 @@ namespace pillz.client.Scripts
     {
         [SerializeField] private TextMeshProUGUI fragsText;
         [SerializeField] private TextMeshProUGUI dmgText;
-
         [SerializeField] private TextMeshProUGUI stimText;
         [SerializeField] private TextMeshProUGUI primaryAmmoText;
         [SerializeField] private TextMeshProUGUI secondaryAmmoText;

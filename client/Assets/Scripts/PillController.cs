@@ -104,7 +104,7 @@ namespace pillz.client.Scripts
             jetpack.Tick();
             PortalState.Tick();
             boundary.Tick(_rb);
-            mover.Tick(intent, jetActive, jetpack.Throttling);
+            mover.Tick(intent, jetpack.Throttling);
             
             pillHud.SetFuel(jetpack.Fuel);
 
@@ -153,15 +153,5 @@ namespace pillz.client.Scripts
                 GameInit.Connection.Reducers.ForceApplied(Owner.PlayerId);
             }
         }
-        
-        // public WeaponSlots GetWeapons()
-        // {
-        //     return weapons;
-        // }
-
-        // public PortalState GetPortalState()
-        // {
-        //     return portalState;
-        // }
     }
 }

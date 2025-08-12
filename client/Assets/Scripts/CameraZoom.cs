@@ -11,13 +11,13 @@ namespace pillz.client.Scripts
         [SerializeField] private float maxZoom = 100f;
 
         private PlayerInputActions _inputActions;
-        private UnityEngine.Camera _camera;
+        private Camera _camera;
 
         private float _targetZoom;
 
         private void Awake()
         {
-            _camera = UnityEngine.Camera.main;
+            _camera = Camera.main;
             _targetZoom = _camera!.orthographicSize;
 
             _inputActions = new PlayerInputActions();

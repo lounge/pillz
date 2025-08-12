@@ -135,7 +135,6 @@ namespace pillz.client.Scripts
             var speed = projectileSpeed * durationClamp * 3;
             
             Debug.Log($"Mouse was held for {heldDuration} seconds. Speed: {speed:0.00}");
-
             
             GameInit.Connection.Reducers.ShootProjectile(new DbVector2(weapon.position.x, weapon.position.y), speed, type, Ammo);
         }

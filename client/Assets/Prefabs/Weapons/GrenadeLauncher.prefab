@@ -45,10 +45,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 415f5c70b24f94ecca5a2500db7b5ad7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ammo: 20
   weapon: {fileID: 8709204359804051046}
   weaponDistance: 1.5
   projectileSpeed: 10
+  <Ammo>k__BackingField: 20
   projectilePrefab: {fileID: 4165104554183277221, guid: b807338ce5d9a432197d5f73603e7fc0, type: 3}
 --- !u!1 &1779554001655125816
 GameObject:

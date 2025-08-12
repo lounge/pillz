@@ -11,7 +11,6 @@ namespace pillz.client.Scripts
         private float _fixedZ;
         private Transform _target;
         private Camera _camera;
-        private TerrainHandler _terrainHandler;
 
         private void Awake()
         {
