@@ -30,11 +30,11 @@ namespace pillz.client.Scripts
             {
                 var ammoController = col.gameObject.GetComponent<AmmoController>();
             
-                Log.Debug($"Pill {_pill.EntityId} picked up ammo {ammoController.Ammo.Id}");
+                Log.Debug($"Pill {_pill.EntityId} picked up ammo {ammoController.Ammo.EntityId}");
                 
                 
                 GameInit.Connection.Reducers.IncreaseAmmo(ammoController.AmmoAmount, ammoController.Ammo.AmmoType);
-                GameInit.Connection.Reducers.DeleteAmmo(ammoController.Ammo.Id);
+                GameInit.Connection.Reducers.DeleteAmmo(ammoController.Ammo.EntityId);
             }
         }
     }

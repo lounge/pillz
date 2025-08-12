@@ -1,3 +1,4 @@
+using System;
 using pillz.client.Assets.Input;
 using SpacetimeDB;
 using SpacetimeDB.Types;
@@ -9,13 +10,15 @@ namespace pillz.client.Scripts
     public class WeaponController : MonoBehaviour
     {
         [Header("Weapon Settings")]
-        [SerializeField] private int ammo = 100;
         [SerializeField] private Transform weapon;
         [SerializeField] private float weaponDistance = 1.5f;
         [SerializeField] private float projectileSpeed = 20f;
+        [field: SerializeField] public int Ammo { get; set; } = 100;
         
         [Header("Projectile Settings")] [SerializeField]
         private ProjectileController projectilePrefab;
+        
+        [field: NonSerialized] public Vector2 AimDir { private get; set; }
 
         private Camera _mainCamera;
         private PlayerInputActions _inputActions;
@@ -25,7 +28,6 @@ namespace pillz.client.Scripts
         private Transform _parentTransform;
         private Rigidbody2D _projectileRb;
         private PlayerController _owner;
-        private Vector2 _aimDir;
         private float _fireStartTime;
         private WeaponType _type;
         
@@ -60,7 +62,7 @@ namespace pillz.client.Scripts
             _owner = owner;
             _parentTransform = parent;
             _mainCamera = Camera.main;
-            _aimDir = aimDir;
+            AimDir = aimDir;
 
             if (_owner.IsLocalPlayer)
             {
@@ -90,10 +92,10 @@ namespace pillz.client.Scripts
             }
             else
             {
-                if (_aimDir.sqrMagnitude < 0.01f)
+                if (AimDir.sqrMagnitude < 0.01f)
                     return;
 
-                direction = _aimDir;
+                direction = AimDir;
             }
 
             _weaponDirection = direction;
@@ -122,7 +124,7 @@ namespace pillz.client.Scripts
 
         private void OnRelease(InputAction.CallbackContext ctx, WeaponType type)
         {
-            if (ammo <= 0)
+            if (Ammo <= 0)
             {
                 Log.Debug("WeaponController: OnRelease called, but ammo is zero or less. Cannot shoot.");
                 return;
@@ -135,22 +137,7 @@ namespace pillz.client.Scripts
             Debug.Log($"Mouse was held for {heldDuration} seconds. Speed: {speed:0.00}");
 
             
-            GameInit.Connection.Reducers.ShootProjectile(new DbVector2(weapon.position.x, weapon.position.y), speed, type, ammo);
-        }
-        
-        public void SetAimDir(Vector2 aimDir)
-        {
-            _aimDir = aimDir;
-        }
-
-        public int GetAmmo()
-        {
-            return ammo;
-        }
-
-        public void SetAmmo(int newAmmo)
-        {
-            ammo = newAmmo;
+            GameInit.Connection.Reducers.ShootProjectile(new DbVector2(weapon.position.x, weapon.position.y), speed, type, Ammo);
         }
     }
 }

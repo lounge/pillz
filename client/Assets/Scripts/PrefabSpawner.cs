@@ -48,11 +48,11 @@ namespace pillz.client.Scripts
         public AmmoController SpawnAmmo(Ammo ammo)
         {
             var ammoController = Instantiate(ammoPrefab);
-            ammoController.name = $"Ammo_{ammo.AmmoType}_{ammo.Id}";
+            ammoController.name = $"Ammo_{ammo.AmmoType}_{ammo.EntityId}";
 
             ammoController.Spawn(ammo);
 
-            Log.Debug($"Spawned ammo with EntityId {ammo.Id} and ammoType {ammo.AmmoType}.");
+            Log.Debug($"Spawned ammo with EntityId {ammo.EntityId} and ammoType {ammo.AmmoType}.");
 
             return ammoController;
         }

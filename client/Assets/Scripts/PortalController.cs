@@ -27,7 +27,7 @@ namespace pillz.client.Scripts
                 return;
             
             var pill = other.GetComponent<PillController>();
-            var portalState = pill.GetPortalState();
+            var portalState = pill.PortalState;
             if (portalState && portalState.CanTrigger)
             {
                 if (pill && pill.Owner.IsLocalPlayer)

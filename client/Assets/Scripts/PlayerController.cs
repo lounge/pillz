@@ -9,8 +9,7 @@ namespace pillz.client.Scripts
         private static PlayerController _local;
         public bool IsLocalPlayer => this == _local;
         public string Username => GameInit.Connection.Db.Player.Id.Find(PlayerId)?.Username;
-
-        [SerializeField] private GameObject gameHud;
+        [field: SerializeField] public GameObject GameHud { get; private set; }
         
         [NonSerialized] 
         public PillController Pill;
@@ -27,12 +26,6 @@ namespace pillz.client.Scripts
             }
             
         }
-
-        public GameObject GetHud()
-        {
-            return gameHud;
-        }
-        
         
         public void OnDelete(EventContext context)
         {

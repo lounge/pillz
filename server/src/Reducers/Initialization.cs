@@ -37,7 +37,7 @@ public partial class Initialization
         
         ctx.Db.SpawnAmmoTimer.Insert(new SpawnAmmoTimer
         {
-            ScheduledAt = new ScheduleAt.Interval(TimeSpan.FromSeconds(30))
+            ScheduledAt = new ScheduleAt.Interval(TimeSpan.FromSeconds(10))
         });
     }
 }

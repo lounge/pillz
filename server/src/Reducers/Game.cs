@@ -125,15 +125,21 @@ public partial class Game
             var rnd = new Random();
             var index = rnd.Next(0, spawnLocations.Count);
             var spawnLoc = spawnLocations[index].Position;
+            
+            var entity = ctx.Db.Entity.Insert(new Entity
+            {
+                Position = new DbVector2(spawnLoc.X, spawnLoc.Y)
+            });
 
             var ammo = ctx.Db.Ammo.Insert(new Ammo
             {
+                EntityId = entity.Id,
                 Position = spawnLoc,
                 AmmoType = type
             });
 
             Log.Debug(
-                $"Spawned ammo type ({ammo.AmmoType}) at ({ammo.Position.X}, {ammo.Position.Y}) with id: {ammo.Id}.");
+                $"Spawned ammo type ({ammo.AmmoType}) at ({entity.Position.X}, {entity.Position.Y}) with id: {entity.Id}.");
         }
     }
 }

@@ -18,8 +18,9 @@ namespace pillz.client.Scripts
         [SerializeField] private Mover2D mover;
         [SerializeField] private Boundary2D boundary;
         [SerializeField] private JetpackModule jetpack;
-        [SerializeField] private WeaponSlots weapons;
-        [SerializeField] private PortalState portalState;
+        [field: SerializeField] public PortalState PortalState { get; private set; }
+        [field: SerializeField] public WeaponSlots Weapons { get; private set; }
+        
         
         [Header("UI")]
         [SerializeField] private PillHud pillHud;
@@ -52,7 +53,7 @@ namespace pillz.client.Scripts
             
             mover.Init(movementConfig, _rb);
             jetpack.Init(jetpackConfig, pillHud);
-            weapons.Init(transform, owner, pill.AimDir);
+            Weapons.Init(transform, owner, pill.AimDir);
 
             if (Owner && (!Owner.IsLocalPlayer || !GameInit.IsConnected()))
             {
@@ -61,14 +62,14 @@ namespace pillz.client.Scripts
             }
 
             _gameHud = GameObject.Find("Game HUD");
-            _gameHud = Instantiate(Owner.GetHud(), _gameHud.transform);
+            _gameHud = Instantiate(Owner.GameHud, _gameHud.transform);
 
             _hudDisplay = _gameHud.GetComponentInChildren<HudDisplay>();
             _hudDisplay.SetStim(_stims);
             _hudDisplay.SetDmg(pill.Dmg);
             _hudDisplay.SetFrags(pill.Frags);
-            _hudDisplay.SetPrimary(weapons.GetPrimary().GetAmmo());
-            _hudDisplay.SetSecondary(weapons.GetSecondary().GetAmmo());
+            _hudDisplay.SetPrimary(Weapons.Primary.Ammo);
+            _hudDisplay.SetSecondary(Weapons.Secondary.Ammo);
 
             _cam?.GetComponent<CameraFollow>()?.SetTarget(transform);
             
@@ -101,7 +102,7 @@ namespace pillz.client.Scripts
             }
 
             jetpack.Tick();
-            portalState.Tick();
+            PortalState.Tick();
             boundary.Tick(_rb);
             mover.Tick(intent, jetActive, jetpack.Throttling);
             
@@ -132,9 +133,9 @@ namespace pillz.client.Scripts
         public void OnPillUpdated(Pill newVal)
         {
             pillHud.SetHp(newVal.Hp);
-            weapons.SetAim(newVal.AimDir);
-            weapons.Select(newVal.SelectedWeapon);
-            weapons.SetAmmo(newVal.PrimaryWeapon.Ammo, newVal.SecondaryWeapon.Ammo);
+            Weapons.SetAim(newVal.AimDir);
+            Weapons.Select(newVal.SelectedWeapon);
+            Weapons.SetAmmo(newVal.PrimaryWeapon.Ammo, newVal.SecondaryWeapon.Ammo);
 
             jetpack.OnJetpackUpdated(newVal.Jetpack);
             
@@ -153,14 +154,14 @@ namespace pillz.client.Scripts
             }
         }
         
-        public WeaponSlots GetWeapons()
-        {
-            return weapons;
-        }
+        // public WeaponSlots GetWeapons()
+        // {
+        //     return weapons;
+        // }
 
-        public PortalState GetPortalState()
-        {
-            return portalState;
-        }
+        // public PortalState GetPortalState()
+        // {
+        //     return portalState;
+        // }
     }
 }

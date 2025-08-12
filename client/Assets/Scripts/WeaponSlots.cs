@@ -9,21 +9,22 @@ namespace pillz.client.Scripts
         [SerializeField] private WeaponDefinition primary;
         [SerializeField] private WeaponDefinition secondary;
 
-        private WeaponController _primary, _secondary;
+        public WeaponController Primary { get; private set; }
+        public WeaponController Secondary { get; private set; }
         private WeaponType _selected;
 
         public void Init(Transform owner, PlayerController player, Vector2 aimDir)
         {
-            _primary = Instantiate(primary.controllerPrefab, owner).GetComponent<WeaponController>();
-            _primary.Init(primary.type, owner, player, aimDir);
+            Primary = Instantiate(primary.controllerPrefab, owner).GetComponent<WeaponController>();
+            Primary.Init(primary.type, owner, player, aimDir);
 
-            _secondary = Instantiate(secondary.controllerPrefab, owner).GetComponent<WeaponController>();
-            _secondary.Init(secondary.type, owner, player, aimDir);
-            _secondary.Disable();
+            Secondary = Instantiate(secondary.controllerPrefab, owner).GetComponent<WeaponController>();
+            Secondary.Init(secondary.type, owner, player, aimDir);
+            Secondary.Disable();
 
             _selected = WeaponType.Primary;
             
-            GameInit.Connection.Reducers.InitAmmo(_primary.GetAmmo(), _secondary.GetAmmo());
+            GameInit.Connection.Reducers.InitAmmo(Primary.Ammo, Secondary.Ammo);
         }
 
         public void Select(WeaponType type)
@@ -36,43 +37,33 @@ namespace pillz.client.Scripts
             if (type == WeaponType.Primary)
             {
 
-                _secondary.Disable();
-                _primary.Enable();
+                Secondary.Disable();
+                Primary.Enable();
             }
             else
             {
-                _primary.Disable();
-                _secondary.Enable();
+                Primary.Disable();
+                Secondary.Enable();
             }
         }
 
         public EntityController Shoot(Projectile p, PlayerController player, Vector2 spawn, float speed)
         {
             return _selected == WeaponType.Primary
-                ? _primary.Shoot(p, player, spawn, speed)
-                : _secondary.Shoot(p, player, spawn, speed);
+                ? Primary.Shoot(p, player, spawn, speed)
+                : Secondary.Shoot(p, player, spawn, speed);
         }
 
         public void SetAim(Vector2 aim)
         {
-            _primary?.SetAimDir(aim);
-            _secondary?.SetAimDir(aim);
+            Primary.AimDir = aim;
+            Secondary.AimDir = aim;
         }
         
         public void SetAmmo(int primaryAmmo, int secondaryAmmo)
         {
-            _primary.SetAmmo(primaryAmmo);
-            _secondary.SetAmmo(secondaryAmmo);
-        }
-
-        public WeaponController GetPrimary()
-        {
-            return _primary;
-        }
-        
-        public WeaponController GetSecondary()
-        {
-            return _secondary;
+            Primary.Ammo = primaryAmmo;
+            Secondary.Ammo = secondaryAmmo;
         }
     }
 }

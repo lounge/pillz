@@ -62,7 +62,7 @@ namespace pillz.client.Scripts
             if (state != OutOfBound.None)
             {
                 Debug.Log("AmmoController: Out of bounds detected, deleting projectile.");
-                GameInit.Connection.Reducers.DeleteAmmo(Ammo.Id);
+                GameInit.Connection.Reducers.DeleteAmmo(Ammo.EntityId);
             }
         }
 
@@ -70,7 +70,7 @@ namespace pillz.client.Scripts
         {
             if (Time.time - _lastSend >= SendUpdatesFrequency && !transform.position.Equals(_lastSent))
             {
-                GameInit.Connection.Reducers.UpdateAmmo(Ammo.Id,
+                GameInit.Connection.Reducers.UpdateAmmo(Ammo.EntityId,
                     new DbVector2(transform.position.x, transform.position.y));
 
                 _lastSend = Time.time;

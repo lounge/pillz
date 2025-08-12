@@ -246,7 +246,7 @@ namespace pillz.client.Scripts
 
             var spawnPos = (Vector2)entity.Position;
 
-            var entityController = player.Pill?.GetWeapons().Shoot(insertedValue, player, spawnPos, insertedValue.Speed);
+            var entityController = player.Pill?.Weapons.Shoot(insertedValue, player, spawnPos, insertedValue.Speed);
             Entities.Add(insertedValue.EntityId, entityController);
         }
 
@@ -266,12 +266,12 @@ namespace pillz.client.Scripts
         {
             var ammoController = _prefabSpawner.SpawnAmmo(insertedValue);
 
-            Ammo.Add(insertedValue.Id, ammoController);
+            Entities.Add(insertedValue.EntityId, ammoController);
         }
 
         private void AmmoOnDelete(EventContext context, Ammo deletedValue)
         {
-            if (Ammo.Remove(deletedValue.Id, out var ammoController))
+            if (Entities.Remove(deletedValue.EntityId, out var ammoController))
             {
                 ammoController.OnDelete(context);
             }
@@ -337,9 +337,9 @@ namespace pillz.client.Scripts
         #endregion
     }
 
-// This is a workaround for the Unity IL2CPP compiler, which does not support the IsExternalInit type.
-// It allows us to use init-only properties in our structs.
-    internal static class IsExternalInit
-    {
-    }
+// // This is a workaround for the Unity IL2CPP compiler, which does not support the IsExternalInit type.
+// // It allows us to use init-only properties in our structs.
+//     internal static class IsExternalInit
+//     {
+//     }
 }
