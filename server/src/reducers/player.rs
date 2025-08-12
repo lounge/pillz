@@ -1,19 +1,17 @@
 use spacetimedb::log::{debug, info};
 use spacetimedb::{ReducerContext, Table};
-
+use crate::dto::jetpack_input::JetpackInput;
+use crate::dto::player_input::PlayerInput;
+use crate::math::dbvector2::DbVector2;
 use crate::tables::entity::entity;
-use crate::tables::jetpack_input::JetpackInput;
 use crate::tables::pill::pill;
 use crate::tables::player::{logged_out_player, player};
 use crate::tables::projectile::projectile;
-use crate::tables::dbvector2::DbVector2;
 use crate::tables::entity::Entity;
 use crate::tables::pill::Pill;
 use crate::tables::player::Player;
-use crate::tables::player_input::PlayerInput;
-use crate::tables::weapon::Weapon;
-use crate::tables::weapon_type::WeaponType;
-
+use crate::types::weapon::Weapon;
+use crate::types::weapon_type::WeaponType;
 
 #[spacetimedb::reducer(client_connected)]
 pub fn connect(ctx: &ReducerContext) -> Result<(), String> {
@@ -100,7 +98,7 @@ pub fn enter_game(
         hp: 100,
         dmg: 0,
         frags: 0,
-        jetpack: crate::tables::jetpack::Jetpack {
+        jetpack: crate::types::jetpack::Jetpack {
             fuel: 0.0,
             enabled: false,
             throttling: false,

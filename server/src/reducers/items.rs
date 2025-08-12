@@ -1,8 +1,5 @@
 use spacetimedb::ReducerContext;
-
-use crate::tables::{
-    dbvector2::DbVector2
-};
+use crate::math::dbvector2::DbVector2;
 use crate::tables::ammo::ammo;
 use crate::tables::entity::entity;
 

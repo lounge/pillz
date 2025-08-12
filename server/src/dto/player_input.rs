@@ -1,6 +1,6 @@
 use spacetimedb::SpacetimeType;
-use crate::tables::dbvector2::DbVector2;
-use crate::tables::weapon_type::WeaponType;
+use crate::math::dbvector2::DbVector2;
+use crate::types::weapon_type::WeaponType;
 
 #[derive(SpacetimeType, Debug, Clone, Copy, PartialEq)]
 pub struct PlayerInput {

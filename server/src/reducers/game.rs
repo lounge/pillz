@@ -1,19 +1,19 @@
 use rand::Rng;
 use spacetimedb::{DbContext, ReducerContext, Table};
-
+use crate::math::dbvector2::DbVector2;
 use crate::tables::ammo::ammo;
-use crate::tables::dbvector2::DbVector2;
 use crate::tables::entity::entity;
 use crate::tables::pill::pill;
 use crate::tables::player::player;
 use crate::tables::projectile::projectile;
 use crate::tables::terrain::terrain;
 use crate::tables::world::world;
-use crate::tables::{ammo::Ammo, entity::Entity, terrain::Terrain, weapon_type::WeaponType};
+use crate::tables::{ammo::Ammo, entity::Entity, terrain::Terrain};
 use crate::timers::{
     move_players_timer::MovePlayersTimer, move_projectiles_timer::MoveProjectilesTimer,
     spawn_ammo_timer::SpawnAmmoTimer,
 };
+use crate::types::weapon_type::WeaponType;
 
 const DELTA_TIME: f32 = 0.05; // 50ms
 
@@ -130,7 +130,7 @@ fn spawn(ctx: &ReducerContext, spawn_locations: &[Terrain], ty: WeaponType) {
     let spawn_loc = spawn_locations[idx].position;
 
     let entity = ctx.db.entity().insert(Entity {
-        id: 0, // autoinc on insert
+        id: 0,
         position: DbVector2::new(spawn_loc.x, spawn_loc.y),
     });
 

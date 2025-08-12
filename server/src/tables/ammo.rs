@@ -1,5 +1,5 @@
-use crate::tables::dbvector2::DbVector2;
-use crate::tables::weapon_type::WeaponType;
+use crate::math::dbvector2::DbVector2;
+use crate::types::weapon_type::WeaponType;
 
 #[spacetimedb::table(name = ammo, public)]
 pub struct Ammo {

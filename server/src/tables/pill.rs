@@ -1,9 +1,7 @@
-use crate::tables::{
-    dbvector2::DbVector2,
-    weapon_type::WeaponType,
-    weapon::Weapon,
-    jetpack::Jetpack,
-};
+use crate::math::dbvector2::DbVector2;
+use crate::types::jetpack::Jetpack;
+use crate::types::weapon::Weapon;
+use crate::types::weapon_type::WeaponType;
 
 #[spacetimedb::table(name = pill, public)]
 #[derive(Debug, Clone)]

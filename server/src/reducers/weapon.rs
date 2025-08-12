@@ -1,14 +1,12 @@
-use spacetimedb::log::{debug, info};
-use spacetimedb::{ReducerContext, Table};
-
+use crate::math::dbvector2::DbVector2;
 use crate::tables::entity::entity;
 use crate::tables::pill::pill;
 use crate::tables::player::player;
 use crate::tables::projectile::projectile;
-use crate::tables::{
-    dbvector2::DbVector2, entity::Entity, projectile::Projectile,
-    weapon_type::WeaponType,
-};
+use crate::tables::{entity::Entity, projectile::Projectile};
+use spacetimedb::log::{debug, info};
+use spacetimedb::{ReducerContext, Table};
+use crate::types::weapon_type::WeaponType;
 
 #[spacetimedb::reducer]
 pub fn init_ammo(
@@ -91,7 +89,7 @@ pub fn shoot_projectile(
         entity_id: entity.id,
         player_id: player.id,
         direction: DbVector2::new(position.x, position.y),
-        position: DbVector2::new(0.0, 0.0), 
+        position: DbVector2::new(0.0, 0.0),
         speed,
     });
 

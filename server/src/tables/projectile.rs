@@ -1,5 +1,4 @@
-use crate::tables::dbvector2::DbVector2;
-
+use crate::math::dbvector2::DbVector2;
 #[spacetimedb::table(name = projectile, public)]
 pub struct Projectile {
     #[primary_key]

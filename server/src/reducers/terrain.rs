@@ -2,12 +2,11 @@ use spacetimedb::{ReducerContext, Table};
 use spacetimedb::log::{debug, info, error};
 use rand::Rng;
 use std::collections::HashMap;
-
+use crate::math::dbvector2::DbVector2;
 use crate::tables::{
     terrain::Terrain as TerrainTile,
     portal::Portal,
 };
-use crate::tables::dbvector2::DbVector2;
 use crate::tables::portal::portal;
 use crate::tables::terrain::{terrain};
 use crate::tables::world::world;

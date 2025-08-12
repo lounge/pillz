@@ -1,4 +1,4 @@
-use crate::tables::dbvector2::DbVector2;
+use crate::math::dbvector2::DbVector2;
 
 #[spacetimedb::table(name = portal, public)]
 pub struct Portal {
