@@ -14,7 +14,6 @@ use crate::tables::player_input::PlayerInput;
 use crate::tables::weapon::Weapon;
 use crate::tables::weapon_type::WeaponType;
 
-const MAX_HP: i32 = 100;
 
 #[spacetimedb::reducer(client_connected)]
 pub fn connect(ctx: &ReducerContext) -> Result<(), String> {
@@ -189,6 +188,8 @@ pub fn init_stims(ctx: &ReducerContext, stims: i32) -> Result<(), String> {
 
 #[spacetimedb::reducer]
 pub fn stim(ctx: &ReducerContext, strength: i32) -> Result<(), String> {
+    const MAX_HP: i32 = 100;
+    
     let player = ctx
         .db
         .player()

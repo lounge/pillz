@@ -124,7 +124,6 @@ pub fn spawn_ammo(ctx: &ReducerContext, _timer: SpawnAmmoTimer) -> Result<(), St
     Ok(())
 }
 
-/// Helper that mirrors the local C# `Spawn(WeaponType type)` function.
 fn spawn(ctx: &ReducerContext, spawn_locations: &[Terrain], ty: WeaponType) {
     let rng = &mut ctx.rng();
     let idx = rng.gen_range(0..spawn_locations.len());

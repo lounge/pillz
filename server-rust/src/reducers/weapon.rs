@@ -91,11 +91,10 @@ pub fn shoot_projectile(
         entity_id: entity.id,
         player_id: player.id,
         direction: DbVector2::new(position.x, position.y),
-        position: DbVector2::new(0.0, 0.0), // not set in C#; defaults to zero unless you want spawn at entity pos
+        position: DbVector2::new(0.0, 0.0), 
         speed,
     });
 
-    // Decrease ammo on the player's pill(s)
     for mut pill in ctx.db.pill().player_id().filter(&player.id) {
         let new_ammo = (ammo - 1).max(0);
         match weapon_type {
