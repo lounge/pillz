@@ -1,4 +1,4 @@
-[X]  Detect when a mask falls off the map and kill it
+[X]  Detect when a pill falls off the map and kill it
 [X]  Detect when a projectile falls off the map and destroy it
 [X]  Player prefabs dont get destroyd correctly when remote player dies (PLayers dict in game manager)
 [-]  Stop player from moving outside the map
@@ -9,14 +9,14 @@
     [X]  Show explosion effect
     [X]  Particles
     [X]  Show explosion damage
-    []  Show explosion sound
-    [-]  Apply force to player if in explosion radius
+    []  Play explosion sound
+    [X]  Apply force to player if in explosion radius
         [X] Force applied if directly hit
         [X] Force applied if in explosion radius
-        []  Show knockback effect
+        [X]  Show knockback effect
 [X]  Rename project to pillz
     [X]  Rename repo
-    [X]  Rename mask classes and vars
+    [X]  Rename pill classes and vars
     [X]  Rename server tables and reducers
     [X]  Rename prefabs, assets and game objects
 []  Create win scenario
@@ -48,7 +48,7 @@
     []  Needs tuning
 [-]  Portals
     [X]  Spawn four portals top, bottom, left, right
-    [X]  Teleport mask to connected portal
+    [X]  Teleport pill to connected portal
     [X]  Fine tune portal spawn positon
     []  Make rigidbody and sync position to server
 [-]  Jetpack movement
@@ -63,5 +63,5 @@
     [X]  Different weapon types (e.g., rocket, grenade)
     [X]  Different dmg output    
     [X]  Weapon switching mechanism    
-[]  Add multiple masks per player
-    []  Toggle between players masks
+[]  Add multiple pillz per player
+    []  Toggle between players pillz

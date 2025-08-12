@@ -61,7 +61,7 @@ namespace pillz.client.Scripts
             Log.Debug("AmmoController: Out of bounds state changed: " + state);
             if (state != OutOfBound.None)
             {
-                Debug.Log("AmmoController: Out of bounds detected, deleting projectile.");
+                Debug.Log("AmmoController: Out of bounds detected, deleting ammo.");
                 GameInit.Connection.Reducers.DeleteAmmo(Ammo.EntityId);
             }
         }
