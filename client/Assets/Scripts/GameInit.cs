@@ -108,6 +108,8 @@ namespace pillz.client.Scripts
 
             Connection.Db.Player.OnInsert += PlayerOnInsert;
             Connection.Db.Player.OnDelete += PlayerOnDelete;
+            
+            Connection.OnUnhandledReducerError += InstanceOnUnhandledReducerError;
 
 
             OnConnected?.Invoke();
@@ -335,11 +337,12 @@ namespace pillz.client.Scripts
         }
 
         #endregion
-    }
 
-// // This is a workaround for the Unity IL2CPP compiler, which does not support the IsExternalInit type.
-// // It allows us to use init-only properties in our structs.
-//     internal static class IsExternalInit
-//     {
-//     }
+        private static void InstanceOnUnhandledReducerError(ReducerEventContext ctx, Exception exception)
+        {
+            var ev = ctx.Event;
+ 
+            Log.Debug($"Unhandled reducer error for event {ev.GetType().Name} with data: {ev} reducer: {ev.Reducer}");
+        }
+    }
 }

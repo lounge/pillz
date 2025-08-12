@@ -22,7 +22,6 @@ namespace pillz.client.Scripts
             _actions.Player.Jump.canceled += _ => _current.JumpHeld = false;
             _actions.Player.Jetpack.performed += _ => _current.ToggleJetpack = true;
             _actions.Player.Stim.performed += _ => _current.Stim = true;
-            
             _actions.Player.PrimaryWeapon.performed += _ => _current.SelectWeapon = WeaponType.Primary;
             _actions.Player.SecondaryWeapon.performed += _ => _current.SelectWeapon = WeaponType.Secondary;
         }
