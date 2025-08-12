@@ -5,7 +5,6 @@ use crate::tables::weapon_type::WeaponType;
 pub struct Ammo {
     #[primary_key]
     pub entity_id: u32,
-
     pub ammo_type: WeaponType,
     pub position: DbVector2,
 }

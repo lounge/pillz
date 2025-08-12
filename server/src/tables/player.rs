@@ -1,5 +1,3 @@
-// use spacetimedb::identity::Identity;
-
 use spacetimedb::Identity;
 
 /// Table: Player
@@ -9,11 +7,9 @@ use spacetimedb::Identity;
 pub struct Player {
     #[primary_key]
     pub identity: Identity,
-
     #[unique]
     #[auto_inc]
     pub id: u32,
-
     pub username: String,
     pub is_paused: bool,
 }
