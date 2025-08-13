@@ -11,13 +11,17 @@ namespace pillz.client.Scripts
         [SerializeField] private GameObject secondary;
         [SerializeField] private int primaryAmmoAmount = 35;
         [SerializeField] private int secondaryAmmoAmount = 15;
-        
+
         [NonSerialized] public Ammo Ammo;
         [NonSerialized] public int AmmoAmount;
-        
-        private float _lastSend;
-        private Vector3 _lastSent;
+
         private OutOfBoundsEmitter _outOfBoundsEmitter;
+        private Rigidbody2D _rb;
+        private ItemMovement _lastSent;
+        private float _lastSend;
+
+        protected override bool IsLocallySimulated => GameInit.IsSimulator;
+
 
         private void OnEnable()
         {
@@ -31,31 +35,36 @@ namespace pillz.client.Scripts
 
         protected override void Awake()
         {
+            base.Awake();
             _outOfBoundsEmitter = GetComponent<OutOfBoundsEmitter>();
+            _rb = GetComponent<Rigidbody2D>();
 
             primary.SetActive(false);
             secondary.SetActive(false);
         }
-        
-        public void Spawn(Ammo ammo)
+
+        public void Spawn(Ammo ammo, PlayerController owner)
         {
+            base.Spawn(ammo.EntityId, owner);
+        
             Ammo = ammo;
-
-            transform.position = new Vector3(ammo.Position.X + 0.5f, ammo.Position.Y + 2f, 0);
-
-            switch (ammo.AmmoType)
+        
+            if (!_rb)
             {
-                case WeaponType.Primary:
-                    primary.SetActive(true);
-                    AmmoAmount = primaryAmmoAmount;
-                    break;
-                case WeaponType.Secondary:
-                    secondary.SetActive(true);
-                    AmmoAmount = secondaryAmmoAmount;
-                    break;
+                _rb = GetComponent<Rigidbody2D>();
             }
+        
+            _rb.position = new Vector2(ammo.Position.X, ammo.Position.Y + 2f);
+            if (GameInit.IsSimulator)
+            {
+                _rb.linearVelocity = new Vector2(Ammo.Direction.X, Ammo.Direction.Y);
+            }
+            
+            primary.SetActive(ammo.AmmoType == WeaponType.Primary);
+            secondary.SetActive(ammo.AmmoType == WeaponType.Secondary);
+            AmmoAmount = ammo.AmmoType == WeaponType.Primary ? primaryAmmoAmount : secondaryAmmoAmount;
         }
-
+        
         private void OnBoundsChanged(OutOfBound state)
         {
             Log.Debug("AmmoController: Out of bounds state changed: " + state);
@@ -65,16 +74,20 @@ namespace pillz.client.Scripts
                 GameInit.Connection.Reducers.DeleteAmmo(Ammo.EntityId);
             }
         }
-
-        protected override void Update()
+        protected void FixedUpdate()
         {
-            if (Time.time - _lastSend >= SendUpdatesFrequency && !transform.position.Equals(_lastSent))
+            if (!GameInit.IsConnected() || !GameInit.IsSimulator || !_rb)
             {
-                GameInit.Connection.Reducers.UpdateAmmo(Ammo.EntityId,
-                    new DbVector2(transform.position.x, transform.position.y));
+                Log.Debug("[AmmoController] Not connected or not observer, skipping ammo updates.");
+                return;
+            }
 
+            var mov = new ItemMovement(_rb.position, _rb.linearVelocity);
+            if (Time.time - _lastSend >= SendUpdatesFrequency && !mov.Equals(_lastSent))
+            { 
+                GameInit.Connection.Reducers.UpdateAmmo(Ammo.EntityId, mov);
                 _lastSend = Time.time;
-                _lastSent = transform.position;
+                _lastSent = mov;
             }
         }
     }

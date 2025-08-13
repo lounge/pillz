@@ -1,10 +1,8 @@
-use rand::Rng;
-use spacetimedb::{DbContext, ReducerContext, Table};
 use crate::math::dbvector2::DbVector2;
 use crate::tables::ammo::ammo;
 use crate::tables::entity::entity;
 use crate::tables::pill::pill;
-use crate::tables::player::player;
+use crate::tables::player::{player, Player};
 use crate::tables::projectile::projectile;
 use crate::tables::terrain::terrain;
 use crate::tables::world::world;
@@ -14,6 +12,10 @@ use crate::timers::{
     spawn_ammo_timer::SpawnAmmoTimer,
 };
 use crate::types::weapon_type::WeaponType;
+use crate::util::constants;
+use constants::PLAYER_OBSERVER_ID;
+use rand::Rng;
+use spacetimedb::{DbContext, ReducerContext, Table};
 
 const DELTA_TIME: f32 = 0.05; // 50ms
 
@@ -22,13 +24,11 @@ pub fn move_players(ctx: &ReducerContext, _timer: MovePlayersTimer) -> Result<()
     for pill in ctx.db.pill().iter() {
         if let Some(player) = ctx.db.player().id().find(pill.player_id) {
             if player.is_paused {
-                // Log.Debug($"Pill with id {pill.EntityId} is paused, skipping movement.");
                 continue;
             }
         }
 
         let Some(mut entity) = ctx.db.entity().id().find(pill.entity_id) else {
-            // spacetime::log::error!("Entity with id {} not found in the database.", pill.entity_id);
             continue;
         };
 
@@ -39,10 +39,6 @@ pub fn move_players(ctx: &ReducerContext, _timer: MovePlayersTimer) -> Result<()
             entity.position = new_position;
             ctx.db.entity().id().update(entity);
         }
-        // spacetime::log::debug!(
-        //     "Moving pill {} to position ({}, {})",
-        //     pill.entity_id, entity.position.x, entity.position.y
-        // );
     }
 
     Ok(())
@@ -52,7 +48,6 @@ pub fn move_players(ctx: &ReducerContext, _timer: MovePlayersTimer) -> Result<()
 pub fn move_projectiles(ctx: &ReducerContext, _timer: MoveProjectilesTimer) -> Result<(), String> {
     for projectile in ctx.db().projectile().iter() {
         let Some(mut entity) = ctx.db.entity().id().find(projectile.entity_id) else {
-            // spacetime::log::error!("Entity with id {} not found in the database.", projectile.entity_id);
             continue;
         };
 
@@ -62,10 +57,6 @@ pub fn move_projectiles(ctx: &ReducerContext, _timer: MoveProjectilesTimer) -> R
         if entity.position != new_position {
             entity.position = new_position;
             ctx.db.entity().id().update(entity);
-            // debug!(
-            //     "Moving projectile {} to ({}, {})",
-            //     projectile.entity_id, entity.position.x, entity.position.y
-            // );
         }
     }
 
@@ -75,14 +66,19 @@ pub fn move_projectiles(ctx: &ReducerContext, _timer: MoveProjectilesTimer) -> R
 #[spacetimedb::reducer]
 pub fn spawn_ammo(ctx: &ReducerContext, _timer: SpawnAmmoTimer) -> Result<(), String> {
     let Some(world) = ctx.db.world().iter().next() else {
-        // spacetime::log::error!("World is not generated yet. Cannot spawn ammo.");
         return Ok(());
     };
 
     if !world.is_generated {
-        // spacetime::log::error!("World is not generated yet. Cannot spawn ammo.");
         return Ok(());
     }
+
+    let observer = ctx
+        .db
+        .player()
+        .id()
+        .find(PLAYER_OBSERVER_ID)
+        .ok_or("Observer not found")?;
 
     const PRIMARY_MAX_COUNT: i32 = 20;
     const SECONDARY_MAX_COUNT: i32 = 10;
@@ -91,7 +87,6 @@ pub fn spawn_ammo(ctx: &ReducerContext, _timer: SpawnAmmoTimer) -> Result<(), St
         ctx.db.terrain().iter().filter(|t| t.is_spawnable).collect();
 
     if spawn_locations.is_empty() {
-        // spacetime::log::error!("No spawn locations available for ammo.");
         return Ok(());
     }
 
@@ -111,20 +106,20 @@ pub fn spawn_ammo(ctx: &ReducerContext, _timer: SpawnAmmoTimer) -> Result<(), St
 
     if primary_count <= PRIMARY_MAX_COUNT {
         for _ in primary_count..PRIMARY_MAX_COUNT {
-            spawn(ctx, &spawn_locations, WeaponType::Primary)
+            create_ammo(ctx, &spawn_locations, WeaponType::Primary, &observer)
         }
     }
 
     if secondary_count <= SECONDARY_MAX_COUNT {
         for _ in secondary_count..SECONDARY_MAX_COUNT {
-            spawn(ctx, &spawn_locations, WeaponType::Secondary)
+            create_ammo(ctx, &spawn_locations, WeaponType::Secondary, &observer)
         }
     }
 
     Ok(())
 }
 
-fn spawn(ctx: &ReducerContext, spawn_locations: &[Terrain], ty: WeaponType) {
+fn create_ammo(ctx: &ReducerContext, spawn_locations: &[Terrain], ty: WeaponType, _observer: &Player) {
     let rng = &mut ctx.rng();
     let idx = rng.gen_range(0..spawn_locations.len());
     let spawn_loc = spawn_locations[idx].position;
@@ -136,12 +131,10 @@ fn spawn(ctx: &ReducerContext, spawn_locations: &[Terrain], ty: WeaponType) {
 
     let _ammo = ctx.db.ammo().insert(Ammo {
         entity_id: entity.id,
+        observer_id: _observer.id,
         ammo_type: ty,
         position: spawn_loc,
+        direction: DbVector2::new(0.0, 0.0),
     });
 
-    // spacetime::log::debug!(
-    //     "Spawned ammo type ({:?}) at ({}, {}) with id: {}.",
-    //     ammo.ammo_type, entity.position.x, entity.position.y, entity.id
-    // );
 }

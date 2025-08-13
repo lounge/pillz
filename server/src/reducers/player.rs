@@ -1,17 +1,20 @@
-use spacetimedb::log::{debug, info};
-use spacetimedb::{ReducerContext, Table};
 use crate::dto::jetpack_input::JetpackInput;
 use crate::dto::player_input::PlayerInput;
 use crate::math::dbvector2::DbVector2;
+use crate::tables::config::config;
 use crate::tables::entity::entity;
-use crate::tables::pill::pill;
-use crate::tables::player::{logged_out_player, player};
-use crate::tables::projectile::projectile;
 use crate::tables::entity::Entity;
+use crate::tables::pill::pill;
 use crate::tables::pill::Pill;
 use crate::tables::player::Player;
+use crate::tables::player::{logged_out_player, player};
+use crate::tables::projectile::projectile;
 use crate::types::weapon::Weapon;
 use crate::types::weapon_type::WeaponType;
+use crate::util::constants;
+use crate::util::helpers::{get_or_create_config, set_config};
+use spacetimedb::log::{debug, info};
+use spacetimedb::{ReducerContext, Table};
 
 #[spacetimedb::reducer(client_connected)]
 pub fn connect(ctx: &ReducerContext) -> Result<(), String> {
@@ -30,6 +33,13 @@ pub fn connect(ctx: &ReducerContext) -> Result<(), String> {
             username: "<NoName>".to_string(),
             is_paused: false,
         });
+    }
+
+    let mut cfg = get_or_create_config(ctx);
+    if cfg.observer.is_none() {
+        cfg.observer = Some(ctx.sender);
+        set_config(ctx, cfg);
+        info!("Observer set to first player: {}", &ctx.sender);
     }
 
     Ok(())
@@ -59,6 +69,25 @@ pub fn disconnect(ctx: &ReducerContext) -> Result<(), String> {
 
     ctx.db.logged_out_player().insert(player);
     ctx.db.player().identity().delete(&ctx.sender);
+
+    if let Some(mut cfg) = ctx.db.config().id().find(0) {
+        if cfg.observer == Some(ctx.sender) {
+            let next_player = ctx
+                .db
+                .player()
+                .iter()
+                .find(|p| p.id != constants::PLAYER_OBSERVER_ID && p.identity != ctx.sender);
+
+            if let Some(p) = next_player {
+                cfg.observer = Some(p.identity);
+                info!("Observer reassigned to {}", p.identity);
+            } else {
+                cfg.observer = None;
+                info!("Observer cleared (no eligible players online).");
+            }
+            set_config(ctx, cfg);
+        }
+    }
 
     Ok(())
 }
@@ -187,7 +216,7 @@ pub fn init_stims(ctx: &ReducerContext, stims: i32) -> Result<(), String> {
 #[spacetimedb::reducer]
 pub fn stim(ctx: &ReducerContext, strength: i32) -> Result<(), String> {
     const MAX_HP: i32 = 100;
-    
+
     let player = ctx
         .db
         .player()

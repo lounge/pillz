@@ -1,0 +1,1 @@
+pub const PLAYER_OBSERVER_ID : u32 = u32::MAX;

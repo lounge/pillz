@@ -45,12 +45,12 @@ namespace pillz.client.Scripts
             return portalController;
         }
         
-        public AmmoController SpawnAmmo(Ammo ammo)
+        public AmmoController SpawnAmmo(Ammo ammo, PlayerController owner)
         {
             var ammoController = Instantiate(ammoPrefab);
             ammoController.name = $"Ammo_{ammo.AmmoType}_{ammo.EntityId}";
 
-            ammoController.Spawn(ammo);
+            ammoController.Spawn(ammo, owner);
 
             Log.Debug($"Spawned ammo with EntityId {ammo.EntityId} and ammoType {ammo.AmmoType}.");
 

@@ -18,6 +18,9 @@ namespace pillz.client.Scripts
         private float _lerpTime;
         private Vector3 _lerpTargetPosition;
         
+        protected virtual bool IsLocallySimulated => Owner && Owner.IsLocalPlayer;
+
+        
         protected virtual void Awake()
         {
             _entityRb = GetComponent<Rigidbody2D>();
@@ -28,7 +31,7 @@ namespace pillz.client.Scripts
             EntityId = entityId;
             Owner = owner;
 
-            if (Owner.IsLocalPlayer)
+            if (IsLocallySimulated)
             {
                 return;
             }
@@ -52,7 +55,7 @@ namespace pillz.client.Scripts
 
         protected virtual void Update()
         {
-            if (!Owner || Owner.IsLocalPlayer)
+            if (IsLocallySimulated)
                 return;
 
             _lerpTime = Mathf.Min(_lerpTime + Time.deltaTime, LerpDurationSec);

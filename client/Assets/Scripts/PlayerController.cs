@@ -24,7 +24,6 @@ namespace pillz.client.Scripts
             {
                 _local = this;
             }
-            
         }
         
         public void OnDelete(EventContext context)

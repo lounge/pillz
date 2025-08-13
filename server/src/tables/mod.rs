@@ -6,3 +6,4 @@ pub mod portal;
 pub mod projectile;
 pub mod terrain;
 pub mod world;
+pub mod config;
