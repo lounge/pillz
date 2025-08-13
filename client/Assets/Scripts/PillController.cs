@@ -8,22 +8,19 @@ namespace pillz.client.Scripts
     [RequireComponent(typeof(Rigidbody2D))]
     public class PillController : EntityController
     {
-        [Header("Data")] 
-        [SerializeField] private MovementConfig movementConfig;
+        [Header("Data")] [SerializeField] private MovementConfig movementConfig;
         [SerializeField] private JetpackConfig jetpackConfig;
         [SerializeField] private StimConfig stimConfig;
 
-        [Header("Modules")] 
-        [SerializeField] private PillInputReader inputReader;
+        [Header("Modules")] [SerializeField] private PillInputReader inputReader;
         [SerializeField] private Mover2D mover;
         [SerializeField] private Boundary2D boundary;
         [SerializeField] private JetpackModule jetpack;
         [field: SerializeField] public PortalState PortalState { get; private set; }
         [field: SerializeField] public WeaponSlots Weapons { get; private set; }
         
-        
-        [Header("UI")]
-        [SerializeField] private PillHud pillHud;
+        [Header("UI")] [SerializeField] private PillHud pillHud;
+        [SerializeField] private GameObject stimEffectPrefab;
 
         private Rigidbody2D _rb;
         private Camera _cam;
@@ -31,26 +28,26 @@ namespace pillz.client.Scripts
         private HudDisplay _hudDisplay;
         private GameObject _gameHud;
         private int _stims;
-        
+
         private float _lastSend;
 
         public void Spawn(Pill pill, PlayerController owner)
         {
             base.Spawn(pill.EntityId, owner);
-            
+
             _cam = Camera.main;
             _rb = GetComponent<Rigidbody2D>();
             _stims = stimConfig.amount;
 
             transform.position = new Vector3(pill.Position.X + 0.5f, pill.Position.Y + 2f, 0);
-            
+
             var hudCanvas = GameObject.Find("Pill HUD");
             pillHud = Instantiate(pillHud, hudCanvas.transform);
             pillHud.AttachTo(transform);
             pillHud.SetUsername(owner.Username);
             pillHud.SetHp(pill.Hp);
             pillHud.SetFuel(jetpack.Fuel);
-            
+
             mover.Init(movementConfig, _rb);
             jetpack.Init(jetpackConfig, pillHud);
             Weapons.Init(transform, owner, pill.AimDir);
@@ -72,9 +69,8 @@ namespace pillz.client.Scripts
             _hudDisplay.SetSecondary(Weapons.Secondary.Ammo);
 
             _cam?.GetComponent<CameraFollow>()?.SetTarget(transform);
-            
+
             GameInit.Connection.Reducers.InitStims(stimConfig.amount);
-            
         }
 
         private void FixedUpdate()
@@ -105,7 +101,7 @@ namespace pillz.client.Scripts
             PortalState.Tick();
             boundary.Tick(_rb);
             mover.Tick(intent, jetpack.Throttling);
-            
+
             pillHud.SetFuel(jetpack.Fuel);
 
             var p = new PlayerInput(_rb.linearVelocity, _rb.position, !FocusHandler.HasFocus, intent.SelectWeapon);
@@ -123,7 +119,7 @@ namespace pillz.client.Scripts
             Destroy(pillHud?.gameObject);
             Destroy(_gameHud?.gameObject);
             Destroy(Owner.gameObject);
-            
+
             if (Owner.IsLocalPlayer)
             {
                 DeathScreen.Instance.Show(Owner);
@@ -138,14 +134,19 @@ namespace pillz.client.Scripts
             Weapons.SetAmmo(newVal.PrimaryWeapon.Ammo, newVal.SecondaryWeapon.Ammo);
 
             jetpack.OnJetpackUpdated(newVal.Jetpack);
-            
+
             _hudDisplay?.SetStim(newVal.Stims);
             _hudDisplay?.SetDmg(newVal.Dmg);
             _hudDisplay?.SetFrags(newVal.Frags);
             _hudDisplay?.SetPrimary(newVal.PrimaryWeapon.Ammo);
             _hudDisplay?.SetSecondary(newVal.SecondaryWeapon.Ammo);
-            
+
             Log.Debug($"AMMO CHECK: Primary={newVal.PrimaryWeapon.Ammo} Secondary={newVal.SecondaryWeapon.Ammo}");
+
+            if (newVal.UsedStim && stimEffectPrefab)
+            {
+                Instantiate(stimEffectPrefab, transform.position, Quaternion.identity);
+            }
 
             if (newVal.Force is not null)
             {

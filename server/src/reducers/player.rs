@@ -138,6 +138,7 @@ pub fn enter_game(
         primary_weapon: Weapon { ammo: 0 },
         secondary_weapon: Weapon { ammo: 0 },
         stims: 0,
+        used_stim: false
     });
 
     info!(
@@ -165,6 +166,7 @@ pub fn update_player(ctx: &ReducerContext, input: PlayerInput) -> Result<(), Str
         pill.direction = input.direction;
         pill.position = input.position;
         pill.selected_weapon = input.selected_weapon;
+        pill.used_stim = false;
 
         ctx.db.pill().entity_id().update(pill);
         // debug!("Updated pill {} dir ({}, {})", pill.entity_id, pill.direction.x, pill.direction.y);
@@ -233,6 +235,7 @@ pub fn stim(ctx: &ReducerContext, strength: i32) -> Result<(), String> {
         let clone = pill.clone();
         pill.hp = (pill.hp + strength).min(MAX_HP);
         pill.stims -= 1;
+        pill.used_stim = true;
         ctx.db.pill().entity_id().update(pill);
 
         debug!(

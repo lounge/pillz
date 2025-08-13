@@ -996,6 +996,7 @@ MonoBehaviour:
   <PortalState>k__BackingField: {fileID: 1442433058460366503}
   <Weapons>k__BackingField: {fileID: 8426579267939972147}
   pillHud: {fileID: 2158790630833352706}
+  stimEffectPrefab: {fileID: 5523156010184644837, guid: 36bfe11c637ba4766b6c2d731b058ed6, type: 3}
 --- !u!114 &4741005030873740878
 MonoBehaviour:
   m_ObjectHideFlags: 0

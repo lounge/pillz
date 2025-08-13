@@ -22,4 +22,5 @@ pub struct Pill {
     pub primary_weapon: Weapon,
     pub secondary_weapon: Weapon,
     pub stims: i32,
+    pub used_stim: bool,
 }
