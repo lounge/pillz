@@ -16,23 +16,25 @@ namespace pillz.client.Scripts
 
         [UsedImplicitly] private static event Action OnConnected;
         [UsedImplicitly] private static event Action OnSubscriptionApplied;
-        
+
         public static GameInit Instance { get; private set; }
         public static Identity LocalIdentity { get; private set; }
         public static DbConnection Connection { get; private set; }
 
         private PrefabSpawner _prefabSpawner;
-        
+
         private static readonly Dictionary<uint, EntityController> Entities = new();
         private static readonly Dictionary<uint, PlayerController> Players = new();
         private static readonly Dictionary<uint, PortalController> Portals = new();
+        
+        public static bool IsSimulator { get; private set; }
 
         private void Awake()
         {
             _prefabSpawner = GetComponent<PrefabSpawner>();
             DontDestroyOnLoad(gameObject);
         }
-        
+
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         private void Start()
         {
@@ -79,17 +81,26 @@ namespace pillz.client.Scripts
         {
             Debug.Log("Conncted");
             AuthToken.SaveToken(token);
+            
             LocalIdentity = identity;
-
-
+            
+            Connection.Db.Config.OnInsert += ConfigOnInsert;
+            Connection.Db.Config.OnUpdate += ConfigOnUpdate;
+            
             Connection.Db.World.OnInsert += WorldOnInsert;
             Connection.Db.World.OnUpdate += WorldOnUpdate;
+
+            Connection.Db.Player.OnInsert += PlayerOnInsert;
+            Connection.Db.Player.OnDelete += PlayerOnDelete;
+
+            Connection.Db.Entity.OnUpdate += EntityOnUpdate;
+            Connection.Db.Entity.OnDelete += EntityOnDelete;
 
             Connection.Db.Terrain.OnDelete += OnTileRemoved;
 
             Connection.Db.Portal.OnInsert += PortalOnInsert;
             Connection.Db.Portal.OnUpdate += PortalOnUpdate;
-            
+
             Connection.Db.Ammo.OnInsert += AmmoOnInsert;
 
             Connection.Db.Pill.OnInsert += PillOnInsert;
@@ -98,14 +109,7 @@ namespace pillz.client.Scripts
 
             Connection.Db.Projectile.OnInsert += ProjectileOnInsert;
 
-            Connection.Db.Entity.OnUpdate += EntityOnUpdate;
-            Connection.Db.Entity.OnDelete += EntityOnDelete;
-
-            Connection.Db.Player.OnInsert += PlayerOnInsert;
-            Connection.Db.Player.OnDelete += PlayerOnDelete;
-            
             Connection.OnUnhandledReducerError += InstanceOnUnhandledReducerError;
-
 
             OnConnected?.Invoke();
 
@@ -114,6 +118,7 @@ namespace pillz.client.Scripts
                 .OnApplied(HandleSubscriptionApplied)
                 .SubscribeToAllTables();
         }
+        
 
         #region Connection Handlers
 
@@ -135,16 +140,39 @@ namespace pillz.client.Scripts
         {
             Debug.Log("Subscription applied!");
             OnSubscriptionApplied?.Invoke();
+            
+            var cfg = Connection.Db.Config.Iter().FirstOrDefault();
+            if (cfg != null)
+            {
+                IsSimulator = cfg.Observer.HasValue && cfg.Observer.Value.Equals(LocalIdentity);
+                Debug.Log($"[HandleSubscriptionApplied] IsObserver = {IsSimulator}");
+            }
 
             var seed = Guid.NewGuid().GetHashCode();
             Log.Debug($"Generating world with seed: {seed}");
 
             Connection.Reducers.GenerateTerrain(seed);
-            
+
             TerrainHandler.Instance.RenderWorld(Connection.Db.World.Iter().FirstOrDefault());
             StartScreen.Instance.Show();
         }
 
+        #endregion
+        
+        #region Config Handlers
+        
+        private static void ConfigOnInsert(EventContext ctx, Config cfg)
+        {
+            IsSimulator = cfg.Observer.HasValue && cfg.Observer.Value.Equals(LocalIdentity);
+            Debug.Log($"[ConfigOnInsert] IsObserver = {IsSimulator}");
+        }
+
+        private static void ConfigOnUpdate(EventContext ctx, Config oldCfg, Config newCfg)
+        {
+            IsSimulator = newCfg.Observer.HasValue && newCfg.Observer.Value.Equals(LocalIdentity);
+            Debug.Log($"[ConfigOnUpdate] IsObserver = {IsSimulator}");
+        }
+        
         #endregion
 
         #region World Handlers
@@ -158,7 +186,6 @@ namespace pillz.client.Scripts
         {
             TerrainHandler.Instance.RenderWorld(newWorld);
         }
-
 
         #endregion
 
@@ -244,14 +271,16 @@ namespace pillz.client.Scripts
             var entityController = player.Pill?.Weapons.Shoot(insertedValue, player, spawnPos, insertedValue.Speed);
             Entities.Add(insertedValue.EntityId, entityController);
         }
-        
+
         #endregion
-        
+
         #region Ammo Handlers
 
         private void AmmoOnInsert(EventContext context, Ammo insertedValue)
         {
-            var ammoController = _prefabSpawner.SpawnAmmo(insertedValue);
+            var player = GetOrCreatePlayer(insertedValue.ObserverId);
+
+            var ammoController = _prefabSpawner.SpawnAmmo(insertedValue, player);
 
             Entities.Add(insertedValue.EntityId, ammoController);
         }
@@ -318,7 +347,7 @@ namespace pillz.client.Scripts
         private static void InstanceOnUnhandledReducerError(ReducerEventContext ctx, Exception exception)
         {
             var ev = ctx.Event;
- 
+
             Log.Debug($"Unhandled reducer error for event {ev.GetType().Name} with data: {ev} reducer: {ev.Reducer}");
         }
     }
