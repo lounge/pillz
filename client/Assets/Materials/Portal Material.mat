@@ -32,7 +32,7 @@ Material:
     - _GlowStrength: 5
     - _PulseMax: 1
     - _PulseMin: 0.1
-    - _PulseSpeed: 2
+    - _PulseSpeed: 0
     m_Colors:
     - _Color: {r: 0, g: 0, b: 0.5019608, a: 1}
     - _GlowColor: {r: 0, g: 0, b: 1, a: 1}

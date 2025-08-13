@@ -1,7 +1,8 @@
 # Pillz
 
-## Running the Server
+![img1.png](img1.png)
 
+## Running the Server
 
 1. **Install SpaceTimeDB CLI:**
    ```sh
@@ -44,3 +45,24 @@
 - Rust and Cargo installed for server development.
 - Unity Editor for client development.
 - Ngrok (optional) for public server access.
+.
+
+## Player Controls
+
+| Action            | Default Binding    | Description                     |
+|-------------------|--------------------|---------------------------------|
+| Move              | WASD / Arrow Keys  | Move the player                 |
+| Jump              | Space              | Hold to jump / throttle jetpack |
+| Jetpack           | Shift              | Toggle jetpack                  |
+| Stim              | Right Mouse Button | Use stim (only if under 100 mg) |
+| Primary Weapon    | 1                  | Select primary weapon           |
+| Secondary Weapon  | 2                  | Select secondary weapon         |
+| Aim               | Mouse Movement     | Aim weapon direction            |
+| Attack    | Left Mouse Button  | Hold and release to shoot       |
+
+## Notes
+
+- Controls are managed via the `PlayerInputActions` asset.
+- Weapon aiming uses mouse position.
+- Holding and releasing the attack button affects projectile speed.
+- Key bindings may be customized in Unity's Input System settings.
