@@ -29,7 +29,7 @@ namespace pillz.client.Scripts
             if (!other.CompareTag(Tags.Pill)) 
                 return;
             
-            AudioManager.Instance.Play(teleportEnterSound, transform.position);
+            AudioManager.Instance.Play(teleportEnterSound, transform.position, 1.5f);
             
             var pill = other.GetComponent<PillController>();
             var portalState = pill.PortalState;
@@ -55,7 +55,7 @@ namespace pillz.client.Scripts
             var portalState = other.GetComponent<PortalState>();
             portalState?.OnPortalExit();
             
-            AudioManager.Instance.Play(teleportExitSound, transform.position);
+            AudioManager.Instance.Play(teleportExitSound, transform.position, 1.5f);
         }
     }
 }
