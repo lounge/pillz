@@ -16,9 +16,10 @@ namespace pillz.client.Scripts
         [Header("Clamp Settings")]
         [SerializeField] private Collider2D deathZone;
 
-        public Tilemap tilemap;
-        public TileBase terrainTile;
-        public GameObject crumblePrefab;
+        [SerializeField] private Tilemap tilemap;
+        [SerializeField] private TileBase terrainTile;
+        [SerializeField] private GameObject crumblePrefab;
+        [SerializeField] private AudioClip crumbleSound;
         
         [NonSerialized] public float MinY;
         [NonSerialized] public float MinX;
@@ -92,6 +93,8 @@ namespace pillz.client.Scripts
             var pos = new Vector3Int((int)tile.Position.X, (int)tile.Position.Y, 0);
             tilemap.SetTile(pos, null);
             Instantiate(crumblePrefab, new Vector3(tile.Position.X, tile.Position.Y), Quaternion.identity);
+            
+            AudioManager.Instance.Play(crumbleSound, new Vector3(tile.Position.X, tile.Position.Y), 0.1f);
         }
 
 

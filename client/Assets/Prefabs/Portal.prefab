@@ -101,6 +101,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a514df9a1ca4d32a8bf6cb97143da33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  teleportEnterSound: {fileID: 8300000, guid: 0833af261ac7d4a619eb9acee4e0754d, type: 3}
+  teleporExittSound: {fileID: 8300000, guid: eac1cd016bd5d418794274bb06a0f7a8, type: 3}
 --- !u!61 &-6236590370777989371
 BoxCollider2D:
   m_ObjectHideFlags: 0

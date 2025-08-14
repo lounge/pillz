@@ -17,3 +17,4 @@ MonoBehaviour:
   refuelRate: 5
   refuelCooldown: 5
   force: 15
+  jetpackLoop: {fileID: 8300000, guid: f66867c7ab8f14abb99c376f614c3f6e, type: 3}

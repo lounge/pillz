@@ -9,5 +9,6 @@ namespace pillz.client.Scripts.ScriptableObjects
        public float maxForce = 50f;
        public uint maxDamage = 20;
        public float explosionRadius = 3.5f;
+       public AudioClip collisionSound;
     }
 }

@@ -6,6 +6,9 @@ namespace pillz.client.Scripts
 {
     public class PortalController : MonoBehaviour
     {
+        [SerializeField] private AudioClip teleportEnterSound;
+        [SerializeField] private AudioClip teleportExitSound;
+        
         private uint _connectedPortalId;
 
         public void Spawn(Portal portal)
@@ -25,6 +28,8 @@ namespace pillz.client.Scripts
         {
             if (!other.CompareTag(Tags.Pill)) 
                 return;
+            
+            AudioManager.Instance.Play(teleportEnterSound, transform.position);
             
             var pill = other.GetComponent<PillController>();
             var portalState = pill.PortalState;
@@ -49,6 +54,8 @@ namespace pillz.client.Scripts
             if (!other.CompareTag(Tags.Pill)) return;
             var portalState = other.GetComponent<PortalState>();
             portalState?.OnPortalExit();
+            
+            AudioManager.Instance.Play(teleportExitSound, transform.position);
         }
     }
 }

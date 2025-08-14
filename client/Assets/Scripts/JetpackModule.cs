@@ -20,8 +20,12 @@ namespace pillz.client.Scripts
         private JetpackInput _lastMovementInput;
         private PillHud _pillHud;
 
+        private Positional2DAudio _positional2DAudio;
+
         public void Init(JetpackConfig cfg, PillHud pill)
         {
+            _positional2DAudio = GetComponent<Positional2DAudio>();
+            
             config = cfg;
             _pillHud = pill;
             Fuel = cfg.maxFuel;
@@ -45,9 +49,9 @@ namespace pillz.client.Scripts
 
         public void Toggle()
         {
-            if (!Enabled && Fuel <= 0f) 
+            if (!Enabled && Fuel <= 0f)
                 return;
-            
+
             Enabled = !Enabled;
             if (visual)
             {
@@ -64,24 +68,29 @@ namespace pillz.client.Scripts
         {
             if (!Enabled || Fuel <= 0f)
                 return;
-            
+
             Throttling = true;
             if (flames)
             {
                 flames.SetActive(true);
             }
+            
+            _positional2DAudio.PlayLoop(config.jetpackLoop, transform.position, 0.8f);
+
         }
 
         public void ThrottleOff()
         {
             if (!Throttling)
                 return;
-            
+
             Throttling = false;
             if (flames)
             {
                 flames.SetActive(false);
             }
+
+            _positional2DAudio.StopLoop(0.5f);
             _cooldown = config.refuelCooldown;
         }
 

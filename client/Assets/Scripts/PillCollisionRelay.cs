@@ -11,7 +11,10 @@ namespace pillz.client.Scripts
 
         private PillController _pill;
 
-        private void Awake() => _pill = GetComponent<PillController>();
+        private void Awake()
+        {
+            _pill = GetComponent<PillController>();
+        }
 
         private void OnTriggerEnter2D(Collider2D col)
         {
@@ -29,6 +32,8 @@ namespace pillz.client.Scripts
             if (hitObject.CompareTag(Tags.Ammo))
             {
                 var ammoController = col.gameObject.GetComponent<AmmoController>();
+                
+                AudioManager.Instance.Play(ammoController.PickupSound, col.transform.position);
             
                 Log.Debug($"Pill {_pill.EntityId} picked up ammo {ammoController.Ammo.EntityId}");
                 

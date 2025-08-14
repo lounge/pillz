@@ -11,6 +11,8 @@ namespace pillz.client.Scripts
         [SerializeField] private GameObject secondary;
         [SerializeField] private int primaryAmmoAmount = 35;
         [SerializeField] private int secondaryAmmoAmount = 15;
+        [field: SerializeField] public AudioClip PickupSound { get; private set; }
+
 
         [NonSerialized] public Ammo Ammo;
         [NonSerialized] public int AmmoAmount;
@@ -70,7 +72,7 @@ namespace pillz.client.Scripts
             Log.Debug("AmmoController: Out of bounds state changed: " + state);
             if (state != OutOfBound.None)
             {
-                Debug.Log("AmmoController: Out of bounds detected, deleting ammo.");
+                Log.Debug("AmmoController: Out of bounds detected, deleting ammo.");
                 GameInit.Connection.Reducers.DeleteAmmo(Ammo.EntityId);
             }
         }

@@ -16,3 +16,4 @@ MonoBehaviour:
   maxForce: 50
   maxDamage: 20
   explosionRadius: 3.5
+  collisionSound: {fileID: 8300000, guid: 9c05d890c35dd405f91b46e524a97a6b, type: 3}

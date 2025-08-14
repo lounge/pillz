@@ -13,6 +13,7 @@ namespace pillz.client.Scripts
         [SerializeField] private Transform weapon;
         [SerializeField] private float weaponDistance = 1.5f;
         [SerializeField] private float projectileSpeed = 20f;
+        [SerializeField] private AudioClip fireSound;
         [field: SerializeField] public int Ammo { get; set; } = 100;
         
         [Header("Projectile Settings")] [SerializeField]
@@ -30,7 +31,6 @@ namespace pillz.client.Scripts
         private PlayerController _owner;
         private float _fireStartTime;
         private WeaponType _type;
-        
 
         public void Enable()
         {
@@ -111,6 +111,8 @@ namespace pillz.client.Scripts
  
         public ProjectileController Shoot(Projectile projectile, PlayerController player, Vector2 position, float speed)
         {
+            AudioManager.Instance.Play(fireSound, transform.position);
+            
             var projectileController = Instantiate(projectilePrefab, weapon.position, Quaternion.identity);
             projectileController.Spawn(projectile, player, position, _weaponDirection.normalized * speed);
 

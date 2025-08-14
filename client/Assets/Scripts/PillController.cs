@@ -22,6 +22,9 @@ namespace pillz.client.Scripts
         [Header("UI")] [SerializeField] private PillHud pillHud;
         [SerializeField] private GameObject stimEffectPrefab;
 
+        [Header("Audio")]
+        [SerializeField] private AudioClip stimSound;
+
         private Rigidbody2D _rb;
         private Camera _cam;
         private PlayerInput _lastSent;
@@ -145,6 +148,7 @@ namespace pillz.client.Scripts
 
             if (newVal.UsedStim && stimEffectPrefab)
             {
+                AudioManager.Instance.Play(stimSound, transform.position);
                 Instantiate(stimEffectPrefab, transform.position, Quaternion.identity);
             }
 

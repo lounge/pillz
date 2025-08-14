@@ -53,6 +53,7 @@ MonoBehaviour:
   secondary: {fileID: 8398557483846126796}
   primaryAmmoAmount: 35
   secondaryAmmoAmount: 15
+  <PickupSound>k__BackingField: {fileID: 8300000, guid: 89fec501746f34ccb8aeaad7758cdbb3, type: 3}
 --- !u!50 &4825477044382774559
 Rigidbody2D:
   serializedVersion: 5

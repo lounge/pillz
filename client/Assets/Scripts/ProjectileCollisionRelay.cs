@@ -16,10 +16,10 @@ namespace pillz.client.Scripts
         private AbilityData _abilityData;
         private ProjectileConfig _config;
 
-        private void Awake() => _projectile = GetComponent<ProjectileController>();
-        
         public void Init(ProjectileConfig config)
         {
+            _projectile = GetComponent<ProjectileController>();
+            
             _config = config;
             _abilityData = new AbilityData
             {
@@ -30,11 +30,20 @@ namespace pillz.client.Scripts
                 }
             };
         }
-        
+
         private void OnCollisionEnter2D(Collision2D collision)
         {
             var hitObject = collision.gameObject;
             var contact = collision.GetContact(0);
+
+
+            if (_config.collisionSound)
+            {
+                Log.Debug("ProjectileController: Playing collision sound.");
+
+                AudioManager.Instance.Play(_config.collisionSound, contact.point);
+            }
+
 
             if (_config.explosionPrefab)
             {
@@ -43,7 +52,8 @@ namespace pillz.client.Scripts
 
             Log.Debug("ProjectileController: Collision detected with " + hitObject.name);
             GameInit.Connection.Reducers.DeleteProjectile(_projectile.EntityId);
-            
+
+
             _abilityData.ApplyExplosionAt(contact.point, _config.explosionRadius);
 
             if (hitObject.CompareTag(terrainTag))
@@ -70,6 +80,5 @@ namespace pillz.client.Scripts
                 }
             }
         }
-        
     }
 }

@@ -1,4 +1,3 @@
-using pillz.client.Scripts.AbilityEffects;
 using pillz.client.Scripts.ScriptableObjects;
 using SpacetimeDB;
 using SpacetimeDB.Types;
@@ -8,14 +7,13 @@ namespace pillz.client.Scripts
 {
     public class ProjectileController : EntityController
     {
-        [Header("Data")]
-        [SerializeField] private ProjectileConfig projectileConfig;
-        
+        [Header("Data")] [SerializeField] private ProjectileConfig projectileConfig;
+
         private Rigidbody2D _rb;
-        private AbilityData _abilityData;
         private Vector2 _lastPosition;
         private float _lastPositionSendTimestamp;
         private OutOfBoundsEmitter _outOfBoundsEmitter;
+
 
         protected override void Awake()
         {
@@ -23,7 +21,7 @@ namespace pillz.client.Scripts
             _rb = GetComponent<Rigidbody2D>();
 
             _outOfBoundsEmitter = GetComponent<OutOfBoundsEmitter>();
-            
+
             var collisionRelay = GetComponent<ProjectileCollisionRelay>();
             collisionRelay.Init(projectileConfig);
         }
@@ -43,11 +41,11 @@ namespace pillz.client.Scripts
             Log.Debug("ProjectileController: Out of bounds state changed: " + state);
             if (state != OutOfBound.None)
             {
-                Debug.Log("ProjectileController: Out of bounds detected, deleting projectile."); 
+                Log.Debug("ProjectileController: Out of bounds detected, deleting projectile.");
                 GameInit.Connection.Reducers.DeleteProjectile(EntityId);
             }
         }
-        
+
         public override void OnEntityUpdated(Entity newVal)
         {
             base.OnEntityUpdated(newVal);
@@ -82,5 +80,7 @@ namespace pillz.client.Scripts
             base.Spawn(projectile.EntityId, owner, position);
             _rb.linearVelocity = velocity;
         }
+
+
     }
 }
