@@ -13,7 +13,7 @@
 - [x] Show explosion effect
 - [x] Particles
 - [x] Show explosion damage
-- [ ] Play explosion sound
+- [x] Play explosion sound
 - [x] Apply force to player if in explosion radius
     - [x] Force applied if directly hit
     - [x] Force applied if in explosion radius
@@ -41,7 +41,12 @@
     - [ ] Host can change map
     - [ ] Host can start game
 
-## Damage and Kill Tracking
+## HP, Damage and Kill Tracking
+- [x] Stim
+    - [x] Use stim to heal player
+    - [x] Show stim in HUD
+    - [x] Stim effect
+    - [x] Stim sound
 - [ ] Detect and store dmg given
     - [ ] Increase dmg points or new field destruct when destroying tiles?
     - [x] Show dmg given on HUD
@@ -71,6 +76,7 @@
     - [x] Spawn four portals top, bottom, left, right
     - [x] Teleport pill to connected portal
     - [x] Fine tune portal spawn position
+    - [x] Porta enter and exit sound
     - [ ] Make rigidbody and sync position to server
 
 ## Jetpack Movement
@@ -86,3 +92,6 @@
 ## Multiple Pills
 - [ ] Add multiple pillz per player
     - [ ] Toggle between players pillz
+
+## Sound
+- [] Fine tune sound effect
