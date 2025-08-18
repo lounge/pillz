@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,9 +9,11 @@ namespace pillz.client.Scripts
     {
         [SerializeField] private TMP_InputField usernameInput;
         [SerializeField] private Button respawnButton;
-        
+        [SerializeField] private List<AudioClip> deathSounds;
+
+
         public static DeathScreen Instance { get; private set; }
-        
+
         private string _username;
 
         private void Awake()
@@ -24,7 +27,7 @@ namespace pillz.client.Scripts
                 Destroy(gameObject);
                 return;
             }
-            
+
             gameObject.SetActive(false);
             respawnButton.interactable = false;
             usernameInput.onValueChanged.AddListener(OnUsernameChanged);
@@ -33,6 +36,7 @@ namespace pillz.client.Scripts
 
         public void Show(PlayerController player)
         {
+            PlayAudioClip();
             usernameInput.text = player.Username;
             gameObject.SetActive(true);
         }
@@ -49,6 +53,15 @@ namespace pillz.client.Scripts
             {
                 GameInit.Connection.Reducers.EnterGame(username, TerrainHandler.Instance.GetRandomSpawnPosition());
                 gameObject.SetActive(false);
+            }
+        }
+
+        private void PlayAudioClip()
+        {
+            var rng = Random.Range(0, deathSounds.Count);
+            if (deathSounds.Count > 0 && deathSounds[rng])
+            {
+                AudioManager.Instance.PlayGlobal(deathSounds[rng], 2F);
             }
         }
     }

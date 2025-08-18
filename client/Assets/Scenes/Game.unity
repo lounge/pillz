@@ -1999,6 +1999,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   usernameInput: {fileID: 7735824510520192623}
   respawnButton: {fileID: 1319860834678460331}
+  deathSounds:
+  - {fileID: 8300000, guid: bfe0a516f208e4c8990d72d606c40fdd, type: 3}
+  - {fileID: 8300000, guid: 54bb91c7187bf45e4ae9d2c545f80910, type: 3}
+  - {fileID: 8300000, guid: 412692e2736c14d1eb3382361a35a83b, type: 3}
+  - {fileID: 8300000, guid: 9f8cbfa83214a4c3ab69195cd64210cb, type: 3}
+  - {fileID: 8300000, guid: 8a96e10ac76974631b3e7d933a441608, type: 3}
+  - {fileID: 8300000, guid: 22f1fbcd334514fe5b666646feacb172, type: 3}
+  - {fileID: 8300000, guid: ee17f53a9fa7b43ca92551d4a90ab0c8, type: 3}
+  - {fileID: 8300000, guid: 8664532c30cc34605a6336972a7441a2, type: 3}
+  - {fileID: 8300000, guid: 2429ec83269d84c99985d76c70b5f636, type: 3}
+  - {fileID: 8300000, guid: 32e41e8deb95f4f948d697a264255bc0, type: 3}
+  - {fileID: 8300000, guid: 267ad643a4cfb40039d27dce99e29f1e, type: 3}
+  - {fileID: 8300000, guid: e4fcba09aa84f4bc7ac4260ad9d267ff, type: 3}
 --- !u!222 &815315545073056653
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2382,7 +2395,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 9, y: 168}
+  m_AnchoredPosition: {x: -4, y: 99}
   m_SizeDelta: {x: 500, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &3596385072645985930
@@ -2512,7 +2525,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -30}
+  m_AnchoredPosition: {x: 3, y: -84}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3903192523947386274
@@ -2546,7 +2559,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 30}
+  m_AnchoredPosition: {x: 3, y: -24}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &3974787454867406006
