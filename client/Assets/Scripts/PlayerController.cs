@@ -1,6 +1,7 @@
 using System;
 using SpacetimeDB.Types;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace pillz.client.Scripts
 {
@@ -8,19 +9,24 @@ namespace pillz.client.Scripts
     {
         private static PlayerController _local;
         public bool IsLocalPlayer => this == _local;
-        public string Username => GameInit.Connection.Db.Player.Id.Find(PlayerId)?.Username;
+        public string Username => Game.Connection.Db.Player.Id.Find(PlayerId)?.Username;
+        public Player Player => Game.Connection.Db.Player.Id.Find(PlayerId);
+        
         [field: SerializeField] public GameObject GameHud { get; private set; }
         
         [NonSerialized] 
         public PillController Pill;
         
-        [NonSerialized]
+        [NonSerialized]                 
         public uint PlayerId;
+
+        public Stats Stats { get; } = new();
 
         public void Spawn(Player player)
         {
+            
             PlayerId = player.Id;
-            if (player.Identity == GameInit.LocalIdentity)
+            if (player.Identity == Game.LocalIdentity)
             {
                 _local = this;
             }
@@ -30,11 +36,20 @@ namespace pillz.client.Scripts
         {
             Destroy(gameObject);
         }
+        
 
         public void SetDefaults(PillController entityController)
         {
             name = $"Player_{Username}";
             Pill = entityController;
+        }
+        
+        public void SetStats()
+        {
+            Stats.Username = Username;
+            Stats.Deaths = Player.Deaths;
+            Stats.Frags = Player.Frags;
+            Stats.Dmg = Player.Dmg;
         }
     }
 }

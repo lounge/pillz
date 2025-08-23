@@ -51,7 +51,7 @@ namespace pillz.client.Scripts
             
                 
             Log.Debug("TerrainManager: Generating terrain...");
-            foreach (var tile in GameInit.Connection.Db.Terrain.Iter())
+            foreach (var tile in Game.Connection.Db.Terrain.Iter())
             {
                 OnTerrainAdded(null, tile);
             }
@@ -101,10 +101,10 @@ namespace pillz.client.Scripts
         public DbVector2 GetRandomSpawnPosition()
         {
             // TODO: ONLY FOR TESTING
-            // var spawnLocations = GameInit.Connection.Db.Terrain.Iter().FirstOrDefault(x => x.IsSpawnable); //ToList();
+            // var spawnLocations = Game.Connection.Db.Terrain.Iter().FirstOrDefault(x => x.IsSpawnable); //ToList();
             // return spawnLocations!.Position;
 
-            var spawnLocations = GameInit.Connection.Db.Terrain.Iter().Where(x => x.IsSpawnable).ToList();
+            var spawnLocations = Game.Connection.Db.Terrain.Iter().Where(x => x.IsSpawnable).ToList();
             if (spawnLocations.Count == 0)
             {
                 throw new Exception("No spawn locations available.");

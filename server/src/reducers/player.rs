@@ -14,7 +14,7 @@ use crate::types::weapon_type::WeaponType;
 use crate::util::constants;
 use crate::util::helpers::{get_or_create_config, set_config};
 use spacetimedb::log::{debug, info};
-use spacetimedb::{ReducerContext, Table};
+use spacetimedb::{Identity, ReducerContext, Table};
 
 #[spacetimedb::reducer(client_connected)]
 pub fn connect(ctx: &ReducerContext) -> Result<(), String> {
@@ -32,6 +32,9 @@ pub fn connect(ctx: &ReducerContext) -> Result<(), String> {
             id: 0,
             username: "<NoName>".to_string(),
             is_paused: false,
+            frags: 0,
+            deaths: 0,
+            dmg: 0
         });
     }
 
@@ -125,8 +128,6 @@ pub fn enter_game(
         direction: DbVector2::new(0.0, 0.0),
         position: entity.position,
         hp: 100,
-        dmg: 0,
-        frags: 0,
         jetpack: crate::types::jetpack::Jetpack {
             fuel: 0.0,
             enabled: false,
@@ -249,7 +250,6 @@ pub fn stim(ctx: &ReducerContext, strength: i32) -> Result<(), String> {
 
 #[spacetimedb::reducer]
 pub fn apply_damage(ctx: &ReducerContext, player_id: u32, damage: i32) -> Result<(), String> {
-    let mut frag_count: u32 = 0;
 
     let enemy = ctx
         .db
@@ -264,8 +264,11 @@ pub fn apply_damage(ctx: &ReducerContext, player_id: u32, damage: i32) -> Result
         let hp = (pill.hp - damage).max(0);
         pill.hp = hp;
 
+        set_attacker_dmg(ctx, damage, enemy.identity);
+
         if hp <= 0 {
-            frag_count += 1;
+            ctx.db.pill().entity_id().update(pill);
+            set_attacker_frags(ctx, enemy.identity);
             delete_pill(ctx, Some(player_id))?;
         } else {
             ctx.db.pill().entity_id().update(pill);
@@ -277,27 +280,45 @@ pub fn apply_damage(ctx: &ReducerContext, player_id: u32, damage: i32) -> Result
         );
     }
 
-    let attacker = ctx
+    Ok(())
+}
+
+
+pub fn set_attacker_frags(ctx: &ReducerContext, enemy: Identity){
+    let mut attacker = ctx
         .db
         .player()
         .identity()
         .find(&ctx.sender)
-        .ok_or("Player not found in the database.")?;
+        .ok_or("Player not found in the database.").unwrap();
 
-    for mut pill in ctx.db.pill().player_id().filter(attacker.id) {
-        let clone = pill.clone();
-        pill.dmg += damage;
-        pill.frags = pill.frags.saturating_add(frag_count);
-        ctx.db.pill().entity_id().update(pill);
+    if attacker.identity == enemy {
+        debug!("Not setting frags for self-inflicted damage.");
+        return;
+    }
+    attacker.frags += 1;
+    debug!("frags {}", attacker.frags);
+    ctx.db.player().id().update(attacker);
+}
 
-        debug!(
-            "Updated pill {} damage to {} after giving damage {} fragCount {}.",
-            clone.entity_id, clone.dmg, damage, frag_count
-        );
+pub fn set_attacker_dmg(ctx: &ReducerContext, damage: i32, enemy: Identity){
+    let mut attacker = ctx
+        .db
+        .player()
+        .identity()
+        .find(&ctx.sender)
+        .ok_or("Player not found in the database.").unwrap();
+
+    if attacker.identity == enemy {
+        debug!("Not setting damage for self-inflicted damage.");
+        return;
     }
 
-    Ok(())
+    attacker.dmg += damage;
+    debug!("dmg {}", attacker.dmg);
+    ctx.db.player().id().update(attacker);
 }
+
 
 #[spacetimedb::reducer]
 pub fn apply_force(
@@ -357,7 +378,7 @@ pub fn force_applied(ctx: &ReducerContext, player_id: u32) -> Result<(), String>
 
 #[spacetimedb::reducer]
 pub fn delete_pill(ctx: &ReducerContext, player_id: Option<u32>) -> Result<(), String> {
-    let player = if let Some(id) = player_id {
+    let mut player = if let Some(id) = player_id {
         ctx.db.player().id().find(id)
     } else {
         ctx.db.player().identity().find(&ctx.sender)
@@ -377,7 +398,14 @@ pub fn delete_pill(ctx: &ReducerContext, player_id: Option<u32>) -> Result<(), S
         ctx.db.projectile().player_id().delete(player.id);
     }
 
+    debug!("deaths1 {}",  player.deaths);
+
+    player.deaths += 1; //player.deaths.saturating_add(1);
+    debug!("deaths2 {}",  player.deaths);
     debug!("Deleted pill with id {}.", player.id);
+
+    ctx.db.player().id().update(player);
+
 
     Ok(())
 }

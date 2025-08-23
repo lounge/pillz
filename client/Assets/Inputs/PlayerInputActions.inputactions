@@ -81,7 +81,7 @@
                     "name": "Next",
                     "type": "Button",
                     "id": "832bed67-0484-4cdd-997a-5424a4a244b6",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -135,6 +135,15 @@
                     "name": "Stim",
                     "type": "Button",
                     "id": "1a7985c5-ebac-452c-94e0-567ca5b34aa8",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Leaderboard",
+                    "type": "Button",
+                    "id": "34c6e038-6584-41c6-bc0f-9fed8ff4dbae",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -590,6 +599,17 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "Stim",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "af356e6b-29db-4a87-b6c0-bcc00c9ecebc",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Leaderboard",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -20,7 +20,7 @@ namespace pillz.client.Scripts
         {
             if (col.CompareTag(deathZoneTag))
             {
-                GameInit.Connection.Reducers.DeletePill(_pill.Owner.PlayerId);
+                Game.Connection.Reducers.DeletePill(_pill.Owner.PlayerId);
             }
         }
         
@@ -38,8 +38,8 @@ namespace pillz.client.Scripts
                 Log.Debug($"Pill {_pill.EntityId} picked up ammo {ammoController.Ammo.EntityId}");
                 
                 
-                GameInit.Connection.Reducers.IncreaseAmmo(ammoController.AmmoAmount, ammoController.Ammo.AmmoType);
-                GameInit.Connection.Reducers.DeleteAmmo(ammoController.Ammo.EntityId);
+                Game.Connection.Reducers.IncreaseAmmo(ammoController.AmmoAmount, ammoController.Ammo.AmmoType);
+                Game.Connection.Reducers.DeleteAmmo(ammoController.Ammo.EntityId);
             }
         }
     }

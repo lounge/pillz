@@ -38,7 +38,7 @@ namespace pillz.client.Scripts
 
             // Use provided position if available, otherwise fall back to DB
             var pos = initialPosition ??
-                      (Vector2)(GameInit.Connection.Db.Entity.Id.Find(entityId)?.Position ?? Vector2.zero);
+                      (Vector2)(Game.Connection.Db.Entity.Id.Find(entityId)?.Position ?? Vector2.zero);
             _lerpTargetPosition = transform.position = pos;
         }
 

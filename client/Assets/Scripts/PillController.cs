@@ -55,7 +55,7 @@ namespace pillz.client.Scripts
             jetpack.Init(jetpackConfig, pillHud);
             Weapons.Init(transform, owner, pill.AimDir);
 
-            if (Owner && (!Owner.IsLocalPlayer || !GameInit.IsConnected()))
+            if (Owner && (!Owner.IsLocalPlayer || !Game.IsConnected()))
             {
                 Log.Debug("PillMovement: Not local player or not connected, skipping movement init.");
                 return;
@@ -66,19 +66,22 @@ namespace pillz.client.Scripts
 
             _hudDisplay = _gameHud.GetComponentInChildren<HudDisplay>();
             _hudDisplay.SetStim(_stims);
-            _hudDisplay.SetDmg(pill.Dmg);
-            _hudDisplay.SetFrags(pill.Frags);
+            _hudDisplay.SetDmg(owner.Player.Dmg);
+            _hudDisplay.SetFrags(owner.Player.Frags);
             _hudDisplay.SetPrimary(Weapons.Primary.Ammo);
             _hudDisplay.SetSecondary(Weapons.Secondary.Ammo);
 
+            owner.SetStats();
+            Log.Debug($"set stats: frags={owner.Stats.Frags} deaths={owner.Stats.Deaths} dmg={owner.Stats.Dmg}");
+
             _cam?.GetComponent<CameraFollow>()?.SetTarget(transform);
 
-            GameInit.Connection.Reducers.InitStims(stimConfig.amount);
+            Game.Connection.Reducers.InitStims(stimConfig.amount);
         }
 
         private void FixedUpdate()
         {
-            if (!GameInit.IsConnected() || !Owner.IsLocalPlayer) return;
+            if (!Game.IsConnected() || !Owner.IsLocalPlayer) return;
 
             var intent = inputReader.ConsumeFrameIntent();
             if (intent.ToggleJetpack)
@@ -97,7 +100,7 @@ namespace pillz.client.Scripts
 
             if (intent.Stim)
             {
-                GameInit.Connection.Reducers.Stim(stimConfig.strength);
+                Game.Connection.Reducers.Stim(stimConfig.strength);
             }
 
             jetpack.Tick();
@@ -110,7 +113,7 @@ namespace pillz.client.Scripts
             var p = new PlayerInput(_rb.linearVelocity, _rb.position, !FocusHandler.HasFocus, intent.SelectWeapon);
             if (Time.time - _lastSend >= SendUpdatesFrequency && !p.Equals(_lastSent))
             {
-                GameInit.Connection.Reducers.UpdatePlayer(p);
+                Game.Connection.Reducers.UpdatePlayer(p);
                 _lastSent = p;
                 _lastSend = Time.time;
             }
@@ -121,6 +124,8 @@ namespace pillz.client.Scripts
             base.OnDelete(ctx);
             Destroy(pillHud?.gameObject);
             Destroy(_gameHud?.gameObject);
+            
+            Owner.SetStats();
             Destroy(Owner.gameObject);
 
             if (Owner.IsLocalPlayer)
@@ -139,12 +144,15 @@ namespace pillz.client.Scripts
             jetpack.OnJetpackUpdated(newVal.Jetpack);
 
             _hudDisplay?.SetStim(newVal.Stims);
-            _hudDisplay?.SetDmg(newVal.Dmg);
-            _hudDisplay?.SetFrags(newVal.Frags);
+            _hudDisplay?.SetDmg(Owner.Player.Dmg);
+            _hudDisplay?.SetFrags(Owner.Player.Frags);
             _hudDisplay?.SetPrimary(newVal.PrimaryWeapon.Ammo);
             _hudDisplay?.SetSecondary(newVal.SecondaryWeapon.Ammo);
 
             Log.Debug($"AMMO CHECK: Primary={newVal.PrimaryWeapon.Ammo} Secondary={newVal.SecondaryWeapon.Ammo}");
+            
+            Owner.SetStats();
+            Log.Debug($"set stats: frags={Owner.Stats.Frags} deaths={Owner.Stats.Deaths} dmg={Owner.Stats.Dmg}");
 
             if (newVal.UsedStim && stimEffectPrefab)
             {
@@ -155,7 +163,7 @@ namespace pillz.client.Scripts
             if (newVal.Force is not null)
             {
                 _rb.AddForce(new Vector2(newVal.Force.X, newVal.Force.Y), ForceMode2D.Impulse);
-                GameInit.Connection.Reducers.ForceApplied(Owner.PlayerId);
+                Game.Connection.Reducers.ForceApplied(Owner.PlayerId);
             }
         }
     }

@@ -12,4 +12,7 @@ pub struct Player {
     pub id: u32,
     pub username: String,
     pub is_paused: bool,
+    pub frags: i32,
+    pub deaths: i32,
+    pub dmg: i32,
 }

@@ -44,7 +44,7 @@ namespace pillz.client.Scripts
             string username = usernameInput.text.Trim();
             if (!string.IsNullOrEmpty(username))
             {
-                GameInit.Connection.Reducers.EnterGame(username, TerrainHandler.Instance.GetRandomSpawnPosition());
+                Game.Connection.Reducers.EnterGame(username, TerrainHandler.Instance.GetRandomSpawnPosition());
                 gameObject.SetActive(false);
             }
         }

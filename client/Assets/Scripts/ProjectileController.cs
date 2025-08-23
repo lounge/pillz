@@ -42,7 +42,7 @@ namespace pillz.client.Scripts
             if (state != OutOfBound.None)
             {
                 Log.Debug("ProjectileController: Out of bounds detected, deleting projectile.");
-                GameInit.Connection.Reducers.DeleteProjectile(EntityId);
+                Game.Connection.Reducers.DeleteProjectile(EntityId);
             }
         }
 
@@ -60,7 +60,7 @@ namespace pillz.client.Scripts
 
         protected override void Update()
         {
-            if (Owner && (!Owner.IsLocalPlayer || !GameInit.IsConnected()))
+            if (Owner && (!Owner.IsLocalPlayer || !Game.IsConnected()))
             {
                 return;
             }
@@ -69,7 +69,7 @@ namespace pillz.client.Scripts
                 Time.time - _lastPositionSendTimestamp >= SendUpdatesFrequency)
             {
                 _lastPositionSendTimestamp = Time.time;
-                GameInit.Connection.Reducers.UpdateProjectile(_rb.linearVelocity, _rb.position);
+                Game.Connection.Reducers.UpdateProjectile(_rb.linearVelocity, _rb.position);
             }
 
             _lastPosition = _rb.linearVelocity;

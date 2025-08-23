@@ -13,8 +13,6 @@ pub struct Pill {
     pub direction: DbVector2,
     pub position: DbVector2,
     pub hp: i32,
-    pub dmg: i32,
-    pub frags: u32,
     pub jetpack: Jetpack,
     pub aim_dir: DbVector2,
     pub force: Option<DbVector2>,

@@ -9,7 +9,7 @@ using Terrain = SpacetimeDB.Types.Terrain;
 
 namespace pillz.client.Scripts
 {
-    public class GameInit : MonoBehaviour
+    public class Game : MonoBehaviour
     {
         private const string SpacetimeDbUrl = "http://localhost:3000";
         private const string SpacetimeDbName = "pillz";
@@ -17,14 +17,14 @@ namespace pillz.client.Scripts
         [UsedImplicitly] private static event Action OnConnected;
         [UsedImplicitly] private static event Action OnSubscriptionApplied;
 
-        public static GameInit Instance { get; private set; }
+        public static Game Instance { get; private set; }
         public static Identity LocalIdentity { get; private set; }
-        public static DbConnection Connection { get; private set; }
+        public static DbConnection Connection { get; private set; }                     
 
         private PrefabSpawner _prefabSpawner;
 
+        public static readonly Dictionary<uint, PlayerController> Players = new();
         private static readonly Dictionary<uint, EntityController> Entities = new();
-        private static readonly Dictionary<uint, PlayerController> Players = new();
         private static readonly Dictionary<uint, PortalController> Portals = new();
         
         public static bool IsSimulator { get; private set; }
@@ -242,11 +242,12 @@ namespace pillz.client.Scripts
 
         private static void PillOnDelete(EventContext context, Pill oldEntity)
         {
+            var player = Players.GetValueOrDefault(oldEntity.PlayerId);
             var pillz = Connection.Db.Pill.PlayerId.Filter(oldEntity.PlayerId);
             if (pillz.Any() || !Players.ContainsKey(oldEntity.PlayerId))
                 return;
-
-            Log.Debug($"PillOnDelete: No pillz left for player {oldEntity.PlayerId}, removing player controller.");
+            
+            Log.Debug($"PillOnDelete: No pillz left for player {oldEntity.PlayerId}, removing player controller. Deaths: {player.Player.Deaths}");
             Players.Remove(oldEntity.PlayerId);
         }
 

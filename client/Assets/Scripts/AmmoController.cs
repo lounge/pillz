@@ -22,7 +22,7 @@ namespace pillz.client.Scripts
         private ItemMovement _lastSent;
         private float _lastSend;
 
-        protected override bool IsLocallySimulated => GameInit.IsSimulator;
+        protected override bool IsLocallySimulated => Game.IsSimulator;
 
 
         private void OnEnable()
@@ -57,7 +57,7 @@ namespace pillz.client.Scripts
             }
         
             _rb.position = new Vector2(ammo.Position.X, ammo.Position.Y + 2f);
-            if (GameInit.IsSimulator)
+            if (Game.IsSimulator)
             {
                 _rb.linearVelocity = new Vector2(Ammo.Direction.X, Ammo.Direction.Y);
             }
@@ -73,12 +73,12 @@ namespace pillz.client.Scripts
             if (state != OutOfBound.None)
             {
                 Log.Debug("AmmoController: Out of bounds detected, deleting ammo.");
-                GameInit.Connection.Reducers.DeleteAmmo(Ammo.EntityId);
+                Game.Connection.Reducers.DeleteAmmo(Ammo.EntityId);
             }
         }
         protected void FixedUpdate()
         {
-            if (!GameInit.IsConnected() || !GameInit.IsSimulator || !_rb)
+            if (!Game.IsConnected() || !Game.IsSimulator || !_rb)
             {
                 Log.Debug("[AmmoController] Not connected or not observer, skipping ammo updates.");
                 return;
@@ -87,7 +87,7 @@ namespace pillz.client.Scripts
             var mov = new ItemMovement(_rb.position, _rb.linearVelocity);
             if (Time.time - _lastSend >= SendUpdatesFrequency && !mov.Equals(_lastSent))
             { 
-                GameInit.Connection.Reducers.UpdateAmmo(Ammo.EntityId, mov);
+                Game.Connection.Reducers.UpdateAmmo(Ammo.EntityId, mov);
                 _lastSend = Time.time;
                 _lastSent = mov;
             }

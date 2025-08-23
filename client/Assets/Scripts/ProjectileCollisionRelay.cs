@@ -51,7 +51,7 @@ namespace pillz.client.Scripts
             }
 
             Log.Debug("ProjectileController: Collision detected with " + hitObject.name);
-            GameInit.Connection.Reducers.DeleteProjectile(_projectile.EntityId);
+            Game.Connection.Reducers.DeleteProjectile(_projectile.EntityId);
 
 
             _abilityData.ApplyExplosionAt(contact.point, _config.explosionRadius);
@@ -72,11 +72,11 @@ namespace pillz.client.Scripts
 
                 if (_config.explosionRadius <= 0f)
                 {
-                    GameInit.Connection.Reducers.DeleteTerrainTile(cellPos.x, cellPos.y);
+                    Game.Connection.Reducers.DeleteTerrainTile(cellPos.x, cellPos.y);
                 }
                 else
                 {
-                    GameInit.Connection.Reducers.DeleteTerrainTiles(cellPos.x, cellPos.y, _config.explosionRadius);
+                    Game.Connection.Reducers.DeleteTerrainTiles(cellPos.x, cellPos.y, _config.explosionRadius);
                 }
             }
         }

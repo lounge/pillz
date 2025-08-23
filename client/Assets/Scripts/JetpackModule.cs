@@ -121,7 +121,7 @@ namespace pillz.client.Scripts
             if (Time.time - _lastMovementSendTimestamp >= EntityController.SendUpdatesFrequency &&
                 !jetpackInput.Equals(_lastMovementInput))
             {
-                GameInit.Connection.Reducers.UpdateJetpack(jetpackInput);
+                Game.Connection.Reducers.UpdateJetpack(jetpackInput);
             }
 
             _lastMovementInput = jetpackInput;

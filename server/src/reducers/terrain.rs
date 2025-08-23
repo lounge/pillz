@@ -1,5 +1,5 @@
 use spacetimedb::{ReducerContext, Table};
-use spacetimedb::log::{debug, info, error};
+use spacetimedb::log::{debug, error};
 use rand::Rng;
 use std::collections::HashMap;
 use crate::math::dbvector2::DbVector2;
@@ -35,7 +35,7 @@ pub fn delete_terrain_tile(ctx: &ReducerContext, x: i32, y: i32) -> Result<(), S
         .find(|t| t.position.x as i32 == x && t.position.y as i32 == y)
     {
         ctx.db.terrain().id().delete(tile.id);
-        info!("Deleted terrain tile at ({}, {}) with id {}.", x, y, tile.id);
+        // info!("Deleted terrain tile at ({}, {}) with id {}.", x, y, tile.id);
     }
 
     Ok(())
@@ -57,12 +57,12 @@ pub fn delete_terrain_tiles(ctx: &ReducerContext, x: i32, y: i32, radius: f32) -
 
     for tile in &tiles_to_delete {
         ctx.db.terrain().id().delete(tile.id);
-        info!("[DeleteTerrainTiles] Deleted terrain tile at ({}, {}) with id {}.",
-              tile.position.x, tile.position.y, tile.id);
+        // info!("[DeleteTerrainTiles] Deleted terrain tile at ({}, {}) with id {}.",
+        //       tile.position.x, tile.position.y, tile.id);
     }
 
-    debug!("[DeleteTerrainTiles] Deleted {} tiles around ({}, {}) with radius {}.",
-           tiles_to_delete.len(), x, y, radius);
+    // debug!("[DeleteTerrainTiles] Deleted {} tiles around ({}, {}) with radius {}.",
+    //        tiles_to_delete.len(), x, y, radius);
 
     Ok(())
 }

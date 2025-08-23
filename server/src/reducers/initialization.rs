@@ -50,6 +50,10 @@ pub fn init(ctx: &ReducerContext) -> Result<(), String> {
         id: constants::PLAYER_OBSERVER_ID,
         username: "<Observer>".to_string(),
         is_paused: false,
+        frags: 0,
+        deaths: 0,
+        dmg: 0,
+        
     });
 
     Ok(())

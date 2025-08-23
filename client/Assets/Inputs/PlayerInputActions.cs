@@ -169,7 +169,7 @@ namespace pillz.client.Assets.Input
                     ""name"": ""Next"",
                     ""type"": ""Button"",
                     ""id"": ""832bed67-0484-4cdd-997a-5424a4a244b6"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -223,6 +223,15 @@ namespace pillz.client.Assets.Input
                     ""name"": ""Stim"",
                     ""type"": ""Button"",
                     ""id"": ""1a7985c5-ebac-452c-94e0-567ca5b34aa8"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Leaderboard"",
+                    ""type"": ""Button"",
+                    ""id"": ""34c6e038-6584-41c6-bc0f-9fed8ff4dbae"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -678,6 +687,17 @@ namespace pillz.client.Assets.Input
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""Stim"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""af356e6b-29db-4a87-b6c0-bcc00c9ecebc"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Leaderboard"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1280,6 +1300,7 @@ namespace pillz.client.Assets.Input
             m_Player_PrimaryWeapon = m_Player.FindAction("PrimaryWeapon", throwIfNotFound: true);
             m_Player_SecondaryWeapon = m_Player.FindAction("SecondaryWeapon", throwIfNotFound: true);
             m_Player_Stim = m_Player.FindAction("Stim", throwIfNotFound: true);
+            m_Player_Leaderboard = m_Player.FindAction("Leaderboard", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
             m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1388,6 +1409,7 @@ namespace pillz.client.Assets.Input
         private readonly InputAction m_Player_PrimaryWeapon;
         private readonly InputAction m_Player_SecondaryWeapon;
         private readonly InputAction m_Player_Stim;
+        private readonly InputAction m_Player_Leaderboard;
         /// <summary>
         /// Provides access to input actions defined in input action map "Player".
         /// </summary>
@@ -1460,6 +1482,10 @@ namespace pillz.client.Assets.Input
             /// </summary>
             public InputAction @Stim => m_Wrapper.m_Player_Stim;
             /// <summary>
+            /// Provides access to the underlying input action "Player/Leaderboard".
+            /// </summary>
+            public InputAction @Leaderboard => m_Wrapper.m_Player_Leaderboard;
+            /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
             public InputActionMap Get() { return m_Wrapper.m_Player; }
@@ -1530,6 +1556,9 @@ namespace pillz.client.Assets.Input
                 @Stim.started += instance.OnStim;
                 @Stim.performed += instance.OnStim;
                 @Stim.canceled += instance.OnStim;
+                @Leaderboard.started += instance.OnLeaderboard;
+                @Leaderboard.performed += instance.OnLeaderboard;
+                @Leaderboard.canceled += instance.OnLeaderboard;
             }
 
             /// <summary>
@@ -1586,6 +1615,9 @@ namespace pillz.client.Assets.Input
                 @Stim.started -= instance.OnStim;
                 @Stim.performed -= instance.OnStim;
                 @Stim.canceled -= instance.OnStim;
+                @Leaderboard.started -= instance.OnLeaderboard;
+                @Leaderboard.performed -= instance.OnLeaderboard;
+                @Leaderboard.canceled -= instance.OnLeaderboard;
             }
 
             /// <summary>
@@ -1991,6 +2023,13 @@ namespace pillz.client.Assets.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnStim(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Leaderboard" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnLeaderboard(InputAction.CallbackContext context);
         }
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

@@ -37,7 +37,7 @@ namespace pillz.client.Scripts
             {
                 if (pill && pill.Owner.IsLocalPlayer)
                 {
-                    var connectedPortal = GameInit.Connection.Db.Portal.Id.Find(_connectedPortalId);
+                    var connectedPortal = Game.Connection.Db.Portal.Id.Find(_connectedPortalId);
                     if (connectedPortal != null)
                     {
                         other.attachedRigidbody.position =
