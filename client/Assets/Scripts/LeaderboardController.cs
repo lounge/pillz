@@ -72,7 +72,8 @@ namespace pillz.client.Scripts
                 .ThenBy(p => p.Deaths)
                 .ToList();
 
-            for (var i = 0; i < ranked.Count; i++)
+            int i;
+            for (i = 0; i < ranked.Count; i++)
             {
                 var player = ranked[i];
                 var row = _rows[i];
@@ -83,6 +84,10 @@ namespace pillz.client.Scripts
                 row.SetBackgroundColor(i % 2 == 0 ? evenRowColor : oddRowColor);
 
                 row.gameObject.SetActive(true);
+            }
+            for (; i < MaxRowCount; i++)
+            {
+                _rows[i].gameObject.SetActive(false);
             }
 
             LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)listLayout.transform);
