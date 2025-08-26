@@ -53,7 +53,6 @@ pub fn init(ctx: &ReducerContext) -> Result<(), String> {
         frags: 0,
         deaths: 0,
         dmg: 0,
-        
     });
 
     Ok(())

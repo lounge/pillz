@@ -57,18 +57,7 @@ pub fn disconnect(ctx: &ReducerContext) -> Result<(), String> {
         .find(&ctx.sender)
         .ok_or("Player not found")?;
 
-    for pill in ctx.db.pill().player_id().filter(player.id) {
-        let entity = ctx
-            .db
-            .entity()
-            .id()
-            .find(pill.entity_id)
-            .ok_or("Could not find pill")?;
-
-        ctx.db.entity().id().delete(entity.id);
-        ctx.db.pill().entity_id().delete(entity.id);
-        ctx.db.projectile().player_id().delete(player.id);
-    }
+    delete_pill(ctx, Some(player.id))?;
 
     ctx.db.logged_out_player().insert(player);
     ctx.db.player().identity().delete(&ctx.sender);
@@ -405,7 +394,6 @@ pub fn delete_pill(ctx: &ReducerContext, player_id: Option<u32>) -> Result<(), S
     debug!("Deleted pill with id {}.", player.id);
 
     ctx.db.player().id().update(player);
-
 
     Ok(())
 }
