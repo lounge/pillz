@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using JetBrains.Annotations;
+using pillz.client.Scripts.Config;
 using SpacetimeDB;
 using SpacetimeDB.Types;
 using UnityEngine;
@@ -11,26 +13,35 @@ namespace pillz.client.Scripts
 {
     public class Game : MonoBehaviour
     {
-        private const string SpacetimeDbUrl = "http://localhost:3000";
-        private const string SpacetimeDbName = "pillz";
+        private static SpacetimeDbConfig _config;
+
+        private SpacetimeDbConfig _defaultConfig = new SpacetimeDbConfig
+        {
+            url = "http://localhost:3000",
+            dbName = "pillz"
+        };
+
+        private const string ConfigFileName = "server.json";
 
         [UsedImplicitly] private static event Action OnConnected;
         [UsedImplicitly] private static event Action OnSubscriptionApplied;
 
         public static Game Instance { get; private set; }
         public static Identity LocalIdentity { get; private set; }
-        public static DbConnection Connection { get; private set; }                     
+        public static DbConnection Connection { get; private set; }
 
         private PrefabSpawner _prefabSpawner;
 
         public static readonly Dictionary<uint, PlayerController> Players = new();
         private static readonly Dictionary<uint, EntityController> Entities = new();
         private static readonly Dictionary<uint, PortalController> Portals = new();
-        
+
         public static bool IsSimulator { get; private set; }
 
         private void Awake()
         {
+            LoadConfigCrossPlatform();
+
             _prefabSpawner = GetComponent<PrefabSpawner>();
             DontDestroyOnLoad(gameObject);
         }
@@ -51,8 +62,8 @@ namespace pillz.client.Scripts
                 .OnConnect(HandleConnect)
                 .OnConnectError(HandleConnectError)
                 .OnDisconnect(HandleDisconnect)
-                .WithUri(SpacetimeDbUrl)
-                .WithModuleName(SpacetimeDbName);
+                .WithUri(_config.url)
+                .WithModuleName(_config.dbName);
 
             // If the user has a SpacetimeDB auth token stored in the Unity PlayerPrefs,
             // we can use it to authenticate the connection.
@@ -81,12 +92,12 @@ namespace pillz.client.Scripts
         {
             Debug.Log("Conncted");
             AuthToken.SaveToken(token);
-            
+
             LocalIdentity = identity;
-            
+
             Connection.Db.Config.OnInsert += ConfigOnInsert;
             Connection.Db.Config.OnUpdate += ConfigOnUpdate;
-            
+
             Connection.Db.World.OnInsert += WorldOnInsert;
             Connection.Db.World.OnUpdate += WorldOnUpdate;
 
@@ -118,7 +129,7 @@ namespace pillz.client.Scripts
                 .OnApplied(HandleSubscriptionApplied)
                 .SubscribeToAllTables();
         }
-        
+
 
         #region Connection Handlers
 
@@ -140,7 +151,7 @@ namespace pillz.client.Scripts
         {
             Debug.Log("Subscription applied!");
             OnSubscriptionApplied?.Invoke();
-            
+
             var cfg = Connection.Db.Config.Iter().FirstOrDefault();
             if (cfg != null)
             {
@@ -158,21 +169,22 @@ namespace pillz.client.Scripts
         }
 
         #endregion
-        
+
         #region Config Handlers
-        
-        private static void ConfigOnInsert(EventContext ctx, Config cfg)
+
+        private static void ConfigOnInsert(EventContext ctx, SpacetimeDB.Types.Config cfg)
         {
             IsSimulator = cfg.Observer.HasValue && cfg.Observer.Value.Equals(LocalIdentity);
             Debug.Log($"[ConfigOnInsert] IsObserver = {IsSimulator}");
         }
 
-        private static void ConfigOnUpdate(EventContext ctx, Config oldCfg, Config newCfg)
+        private static void ConfigOnUpdate(EventContext ctx, SpacetimeDB.Types.Config oldCfg,
+            SpacetimeDB.Types.Config newCfg)
         {
             IsSimulator = newCfg.Observer.HasValue && newCfg.Observer.Value.Equals(LocalIdentity);
             Debug.Log($"[ConfigOnUpdate] IsObserver = {IsSimulator}");
         }
-        
+
         #endregion
 
         #region World Handlers
@@ -246,8 +258,9 @@ namespace pillz.client.Scripts
             var pillz = Connection.Db.Pill.PlayerId.Filter(oldEntity.PlayerId);
             if (pillz.Any() || !Players.ContainsKey(oldEntity.PlayerId))
                 return;
-            
-            Log.Debug($"PillOnDelete: No pillz left for player {oldEntity.PlayerId}, removing player controller. Deaths: {player.Player.Deaths}");
+
+            Log.Debug(
+                $"PillOnDelete: No pillz left for player {oldEntity.PlayerId}, removing player controller. Deaths: {player.Player.Deaths}");
             Players.Remove(oldEntity.PlayerId);
         }
 
@@ -344,6 +357,60 @@ namespace pillz.client.Scripts
         }
 
         #endregion
+
+        private void LoadConfigCrossPlatform()
+        {
+            var persistentPath = Path.Combine(Application.persistentDataPath, ConfigFileName);
+            if (TryLoadConfigFromFile(persistentPath, out _config)) return;
+            
+            var streamingPath = Path.Combine(Application.streamingAssetsPath, ConfigFileName);
+                    Log.Debug($"[Config] streamingPath: {streamingPath}");
+            
+            if (File.Exists(streamingPath))
+            {
+                try
+                {
+                    Log.Debug($"[Config] COPYING CONFIG FILE");
+                    Directory.CreateDirectory(Path.GetDirectoryName(persistentPath)!);
+                    File.Copy(streamingPath, persistentPath, overwrite: true);
+                    if (TryLoadConfigFromFile(persistentPath, out _config)) return;
+                }
+                catch (Exception e)
+                {
+                    Debug.LogWarning($"[Config] Failed to copy from StreamingAssets: {e.Message}");
+                }
+            }
+
+            Debug.LogWarning("[Config] Using built-in default SpacetimeDB config.");
+            _config = _defaultConfig;
+        }
+
+        private static bool TryLoadConfigFromFile(string path, out SpacetimeDbConfig cfg)
+        {
+            cfg = null;
+            try
+            {
+                if (!File.Exists(path))
+                {
+                    Debug.Log($"[Config] Not found: {path}");
+                    return false;
+                }
+
+                var json = File.ReadAllText(path);
+                var parsed = JsonUtility.FromJson<SpacetimeDbConfig>(json);
+                if (parsed == null || string.IsNullOrWhiteSpace(parsed.url) || string.IsNullOrWhiteSpace(parsed.dbName))
+                    throw new Exception("Missing required fields: url, dbName");
+
+                cfg = parsed;
+                Debug.Log($"[Config] Loaded: {path}  url={cfg.url}  db={cfg.dbName}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[Config] Failed to load {path}: {ex.Message}");
+                return false;
+            }
+        }
 
         private static void InstanceOnUnhandledReducerError(ReducerEventContext ctx, Exception exception)
         {
