@@ -34,6 +34,21 @@
    ./ngrok.sh
    ```
 
+## Server Configuration
+When running the game a `server.json` configuration file is created, you can change the server url and module name if needed and restart the game.
+
+```
+{
+  "url": "http://localhost:3000",
+  "dbName": "pillz"
+}
+```
+
+### MacOS
+- The `server.json` file is located in `User/Library/Application Support/Mulla/Pillz`
+### Windows
+- The `server.json` file is located in `C:\Users\<YourUsername>\AppData\LocalLow\Mulla\Pillz`
+
 ## Running the Unity Client
 
 1. Open the `client` folder in Unity Editor.
