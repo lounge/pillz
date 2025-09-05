@@ -13,16 +13,7 @@ namespace pillz.client.Scripts
 {
     public class Game : MonoBehaviour
     {
-        private static SpacetimeDbConfig _config;
-
-        private SpacetimeDbConfig _defaultConfig = new SpacetimeDbConfig
-        {
-            url = "http://localhost:3000",
-            dbName = "pillz"
-        };
-
-        private const string ConfigFileName = "server.json";
-
+    
         [UsedImplicitly] private static event Action OnConnected;
         [UsedImplicitly] private static event Action OnSubscriptionApplied;
 
@@ -37,10 +28,13 @@ namespace pillz.client.Scripts
         private static readonly Dictionary<uint, PortalController> Portals = new();
 
         public static bool IsSimulator { get; private set; }
+        
+        private SpacetimeDbConfig _config;
+        
 
         private void Awake()
         {
-            LoadConfigCrossPlatform();
+           _config =  ConfigLoader.LoadConfigCrossPlatform();
 
             _prefabSpawner = GetComponent<PrefabSpawner>();
             DontDestroyOnLoad(gameObject);
@@ -358,59 +352,6 @@ namespace pillz.client.Scripts
 
         #endregion
 
-        private void LoadConfigCrossPlatform()
-        {
-            var persistentPath = Path.Combine(Application.persistentDataPath, ConfigFileName);
-            if (TryLoadConfigFromFile(persistentPath, out _config)) return;
-            
-            var streamingPath = Path.Combine(Application.streamingAssetsPath, ConfigFileName);
-                    Log.Debug($"[Config] streamingPath: {streamingPath}");
-            
-            if (File.Exists(streamingPath))
-            {
-                try
-                {
-                    Log.Debug($"[Config] COPYING CONFIG FILE");
-                    Directory.CreateDirectory(Path.GetDirectoryName(persistentPath)!);
-                    File.Copy(streamingPath, persistentPath, overwrite: true);
-                    if (TryLoadConfigFromFile(persistentPath, out _config)) return;
-                }
-                catch (Exception e)
-                {
-                    Debug.LogWarning($"[Config] Failed to copy from StreamingAssets: {e.Message}");
-                }
-            }
-
-            Debug.LogWarning("[Config] Using built-in default SpacetimeDB config.");
-            _config = _defaultConfig;
-        }
-
-        private static bool TryLoadConfigFromFile(string path, out SpacetimeDbConfig cfg)
-        {
-            cfg = null;
-            try
-            {
-                if (!File.Exists(path))
-                {
-                    Debug.Log($"[Config] Not found: {path}");
-                    return false;
-                }
-
-                var json = File.ReadAllText(path);
-                var parsed = JsonUtility.FromJson<SpacetimeDbConfig>(json);
-                if (parsed == null || string.IsNullOrWhiteSpace(parsed.url) || string.IsNullOrWhiteSpace(parsed.dbName))
-                    throw new Exception("Missing required fields: url, dbName");
-
-                cfg = parsed;
-                Debug.Log($"[Config] Loaded: {path}  url={cfg.url}  db={cfg.dbName}");
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError($"[Config] Failed to load {path}: {ex.Message}");
-                return false;
-            }
-        }
 
         private static void InstanceOnUnhandledReducerError(ReducerEventContext ctx, Exception exception)
         {
