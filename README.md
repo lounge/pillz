@@ -55,6 +55,9 @@ When running the game a `server.json` configuration file is created, you can cha
 2. Ensure the generated scripts are present in `client/Assets/Scripts/autogen`.
 3. Press Play in Unity to start the client.
 
+## Or download the client from itch.io
+- [Pillz on itch.io](https://loungebylounge.itch.io/pillz)
+
 ## Requirements
 
 - Rust and Cargo installed for server development.
