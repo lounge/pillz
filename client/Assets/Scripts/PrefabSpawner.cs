@@ -40,7 +40,7 @@ namespace pillz.client.Scripts
             portalController.Spawn(portal);
 
             Log.Debug(
-                $"Spawned portal at position {portal.Position} with connected portal ID {portal.ConnectedPortalId}.");
+                $"Spawned portal at position {portal.Position} with connected portals {portal.Connections}.");
 
             return portalController;
         }

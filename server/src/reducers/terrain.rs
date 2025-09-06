@@ -51,7 +51,7 @@ pub fn delete_terrain_tiles(ctx: &ReducerContext, x: i32, y: i32, radius: f32) -
         .filter(|t| {
             let dx = t.position.x - cx;
             let dy = t.position.y - cy;
-            dx*dx + dy*dy <= r2
+            dx * dx + dy * dy <= r2
         })
         .collect();
 
@@ -74,7 +74,7 @@ pub fn generate_terrain(ctx: &ReducerContext, seed: i32) -> Result<(), String> {
         w
     } else {
         error!("World is not initialized; cannot generate terrain.");
-        return Ok(())
+        return Ok(());
     };
 
     if !world.is_generated {
@@ -84,7 +84,6 @@ pub fn generate_terrain(ctx: &ReducerContext, seed: i32) -> Result<(), String> {
     }
 
     Ok(())
-
 }
 
 fn generate_tiles(ctx: &ReducerContext, seed: u64) {
@@ -179,12 +178,7 @@ fn generate_portal_locations(
     half_width: i32,
     half_height: i32,
 ) {
-    let min_allowed_y: f32 = -40.0;
-
-    let mut highest: Option<(f32, f32)> = None;
-    let mut lowest: Option<(f32, f32)> = None;
-    let mut leftest: Option<(f32, f32)> = None;
-    let mut rightest: Option<(f32, f32)> = None;
+    let mut locs: Vec<(i32, i32)> = Vec::new();
 
     for x in 1..(width - 2) {
         for y in 2..(height - 5) {
@@ -208,61 +202,39 @@ fn generate_portal_locations(
             let gx = x as i32 - half_width;
             let gy = y as i32 - half_height;
 
-            let gx_f = gx as f32;
-            let gy_f = gy as f32;
-
-            if lowest.map_or(true, |(_, ly)| gy_f < ly) {
-                lowest = Some((gx_f, gy_f));
-            }
-            if highest.map_or(true, |(_, hy)| gy_f > hy) {
-                highest = Some((gx_f, gy_f));
-            }
-
-            if gy_f >= min_allowed_y {
-                if leftest.map_or(true, |(lx, _)| gx_f < lx) {
-                    leftest = Some((gx_f, gy_f));
-                }
-                if rightest.map_or(true, |(rx, _)| gx_f > rx) {
-                    rightest = Some((gx_f, gy_f));
-                }
-            }
+            locs.push((gx, gy));
         }
     }
 
-    if let (Some(lowest), Some(highest), Some(leftest), Some(rightest)) =
-        (lowest, highest, leftest, rightest)
-    {
-        let mut portal1 = ctx.db.portal().insert(Portal {
+    let mut rng = ctx.rng();
+    let mut portals: Vec<Portal> = Vec::new();
+    for _ in 0..15 {
+        let idx = rng.gen_range(0..locs.len());
+        let p = ctx.db.portal().insert(Portal {
             id: 0,
-            connected_portal_id: 0,
-            position: DbVector2::new(lowest.0, lowest.1),
+            connections: Vec::new(),
+            position: DbVector2::new(locs[idx].0 as f32, locs[idx].1 as f32),
         });
 
-        let portal2 = ctx.db.portal().insert(Portal {
-            id: 0,
-            connected_portal_id: portal1.id,
-            position: DbVector2::new(highest.0, highest.1),
-        });
+        portals.push(p);
+        locs.remove(idx);
+    }
 
-        let portal3 = ctx.db.portal().insert(Portal {
-            id: 0,
-            connected_portal_id: portal2.id,
-            position: DbVector2::new(leftest.0, leftest.1),
-        });
+    let all_ids: Vec<u32> = portals.iter().map(|p| p.id).collect();
 
-        let portal4 = ctx.db.portal().insert(Portal {
-            id: 0,
-            connected_portal_id: portal3.id,
-            position: DbVector2::new(rightest.0, rightest.1),
-        });
+    for p in portals {
+        let connections: Vec<u32> = all_ids
+            .iter()
+            .copied()
+            .filter(|id| *id != p.id)
+            .collect();
 
-        // make 1 <-> 2 and 3 <-> 4
-        portal1.connected_portal_id = portal2.id;
-        ctx.db.portal().id().update(portal1);
+        let updated = Portal {
+            connections,
+            ..p
+        };
 
-        let mut portal3_updated = portal3;
-        portal3_updated.connected_portal_id = portal4.id;
-        ctx.db.portal().id().update(portal3_updated);
+        ctx.db.portal().id().update(updated);
     }
 }
 

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using pillz.client.Scripts.Constants;
 using SpacetimeDB.Types;
 using UnityEngine;
@@ -9,11 +10,11 @@ namespace pillz.client.Scripts
         [SerializeField] private AudioClip teleportEnterSound;
         [SerializeField] private AudioClip teleportExitSound;
         
-        private uint _connectedPortalId;
+        private List<uint> _connections;
 
         public void Spawn(Portal portal)
         {
-            _connectedPortalId = portal.ConnectedPortalId;
+            _connections = portal.Connections;
 
             // Set position from server correction for client placement
             transform.position = new Vector3(portal.Position.X + 1f, portal.Position.Y + 1.5f, 0);
@@ -21,7 +22,7 @@ namespace pillz.client.Scripts
 
         public void OnPortalUpdated(Portal newVal)
         {
-            _connectedPortalId = newVal.ConnectedPortalId;
+            _connections = newVal.Connections;
         }
 
         private void OnTriggerEnter2D(Collider2D other)
@@ -37,7 +38,10 @@ namespace pillz.client.Scripts
             {
                 if (pill && pill.Owner.IsLocalPlayer)
                 {
-                    var connectedPortal = Game.Connection.Db.Portal.Id.Find(_connectedPortalId);
+                    var rng = Random.Range(0, _connections.Count);
+                    var connectedPortalId = _connections[rng];
+                    
+                    var connectedPortal = Game.Connection.Db.Portal.Id.Find(connectedPortalId);
                     if (connectedPortal != null)
                     {
                         other.attachedRigidbody.position =

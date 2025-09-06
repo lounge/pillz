@@ -207,7 +207,7 @@ pub fn init_stims(ctx: &ReducerContext, stims: i32) -> Result<(), String> {
 
 #[spacetimedb::reducer]
 pub fn stim(ctx: &ReducerContext, strength: i32) -> Result<(), String> {
-    const MAX_HP: i32 = 100;
+    const MAX_HP: i32 = 150;
 
     let player = ctx
         .db
@@ -217,7 +217,7 @@ pub fn stim(ctx: &ReducerContext, strength: i32) -> Result<(), String> {
         .ok_or("Player not found in the database.")?;
 
     for mut pill in ctx.db.pill().player_id().filter(&player.id) {
-        if pill.stims <= 0 || pill.hp >= MAX_HP {
+        if pill.stims <= 0 || pill.hp >= 100 {
             debug!("Cannot use stim: No stims left or HP is already full.");
             continue;
         }
