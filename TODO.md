@@ -94,4 +94,7 @@
     - [ ] Toggle between players pillz
 
 ## Sound
-- [] Fine tune sound effect
+- [ ] Fine tune sound effect
+
+## Balancing
+- [ ] Jiddi Jadda
